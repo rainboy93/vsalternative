@@ -1,0 +1,207 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/d30"
+    android:paddingRight="@dimen/d30">
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/login_setting_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d10"
+        android:gravity="center_vertical"
+        android:text="Cài đặt"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d18"
+        app:font_name="OpenSans"
+        app:font_variant="Regular" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/login_setting_button_layout"
+        android:layout_below="@+id/login_setting_hint"
+        android:layout_marginBottom="@dimen/d10"
+        android:layout_marginTop="@dimen/d5"
+        android:background="@drawable/login_setting_input_layout"
+        android:orientation="vertical"
+        android:paddingBottom="12dp"
+        android:paddingTop="@dimen/d5">
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="Địa chỉ IP nội mạng"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_setting_ip"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="192.168.1.250"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular">
+
+            <requestFocus />
+        </in.workarounds.typography.EditText>
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="Cổng nội mạng"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_setting_ip_port"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="3003"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="Địa chỉ ngoại mạng"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_setting_dns"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="vshome.ddns.net"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="Cổng ngoại mạng"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_setting_dns_port"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="3003"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/login_setting_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/d40"
+        android:background="@drawable/login_setting_button_layout"
+        android:orientation="horizontal">
+
+        <in.workarounds.typography.Button
+            android:id="@+id/login_setting_button_save"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/d50"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:text="LƯU"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/login_setting_button_cancel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/d50"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:text="THOÁT"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

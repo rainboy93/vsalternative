@@ -1,0 +1,140 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/d20"
+    android:paddingRight="@dimen/d20">
+
+    <LinearLayout
+        android:id="@+id/login_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d120"
+        android:layout_marginLeft="@dimen/d10"
+        android:layout_marginRight="@dimen/d10"
+        android:layout_marginTop="@dimen/d10"
+        android:background="@drawable/login_input_box"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_username"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/login_username_hint"
+            android:maxLength="30"
+            android:paddingLeft="@dimen/d10"
+            android:paddingRight="@dimen/d10"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular">
+
+            <requestFocus />
+        </in.workarounds.typography.EditText>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/divider" />
+
+        <in.workarounds.typography.EditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/login_password_hint"
+            android:inputType="textPassword"
+            android:paddingLeft="@dimen/d10"
+            android:paddingRight="@dimen/d10"
+            android:textColor="@color/darkgray"
+            android:textColorHint="@color/hint"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/login_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d60"
+        android:layout_below="@+id/login_top_layout"
+        android:layout_marginLeft="@dimen/d10"
+        android:layout_marginRight="@dimen/d10"
+        android:layout_marginTop="@dimen/d10">
+
+        <ImageButton
+            android:id="@+id/login_setting_button"
+            android:layout_width="@dimen/d40"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/login_setting_button"
+            android:paddingLeft="@dimen/d10"
+            android:paddingRight="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/login_setting_icon" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/login_setting_button"
+            android:background="@drawable/login_button"
+            android:gravity="center"
+            android:paddingLeft="@dimen/d40"
+            android:text="@string/login_button_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d20"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_button_layout"
+        android:layout_marginLeft="@dimen/d12"
+        android:layout_marginRight="@dimen/d12"
+        android:layout_marginTop="5dp">
+
+        <in.workarounds.typography.CheckBox
+            android:id="@+id/login_remember_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_checkbox"
+            android:drawablePadding="0dp"
+            android:gravity="left|center_vertical"
+            android:text=" Ghi nhớ mật khẩu"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d12"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/login_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/login_remember_password"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/login_remember_password"
+            android:gravity="right|center_vertical"
+            android:text="Quên mật khẩu"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d12"
+            app:font_name="OpenSans"
+            app:font_variant="Regular" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -12,6 +12,8 @@ import vn.com.vshome.networks.SocketManager;
 public class VSHome extends SugarApp{
     public static SocketManager socketManager;
 
+    public static int userPriority = 0;
+
     @Override
     public void onCreate() {
         super.onCreate();

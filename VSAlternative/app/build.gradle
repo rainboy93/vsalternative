@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'in.workarounds.typography:typography:0.0.8'
     compile 'com.github.satyan:sugar:1.4'
+    compile 'com.android.support:gridlayout-v7:23.4.0'
 }

@@ -5,6 +5,8 @@ package vn.com.vshome.utils;
  */
 public class Define {
 
+    public static boolean DEBUG = true;
+
     public enum NetworkType {
         NotDetermine,
         LocalNetwork,
