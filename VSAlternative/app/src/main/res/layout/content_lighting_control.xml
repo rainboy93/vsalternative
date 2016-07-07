@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/lighting_control_container">
+
+    <LinearLayout
+        android:id="@+id/lighting_control_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <in.workarounds.typography.Button
+            android:id="@+id/lighting_control_button_device"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_control"
+            android:gravity="center"
+            android:text="THIẾT BỊ"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d18"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/lighting_control_button_scene"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/selector_control"
+            android:gravity="center"
+            android:text="NGỮ CẢNH"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d18"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+    </LinearLayout>
+
+    <vn.com.vshome.view.NonSwipeViewPager
+        android:id="@+id/lighting_control_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lighting_control_button_layout" />
+
+</RelativeLayout>

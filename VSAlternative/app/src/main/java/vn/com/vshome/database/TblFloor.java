@@ -11,6 +11,7 @@ public class TblFloor extends SugarRecord {
     public String name;
 
     public void setFloor(Floor floor) {
+        setId((long) floor.id);
         this.name = floor.name;
     }
 }

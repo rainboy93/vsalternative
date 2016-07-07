@@ -8,6 +8,9 @@
     <string name="login_password_hint">Mật khẩu</string>
     <string name="login_button_text">Đăng nhập</string>
 
+    <string name="font_name">OpenSans</string>
+    <string name="font_regular">Regular</string>
+
     <string name="LAN_ip">Địa chỉ IP nội mạng</string>
     <string name="LAN_port">Cổng nội mạng</string>
     <string name="DNS_address">Địa chỉ ngoại mạng</string>
@@ -123,4 +126,9 @@
     <string name="crop_image_menu_crop">Crop</string>
     <string name="pick_image_intent_chooser_title">Select source</string>
     <string name="title_activity_crop">CropActivity</string>
+    <string name="title_activity_activity_lighting_control">ActivityLightingControl</string>
+    <string name="title_activity_lighting_control">LightingControlActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

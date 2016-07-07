@@ -9,6 +9,6 @@ public class Room {
     public int id;
     public int floorID;
     public String name;
-    private ArrayList<LightingDevice> devices = new ArrayList<>();
-    private ArrayList<CameraDevice> foscams = new ArrayList<>();
+    public ArrayList<LightingDevice> devices = new ArrayList<>();
+    public ArrayList<CameraDevice> foscams = new ArrayList<>();
 }

@@ -2,46 +2,201 @@
 <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/base_background"
+    android:paddingTop="@dimen/d20"
     app:columnCount="2"
-    app:rowCount="3"
-    android:layout_height="match_parent">
+    app:rowCount="3">
 
-    <ImageButton
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_rowWeight="1"
         app:layout_columnWeight="1"
-        />
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1"
-        />
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1"
-        />
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1"
-        />
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1"
-        />
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1"
-        />
+        app:layout_rowWeight="1">
 
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_light_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="Chiếu sáng\n"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
+        <ImageButton
+            android:id="@+id/main_button_light_control"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_light_control"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_lighting" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_security"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="An ninh\n"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <ImageButton
+            android:id="@+id/main_button_security"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_security"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_security" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_environment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="Cảm biến\nmôi trường"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <ImageButton
+            android:id="@+id/main_button_environment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_environment"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_env_sensor" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_sun_energy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="Năng lượng\nmặt trời"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <ImageButton
+            android:id="@+id/main_button_sun_energy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_sun_energy"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_sun_energy" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="Người dùng\n"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <ImageButton
+            android:id="@+id/main_button_user"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_user"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_user" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/main_text_advance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/d5"
+            android:paddingTop="@dimen/d5"
+            android:text="Nâng cao\n"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d16"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <ImageButton
+            android:id="@+id/main_button_advance"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_text_advance"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="@dimen/d10"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_advance" />
+    </RelativeLayout>
 </android.support.v7.widget.GridLayout>

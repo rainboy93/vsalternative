@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/blueActionbar">
+
+    <ImageButton
+        android:id="@+id/action_bar_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/base_selector_background"
+        android:padding="@dimen/d10"
+        android:src="@drawable/icon_menu" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/action_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="asdfa"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d18"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+    <ImageButton
+        android:id="@+id/action_bar_home"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/base_selector_background"
+        android:padding="@dimen/d10"
+        android:src="@drawable/icon_home" />
+</RelativeLayout>
