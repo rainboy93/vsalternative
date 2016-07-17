@@ -1,0 +1,7 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/lighting_control_disable_icon" android:state_selected="false"/>
+    <item android:drawable="@drawable/lighting_control_enable_icon" android:state_pressed="true"/>
+    <item android:drawable="@drawable/lighting_control_enable_icon" android:state_selected="true"/>
+
+</selector>

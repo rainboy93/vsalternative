@@ -21,7 +21,6 @@ public class ProgressHUD extends Dialog {
             @Override
             public void run() {
                 hideLoading(activity);
-
                 progressHUD = show(activity);
             }
         });

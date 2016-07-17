@@ -13,11 +13,11 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".MainActivity" />
         <activity android:name=".account.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <meta-data
@@ -33,7 +33,19 @@
         <activity
             android:name=".lightingcontrol.LightingControlActivity"
             android:label="@string/title_activity_lighting_control"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
+        <activity android:name=".lightingcontrol.LightingSceneActivity" />
+        <activity
+            android:name=".user.UserActivity"
+            android:label="@string/title_activity_user"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".floorselection.FloorSelectionActivity"></activity>
     </application>
 
 </manifest>

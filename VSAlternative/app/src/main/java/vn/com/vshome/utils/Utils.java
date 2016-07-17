@@ -2,6 +2,7 @@ package vn.com.vshome.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.Window;
 
@@ -12,16 +13,13 @@ import java.util.ArrayList;
 import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
-import vn.com.vshome.database.TblCamera;
-import vn.com.vshome.database.TblFloor;
-import vn.com.vshome.database.TblLightingDevice;
-import vn.com.vshome.database.TblRoom;
-import vn.com.vshome.database.TblScene;
-import vn.com.vshome.database.TblSceneDevice;
-import vn.com.vshome.database.model.CameraDevice;
-import vn.com.vshome.database.model.Floor;
-import vn.com.vshome.database.model.LightingDevice;
-import vn.com.vshome.database.model.Room;
+import vn.com.vshome.database.Camera;
+import vn.com.vshome.database.DeviceState;
+import vn.com.vshome.database.Floor;
+import vn.com.vshome.database.LightingDevice;
+import vn.com.vshome.database.Room;
+import vn.com.vshome.database.Scene;
+import vn.com.vshome.database.SceneDevice;
 
 /**
  * Created by anlab on 7/5/16.
@@ -81,41 +79,42 @@ public class Utils {
             return;
         }
 
-        TblFloor.deleteAll(TblFloor.class);
-        TblRoom.deleteAll(TblRoom.class);
-        TblLightingDevice.deleteAll(TblLightingDevice.class);
-        TblCamera.deleteAll(TblCamera.class);
-        TblScene.deleteAll(TblScene.class);
-        TblSceneDevice.deleteAll(TblSceneDevice.class);
+        Floor.deleteAll(Floor.class);
+        Room.deleteAll(Room.class);
+        LightingDevice.deleteAll(LightingDevice.class);
+        Camera.deleteAll(Camera.class);
+        Scene.deleteAll(Scene.class);
+        SceneDevice.deleteAll(SceneDevice.class);
 
         for(Floor floor : floors){
-            TblFloor fl = new TblFloor();
-            fl.setFloor(floor);
-            fl.save();
+            floor.save();
 
             for(Room room : floor.rooms){
-                TblRoom r = new TblRoom();
-                r.setRoom(room);
-                r.save();
+                room.save();
 
                 for(LightingDevice device : room.devices){
-                    TblLightingDevice d = new TblLightingDevice();
-                    d.setLightingDevice(device);
-                    d.save();
+                    DeviceState state = new DeviceState();
+                    state.setId(device.getId());
+                    state.state = 1;
+                    state.param = 0;
+                    state.param1 = 0;
+                    state.param2 = 0;
+                    state.param3 = 0;
+                    state.save();
+                    device.save();
                 }
 
-                for(CameraDevice camera : room.foscams){
-                    TblCamera c = new TblCamera();
-                    c.setCamera(camera);
-                    c.save();
+                for(Camera camera : room.foscams){
+                    camera.save();
                 }
             }
         }
 
-        Logger.LogD("Floor size " + TblFloor.listAll(TblFloor.class).size());
-        Logger.LogD("Room size " + TblRoom.listAll(TblRoom.class).size());
-        Logger.LogD("Device size " + TblLightingDevice.listAll(TblLightingDevice.class).size());
-        Logger.LogD("Camera size " + TblCamera.listAll(TblCamera.class).size());
+        Logger.LogD("Floor size " + Floor.listAll(Floor.class).size());
+        Logger.LogD("Room size " + Room.listAll(Room.class).size());
+        Logger.LogD("Device size " + LightingDevice.listAll(LightingDevice.class).size());
+        Logger.LogD("Camera size " + Camera.listAll(Camera.class).size());
+        Logger.LogD("State size " + DeviceState.listAll(DeviceState.class).size());
 
         PreferenceUtils.getInstance(context).setValue(PreferenceDefine.UID, uid);
         PreferenceUtils.getInstance(context).setValue(PreferenceDefine.VERSION_CODE,
@@ -126,5 +125,20 @@ public class Utils {
         MaterialRippleLayout.on(v).rippleColor(context.getResources().getColor(R.color.white))
                 .rippleOverlay(true)
                 .rippleAlpha(0.3f).create();
+    }
+
+    public static int getScreenWidth(){
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static String getTimeString(int c) {
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
+    }
+
+    public static int getColor(int id){
+        return Resources.getSystem().getColor(id);
     }
 }

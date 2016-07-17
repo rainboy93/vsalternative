@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/device_background"
+    android:gravity="center">
+
+    <com.daimajia.swipe.SwipeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/user_swipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftEdgeSwipeOffset="0dp"
+        app:rightEdgeSwipeOffset="0dp">
+
+        <LinearLayout
+            android:layout_width="@dimen/d60"
+            android:layout_height="match_parent"
+            android:background="@color/sub_button_red"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <ImageButton
+                android:id="@+id/lighting_user_button_edit"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:padding="@dimen/d10"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lighting_scene_edit_icon" />
+
+            <ImageButton
+                android:id="@+id/lighting_user_button_delete"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:padding="@dimen/d10"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lighting_scene_trash_icon" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/d10"
+            android:background="@drawable/rounded_corner_background"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/user_avatar_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <in.workarounds.typography.TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/d60"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/user_avatar_icon"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:text="textview"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:font_name="@string/font_name"
+                app:font_variant="@string/font_bold" />
+
+            <ImageButton
+                android:id="@+id/user_button_control"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@null"
+                android:src="@drawable/selector_on_off" />
+        </RelativeLayout>
+    </com.daimajia.swipe.SwipeLayout>
+</LinearLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lighting_scene_day_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:id="@+id/lighting_scene_picker_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lighting_scene_day_recycler_view"
+        android:background="@color/device_background"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <vn.com.vshome.view.customview.WheelView
+            android:id="@+id/lighting_scene_wheel_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <vn.com.vshome.view.customview.WheelView
+            android:id="@+id/lighting_scene_wheel_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <vn.com.vshome.view.customview.WheelView
+            android:id="@+id/lighting_scene_wheel_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <vn.com.vshome.view.customview.WheelView
+            android:id="@+id/lighting_scene_wheel_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lighting_scene_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/lighting_scene_button_save"
+        android:layout_below="@+id/lighting_scene_picker_layout" />
+
+    <ImageButton
+        android:id="@+id/lighting_scene_button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/base_selector_background"
+        android:src="@drawable/save_button" />
+
+</RelativeLayout>

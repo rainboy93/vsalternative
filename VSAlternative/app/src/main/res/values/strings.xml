@@ -10,6 +10,7 @@
 
     <string name="font_name">OpenSans</string>
     <string name="font_regular">Regular</string>
+    <string name="font_bold">Bold</string>
 
     <string name="LAN_ip">Địa chỉ IP nội mạng</string>
     <string name="LAN_port">Cổng nội mạng</string>
@@ -131,4 +132,5 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_user">UserActivity</string>
 </resources>

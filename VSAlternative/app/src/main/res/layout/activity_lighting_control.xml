@@ -19,8 +19,25 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_lighting_control"
-        app:menu="@menu/activity_lighting_control_drawer" />
+        android:fitsSystemWindows="true">
+
+        <in.workarounds.typography.TextView
+            android:id="@+id/lighting_control_list_floor_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/d50"
+            android:background="@color/blueActionbar"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d20"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lighting_control_list_floor_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/d50" />
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

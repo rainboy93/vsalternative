@@ -22,13 +22,14 @@ import vn.com.vshome.MainActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LoginCallback;
-import vn.com.vshome.database.TblScene;
-import vn.com.vshome.database.model.CameraDevice;
-import vn.com.vshome.database.model.Floor;
-import vn.com.vshome.database.model.LightingDevice;
-import vn.com.vshome.database.model.Room;
+import vn.com.vshome.database.Camera;
+import vn.com.vshome.database.Floor;
+import vn.com.vshome.database.LightingDevice;
+import vn.com.vshome.database.Room;
+import vn.com.vshome.database.Scene;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.networks.ReturnMessage;
+import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.PasswordFlowerMask;
 import vn.com.vshome.utils.PreferenceDefine;
@@ -285,7 +286,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                     int lastUID = PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.UID, 0);
                     int lastConfigID = PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.CONFIGURE_ID, 0);
 
-                    if (uid != lastUID || configureID != lastConfigID
+                    if (Define.DEBUG ||
+                            uid != lastUID || configureID != lastConfigID
                             || net.the4thdimension.android.Utils.getApplicationVersionCode(getActivity())
                             != PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.VERSION_CODE, 0)) {
                         VSHome.socketManager.outputStream.write(1);
@@ -338,7 +340,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         }
                     });
                     if(sceneDBVersion != lastSceneDBVersion){
-                        TblScene.deleteAll(TblScene.class);
+                        Scene.deleteAll(Scene.class);
                         VSHome.socketManager.outputStream.write(1);
                     } else {
                         VSHome.socketManager.outputStream.write(0);
@@ -360,10 +362,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
             int index = 0;
             int mNumberFloor = mBufferData[index];
             index++;
+            Logger.LogD("Floor " + mNumberFloor);
             while (mNumberFloor > 0) {
                 Floor floor = new Floor();
                 int mFloorId = mBufferData[index];
-                floor.id = mFloorId;
+                floor.setId((long) mFloorId);
                 index++;
                 byte[] bFloorName = Arrays.copyOfRange(mBufferData, index,
                         index + 49);
@@ -379,12 +382,13 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                 int mNumberRoom = mBufferData[index];
                 index++;
+                Logger.LogD("Room " + mNumberRoom);
                 while (mNumberRoom > 0) {
 
                     Room room = new Room();
 
                     int mRoomId = mBufferData[index];
-                    room.id = mRoomId;
+                    room.setId((long) mRoomId);
                     index += 2;
 
                     byte[] b2 = Arrays.copyOfRange(mBufferData, index, index + 49);
@@ -402,21 +406,21 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                     int mNumberLightingDevice = mBufferData[index];
                     index++;
-
+                    Logger.LogD("Device " + mNumberLightingDevice);
                     while (mNumberLightingDevice > 0) {
 
                         LightingDevice device = new LightingDevice();
 
-                        device.room_id = mRoomId;
+                        device.roomId = mRoomId;
 
                         int mLightingId = (Utils
                                 .Byte2Unsigned((byte) mBufferData[index]) << 8)
                                 + Utils.Byte2Unsigned((byte) mBufferData[index + 1]);
-                        device.id = mLightingId;
+                        device.setId((long) mLightingId);
                         index += 2;
 
                         int mDeviceType = mBufferData[index];
-                        device.type_id = mDeviceType;
+                        device.typeId = mDeviceType;
                         index += 2;
 
                         byte[] b3 = Arrays.copyOfRange(mBufferData, index,
@@ -434,15 +438,15 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         int mStateId = (Utils
                                 .Byte2Unsigned((byte) mBufferData[index]) << 8)
                                 + Utils.Byte2Unsigned((byte) mBufferData[index + 1]);
-                        device.state_id = mStateId;
+                        device.stateId = mStateId;
                         index += 2;
 
                         int mLCId = mBufferData[index];
-                        device.lc_id = mLCId;
+                        device.lcId = mLCId;
                         index++;
 
                         int mDevId = mBufferData[index];
-                        device.dev_id = mDevId;
+                        device.devId = mDevId;
                         index++;
 
                         int mDeviceChannel = mBufferData[index];
@@ -455,6 +459,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                     }
 
                     int mNumberSecurityDevice = mBufferData[index];
+                    Logger.LogD("Security " + mNumberSecurityDevice);
                     index++;
                     while (mNumberSecurityDevice > 0) {
                         int mSecurityId = (int) (mBufferData[index] << 8)
@@ -496,18 +501,18 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                     int mNumberOfCamera = mBufferData[index];
                     index++;
-
+                    Logger.LogD("Camera " + mNumberOfCamera);
                     while (mNumberOfCamera > 0) {
-                        CameraDevice foscam = new CameraDevice();
+                        Camera foscam = new Camera();
                         int mCameraId = mBufferData[index];
-                        foscam.id = mCameraId;
+                        foscam.setId((long) mCameraId);
                         index += 1;
 
                         int mCameraType = mBufferData[index];
-                        foscam.device_type = mCameraType;
+                        foscam.deviceType = mCameraType;
                         index += 2;
 
-                        foscam.room_id = mRoomId;
+                        foscam.roomId = mRoomId;
 
                         byte[] b5 = Arrays.copyOfRange(mBufferData, index,
                                 index + 49);
@@ -518,7 +523,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                                 break;
                             }
                         }
-                        foscam.device_name = mCameraName;
+                        foscam.deviceName = mCameraName;
                         index += 50;
 
                         byte[] b6 = Arrays.copyOfRange(mBufferData, index,
@@ -530,13 +535,13 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                                 break;
                             }
                         }
-                        foscam.ip_address = mCameraAddress;
+                        foscam.ipAddress = mCameraAddress;
                         index += 20;
 
                         int mCameraLocalPort = (Utils
                                 .Byte2Unsigned((byte) mBufferData[index]) << 8)
                                 + (Utils.Byte2Unsigned((byte) mBufferData[index + 1]));
-                        foscam.local_port = mCameraLocalPort;
+                        foscam.localPort = mCameraLocalPort;
                         index += 2;
 
                         byte[] b7 = Arrays.copyOfRange(mBufferData, index,
@@ -549,14 +554,14 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                                 break;
                             }
                         }
-                        foscam.dns_address = mCameraDNSAddress;
+                        foscam.dnsAddress = mCameraDNSAddress;
                         index += 50;
 
                         int mCameraDNSPort = (Utils
                                 .Byte2Unsigned((byte) mBufferData[index]) << 8)
                                 + (Utils.Byte2Unsigned((byte) mBufferData[index + 1]));
                         index += 2;
-                        foscam.web_port = mCameraDNSPort;
+                        foscam.webPort = mCameraDNSPort;
 
                         byte[] b8 = Arrays.copyOfRange(mBufferData, index,
                                 index + 19);
@@ -587,7 +592,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                     int mNumberOfSensor = mBufferData[index];
                     index++;
-
+                    Logger.LogD("Sensor " + mNumberOfSensor);
                     if (mNumberOfSensor == 1) {
                         index++;
                         byte[] b10 = Arrays.copyOfRange(mBufferData, index,

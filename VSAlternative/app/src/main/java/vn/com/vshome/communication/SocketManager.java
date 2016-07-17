@@ -30,7 +30,7 @@ public class SocketManager {
     public SendThread sendThread;
 
     public void startCommunication(LoginCallback callback) {
-        receiveThread = new ReceiveThread();
+        receiveThread = new ReceiveThread(VSHome.activity);
         receiveThread.start();
         sendThread = new SendThread();
         sendThread.start();

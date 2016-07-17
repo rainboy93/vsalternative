@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/d20"
-    android:paddingRight="@dimen/d20">
+    android:background="@color/device_background">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/lighting_control_device_recycler_view"
+        android:id="@+id/lighting_control_scene_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -18,8 +17,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/d20"
-        android:src="@drawable/icon_add"
         android:cropToPadding="true"
+        android:src="@drawable/icon_add"
         app:layout_anchor="@+id/lighting_control_device_recycler_view" />
 
 </RelativeLayout>

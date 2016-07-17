@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/device_background"
+    android:gravity="center"
+    android:paddingLeft="@dimen/d10"
+    android:paddingRight="@dimen/d10"
+    android:paddingTop="@dimen/d10">
+
+    <com.daimajia.swipe.SwipeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftEdgeSwipeOffset="0dp"
+        app:rightEdgeSwipeOffset="0dp">
+
+        <LinearLayout
+            android:layout_width="@dimen/d60"
+            android:layout_height="match_parent"
+            android:background="@color/sub_button_red"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+            <ImageButton
+                android:id="@+id/lighting_scene_button_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:padding="@dimen/d10"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lighting_scene_edit_icon" />
+
+            <ImageButton
+                android:id="@+id/lighting_scene_button_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:padding="@dimen/d10"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lighting_scene_trash_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/d10"
+            android:background="@drawable/rounded_corner_background"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/d60">
+
+                <in.workarounds.typography.TextView
+                    android:id="@+id/lighting_scene_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:text="textview"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/d14"
+                    app:font_name="@string/font_name"
+                    app:font_variant="@string/font_regular" />
+
+                <vn.com.vshome.view.ButtonSceneControl
+                    android:id="@+id/lighting_scene_button_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="@dimen/d5"
+                android:layout_marginRight="@dimen/d5"
+                android:background="@color/gray" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/d60">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/lighting_scene_button_active"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/lighting_scene_clock_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:padding="@dimen/d5"
+                        android:src="@drawable/light_clock_icon" />
+
+                    <in.workarounds.typography.TextView
+                        android:id="@+id/lighting_scene_schedule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="08:00 AM"
+                        android:textColor="@color/blueActionbar"
+                        android:textSize="@dimen/d12"
+                        app:font_name="@string/font_name"
+                        app:font_variant="@string/font_regular" />
+
+                    <View
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@color/gray" />
+
+                    <in.workarounds.typography.TextView
+                        android:id="@+id/lighting_scene_active_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="T: 2 3 4 5 6 7 CN"
+                        android:textColor="@color/blueActionbar"
+                        android:textSize="@dimen/d12"
+                        app:font_name="@string/font_name"
+                        app:font_variant="@string/font_regular" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/lighting_scene_button_active"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:src="@drawable/selector_en_dis" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
+</LinearLayout>

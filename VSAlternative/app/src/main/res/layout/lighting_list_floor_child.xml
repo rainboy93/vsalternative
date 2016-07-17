@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:foo="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/lighting_list_floor_child_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/d20"
+        android:adjustViewBounds="true"
+        android:src="@drawable/floor_icon_home" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/lighting_list_floor_child_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d50"
+        android:layout_marginLeft="@dimen/d5"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/d16"
+        foo:font_name="@string/font_name"
+        foo:font_variant="@string/font_regular" />
+
+</LinearLayout>

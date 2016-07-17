@@ -12,5 +12,7 @@ import android.view.ViewGroup;
  */
 public abstract class BaseControlFragment extends Fragment{
 
-    public abstract void freshData(int floorID, int roomID);
+    protected long floorId, roomId;
+
+    public abstract void resetData(long floorID, long roomID);
 }
