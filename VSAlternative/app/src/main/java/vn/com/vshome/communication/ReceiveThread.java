@@ -40,6 +40,7 @@ public class ReceiveThread extends Thread {
     private LightingControlCallback lightingCallback;
     private UserControlCallback userCallback;
     public int currentControlDeviceId = -1;
+    public int currentUserId = -1;
 
     public void setOnLoginSuccessCallback(LoginCallback callback) {
         this.loginCallback = callback;
@@ -75,7 +76,8 @@ public class ReceiveThread extends Thread {
                 int len = VSHome.socketManager.inputStream.read(data);
                 if (len == -1) {
                     isRunning = false;
-
+                    VSHome.socketManager.destroySocket();
+                    VSHome.restart();
                     break;
                 }
                 handleMessage();
@@ -155,31 +157,42 @@ public class ReceiveThread extends Thread {
 
     private void handleAddNewUser(ReturnMessage ret) {
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
     private void handleUpdatePassword(ReturnMessage ret) {
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
     private void handleUpdatePriority(ReturnMessage ret) {
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
     private void handleUpdateUserStatus(ReturnMessage ret) {
+        if (ret.status == CommandMessage.STATUS_OK) {
+            User user = User.findById(User.class, currentUserId);
+            if (user != null) {
+                if (user.status == Define.USER_STATUS_DISABLE) {
+                    user.status = Define.USER_STATUS_ENABLE;
+                } else {
+                    user.status = Define.USER_STATUS_DISABLE;
+                }
+                user.save();
+            }
+        }
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
     private void handleDeleteUser(ReturnMessage ret) {
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
@@ -190,8 +203,8 @@ public class ReceiveThread extends Thread {
         if (!isReceivingUserList) {
             if (ret.status == CommandMessage.STATUS_OK) {
                 mUserListCount = ret.data[0];
+                isReceivingUserList = true;
             }
-            isReceivingUserList = true;
             return;
         }
 
@@ -212,22 +225,24 @@ public class ReceiveThread extends Thread {
     }
 
     private void handleLightingControl(ReturnMessage ret) {
+        int deviceId = new Integer(currentControlDeviceId);
         if (lightingCallback != null) {
-            lightingCallback.onResponse(ret.status);
+            lightingCallback.onResponse(deviceId, ret.status);
         }
     }
 
     private void handleLightingConfig(ReturnMessage ret) {
+        int deviceId = new Integer(currentControlDeviceId);
         if (lightingCallback != null) {
-            lightingCallback.onResponse(ret.status);
+            lightingCallback.onResponse(deviceId, ret.status);
         }
     }
 
     private void handleLightingUpdate(ReturnMessage ret) {
         int numberOfDevice = ret.status;
         for (int i = 0; i < numberOfDevice; i++) {
-            int deviceId = ret.data[i * 10 + 0] << 8
-                    + ret.data[i * 10 + 1];
+            int deviceId = ((ret.data[i * 10 + 0]) << 8)
+                    + (ret.data[i * 10 + 1]);
             DeviceState state = new DeviceState();
             state.setId((long) deviceId);
             state.state = ret.data[i * 10 + 5];
@@ -301,9 +316,9 @@ public class ReceiveThread extends Thread {
     private void handleSceneConfig(ReturnMessage ret) {
         int scene_db_version = ret.status;
         int numberOfScene = ret.data[0];
-        int sceneID = (Utils.Byte2Unsigned((byte) ret.data[1]) << 16)
-                + (Utils.Byte2Unsigned((byte) ret.data[2]) << 8)
-                + Utils.Byte2Unsigned((byte) ret.data[3]);
+        int sceneID = ((ret.data[1]) << 16)
+                + ((ret.data[2]) << 8)
+                + (ret.data[3]);
         int roomID = ret.data[4];
         int schedule = ret.data[5];
         int hour = ret.data[6];
@@ -354,8 +369,8 @@ public class ReceiveThread extends Thread {
 
         for (int i = 0; i < num_device; i++) {
             SceneDevice device = new SceneDevice();
-            int deviceId = ret.data[10 * (i + 1)] << 8
-                    + ret.data[10 * (i + 1) + 1];
+            int deviceId = (ret.data[10 * (i + 1)] << 8)
+                    + (ret.data[10 * (i + 1) + 1]);
             int type = ret.data[10 * (i + 1) + 2];
             int state = ret.data[10 * (i + 1) + 3];
             int param = ret.data[10 * (i + 1) + 4];
@@ -389,7 +404,7 @@ public class ReceiveThread extends Thread {
 
     private void handleUpdateUserRoom(ReturnMessage ret) {
         if (userCallback != null) {
-            userCallback.onResponse(ret.status);
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
@@ -399,9 +414,9 @@ public class ReceiveThread extends Thread {
 
     private void handleSceneUpdate(ReturnMessage ret) {
         int sceneMode = ret.data[0];
-        int sceneID = (Utils.Byte2Unsigned((byte) ret.data[1]) << 16)
-                + (Utils.Byte2Unsigned((byte) ret.data[2]) << 8)
-                + Utils.Byte2Unsigned((byte) ret.data[3]);
+        int sceneID = ((ret.data[1]) << 16)
+                + ((ret.data[2]) << 8)
+                + (ret.data[3]);
         int roomID = ret.data[4];
         int schedule = ret.data[5];
         int hour = ret.data[6];
@@ -452,8 +467,8 @@ public class ReceiveThread extends Thread {
 
         for (int i = 0; i < num_device; i++) {
             SceneDevice device = new SceneDevice();
-            int deviceId = ret.data[10 * (i + 1)] << 8
-                    + ret.data[10 * (i + 1) + 1];
+            int deviceId = (ret.data[10 * (i + 1)] << 8)
+                    + (ret.data[10 * (i + 1) + 1]);
             int type = ret.data[10 * (i + 1) + 2];
             int state = ret.data[10 * (i + 1) + 3];
             int param = ret.data[10 * (i + 1) + 4];

@@ -126,6 +126,9 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
         }
         if(isControl){
             LightingDevice d = new LightingDevice(this.device);
+            if(d.deviceState == null){
+                d.deviceState = new DeviceState();
+            }
             if (device.deviceState.state == Define.STATE_ENABLE) {
                 d.deviceState.state =  Define.STATE_DISBALE;
             } else if (device.deviceState.state == Define.STATE_DISBALE) {

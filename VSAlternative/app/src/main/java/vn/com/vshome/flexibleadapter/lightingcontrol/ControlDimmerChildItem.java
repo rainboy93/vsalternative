@@ -187,6 +187,9 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
 
         if (isControl) {
             LightingDevice d = new LightingDevice(this.device);
+            if(d.deviceState == null){
+                d.deviceState = new DeviceState();
+            }
             d.deviceState.state = Define.STATE_PARAM;
             d.deviceState.param = seekBar.getCurrentProgress();
             startSendControlMessage(d);
@@ -205,6 +208,9 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
         }
         if (isControl) {
             LightingDevice d = new LightingDevice(this.device);
+            if(d.deviceState == null){
+                d.deviceState = new DeviceState();
+            }
             if (deviceState.state == Define.STATE_ON
                     || deviceState.state == Define.STATE_PARAM) {
                 d.deviceState.state = Define.STATE_OFF;

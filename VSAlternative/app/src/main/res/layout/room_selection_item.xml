@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginTop="20dp">
+
+    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
+        android:id="@+id/room_selection_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:siShape="@drawable/room_selection_shape" />
+
+    <ImageView
+        android:id="@+id/room_selection_name_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/room_selection_image"
+        android:layout_alignLeft="@+id/room_selection_image"
+        android:src="@drawable/name_room_tag" />
+
+    <ImageButton
+        android:id="@+id/room_selection_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/room_selection_image"
+        android:layout_alignRight="@+id/room_selection_image"
+        android:layout_marginBottom="@dimen/d5"
+        android:layout_marginRight="@dimen/d5"
+        android:background="@drawable/base_selector_background"
+        android:src="@drawable/take_photo_icon" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/room_selection_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/room_selection_name_image"
+        android:layout_alignLeft="@+id/room_selection_name_image"
+        android:layout_alignRight="@+id/room_selection_name_image"
+        android:layout_alignTop="@+id/room_selection_name_image"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d20"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+</RelativeLayout>

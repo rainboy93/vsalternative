@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/black" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/dialog_choose_camera"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:text="Chọn ảnh từ Camera"
+        android:textColor="@color/black"
+        android:textSize="@dimen/d16"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/black" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/dialog_choose_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:text="Chọn ảnh từ bộ sưu tập"
+        android:textColor="@color/black"
+        android:textSize="@dimen/d16"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/black" />
+
+</LinearLayout>

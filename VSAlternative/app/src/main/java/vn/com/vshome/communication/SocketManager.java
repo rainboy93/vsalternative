@@ -3,6 +3,8 @@ package vn.com.vshome.communication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +25,34 @@ import vn.com.vshome.utils.PreferenceUtils;
  * Created by anlab on 7/4/16.
  */
 public class SocketManager {
+    private final int HEART_BEAT_DELAY = 100;
+
     private Socket socket;
     public InputStream inputStream;
     public OutputStream outputStream;
     public ReceiveThread receiveThread;
     public SendThread sendThread;
+
+    private CommandMessage heartBeatMessage;
+
+    private Runnable heartBeatRunnable;
+
+    private Handler heartBeatHandler;
+
+    public void startHeartBeat() {
+        heartBeatHandler = new Handler(Looper.getMainLooper());
+        heartBeatRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Logger.LogD("Send heart beat");
+                sendMessage(heartBeatMessage);
+                heartBeatHandler.postDelayed(heartBeatRunnable, HEART_BEAT_DELAY * 1000);
+            }
+        };
+        heartBeatMessage = new CommandMessage();
+        heartBeatMessage.cmd = 19;
+        heartBeatHandler.postDelayed(heartBeatRunnable, HEART_BEAT_DELAY * 1000);
+    }
 
     public void startCommunication(LoginCallback callback) {
         receiveThread = new ReceiveThread(VSHome.activity);
@@ -35,6 +60,7 @@ public class SocketManager {
         sendThread = new SendThread();
         sendThread.start();
         receiveThread.setOnLoginSuccessCallback(callback);
+        startHeartBeat();
     }
 
     public void removeLoginCallback() {
@@ -45,13 +71,6 @@ public class SocketManager {
         if (sendThread != null) {
             sendThread.sendMessage(message);
         }
-    }
-
-    public void restart(){
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        VSHome.activity.startActivity(intent);
     }
 
     public boolean canConnect(Context context, int type) {
@@ -99,6 +118,15 @@ public class SocketManager {
     }
 
     public void destroySocket() {
+
+        try {
+            heartBeatHandler.removeCallbacks(heartBeatRunnable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        heartBeatRunnable = null;
+        heartBeatHandler = null;
 
         if (sendThread != null) {
             sendThread.stopRunning();

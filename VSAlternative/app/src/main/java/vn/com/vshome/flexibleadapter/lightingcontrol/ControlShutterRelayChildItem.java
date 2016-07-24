@@ -183,6 +183,9 @@ public class ControlShutterRelayChildItem extends AbstractControlItem<ControlShu
 
         if(isControl){
             LightingDevice d = new LightingDevice(this.device);
+            if(d.deviceState == null){
+                d.deviceState = new DeviceState();
+            }
             d.deviceState.state = Define.STATE_PARAM;
             d.deviceState.param = progress;
             startSendControlMessage(d);

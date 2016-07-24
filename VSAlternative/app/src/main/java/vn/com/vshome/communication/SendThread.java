@@ -6,9 +6,11 @@ import android.os.Looper;
 import android.os.Message;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import vn.com.vshome.VSHome;
 import vn.com.vshome.networks.CommandMessage;
+import vn.com.vshome.utils.Logger;
 
 
 /**
@@ -48,6 +50,7 @@ public class SendThread extends Thread{
                     Bundle bundle = msg.getData();
                     if(bundle != null){
                         byte[] data = bundle.getByteArray(MESSAGE);
+                        Logger.LogD("Send message: " + Arrays.toString(data));
                         try {
                             VSHome.socketManager.outputStream.write(data);
                         } catch (IOException e) {

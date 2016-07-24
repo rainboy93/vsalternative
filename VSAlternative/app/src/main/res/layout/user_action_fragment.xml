@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/user_button_save">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <cn.carbs.android.avatarimageview.library.AvatarImageView
+                    android:layout_width="@dimen/d120"
+                    android:layout_height="@dimen/d120"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/d20"
+                    android:src="@drawable/default_user_avatar" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/capture_icon" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/d120"
+                android:layout_marginLeft="@dimen/d20"
+                android:layout_marginRight="@dimen/d20"
+                android:background="@drawable/user_action_field_background"
+                android:orientation="vertical">
+
+                <in.workarounds.typography.EditText
+                    android:id="@+id/user_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:hint="Tên người dùng"
+                    android:paddingLeft="@dimen/d10"
+                    android:paddingRight="@dimen/d10"
+                    android:singleLine="true"
+                    android:textColorHint="@color/gray"
+                    app:font_name="@string/font_name"
+                    app:font_variant="@string/font_regular" />
+
+                <in.workarounds.typography.EditText
+                    android:id="@+id/user_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:hint="Mật khẩu"
+                    android:paddingLeft="@dimen/d10"
+                    android:paddingRight="@dimen/d10"
+                    android:singleLine="true"
+                    android:textColorHint="@color/gray"
+                    app:font_name="@string/font_name"
+                    app:font_variant="@string/font_regular" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/d10">
+
+                <ImageView
+                    android:id="@+id/user_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/d20"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/user_icon" />
+
+                <in.workarounds.typography.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/user_icon"
+                    android:layout_alignTop="@+id/user_icon"
+                    android:layout_marginLeft="@dimen/d10"
+                    android:layout_toRightOf="@+id/user_icon"
+                    android:gravity="center_vertical"
+                    android:text="QUYỀN SỬ DỤNG"
+                    android:textColor="@color/black"
+                    app:font_name="@string/font_name"
+                    app:font_variant="@string/font_bold" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/user_list_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/user_icon"
+                    android:layout_marginTop="@dimen/d10" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <ImageButton
+        android:id="@+id/user_button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/save_button" />
+</RelativeLayout>

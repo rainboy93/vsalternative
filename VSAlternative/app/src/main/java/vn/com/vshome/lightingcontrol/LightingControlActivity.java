@@ -21,6 +21,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
+import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.database.Room;
@@ -30,8 +31,8 @@ import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.NonSwipeViewPager;
 
-public class LightingControlActivity extends AppCompatActivity implements View.OnClickListener,
-        FlexibleAdapter.OnItemClickListener{
+public class LightingControlActivity extends BaseActivity implements View.OnClickListener,
+        FlexibleAdapter.OnItemClickListener {
 
     private boolean isDevice = true;
 
@@ -48,14 +49,13 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             isDevice = savedInstanceState.getBoolean(STATE_IS_DEVICE);
-        } else {
-            Bundle bundle = getIntent().getExtras();
-            if(bundle != null){
-                floorId = bundle.getLong(Define.INTENT_FLOOR_ID, 0);
-                roomId = bundle.getLong(Define.INTENT_ROOM_ID, 0);
-            }
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            floorId = bundle.getLong(Define.INTENT_FLOOR_ID, 0);
+            roomId = bundle.getLong(Define.INTENT_ROOM_ID, 0);
         }
 
         setContentView(R.layout.activity_lighting_control);
@@ -76,9 +76,9 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case 1000:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
 
                 }
                 break;
@@ -97,12 +97,11 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
 
     private LightingViewPagerAdapter mAdapter;
 
-    private void initView(){
+    private void initView() {
         initActionBar();
 
         mButtonDevice = (Button) findViewById(R.id.lighting_control_button_device);
         mButtonScene = (Button) findViewById(R.id.lighting_control_button_scene);
-
 
         mAdapter = new LightingViewPagerAdapter(getSupportFragmentManager(), this.floorId, this.roomId);
 
@@ -115,14 +114,14 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
         mButtonDevice.setOnClickListener(this);
         mButtonScene.setOnClickListener(this);
 
-        if(isDevice){
+        if (isDevice) {
             setToDevice();
         } else {
             setToScene();
         }
     }
 
-    private void initActionBar(){
+    private void initActionBar() {
         mMenu = (ImageButton) findViewById(R.id.action_bar_menu);
         mHome = (ImageButton) findViewById(R.id.action_bar_home);
         mTitle = (TextView) findViewById(R.id.action_bar_title);
@@ -134,7 +133,7 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
         drawerLayout = (DrawerLayout) findViewById(R.id.lighting_control_drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, final float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
@@ -177,21 +176,22 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
         //mRecyclerView.setItemAnimator(new SlideInRightAnimator());
     }
 
-    private void toggleMenu(){
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+    private void toggleMenu() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 
-    private void setToDevice(){
+    private void setToDevice() {
         isDevice = true;
         mButtonScene.setSelected(false);
         mButtonDevice.setSelected(true);
         mViewPager.setCurrentItem(0, true);
     }
-    private void setToScene(){
+
+    private void setToScene() {
         isDevice = false;
         mButtonScene.setSelected(true);
         mButtonDevice.setSelected(false);
@@ -200,13 +200,13 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View v) {
-        if(v == mMenu){
+        if (v == mMenu) {
             toggleMenu();
-        } else if(v == mHome){
+        } else if (v == mHome) {
             finishAffinity();
-        } else if(v == mButtonDevice){
+        } else if (v == mButtonDevice) {
             setToDevice();
-        } else if(v == mButtonScene){
+        } else if (v == mButtonScene) {
             setToScene();
         }
     }
@@ -222,11 +222,11 @@ public class LightingControlActivity extends AppCompatActivity implements View.O
     @Override
     public boolean onItemClick(int position) {
         IFlexible flexibleItem = mMenuAdapter.getItem(position);
-        if(flexibleItem instanceof ListFloorChildItem){
+        if (flexibleItem instanceof ListFloorChildItem) {
             ListFloorChildItem childItem = (ListFloorChildItem) flexibleItem;
             Room room = childItem.getRoom();
 
-            if(room != null && mAdapter != null){
+            if (room != null && mAdapter != null) {
                 this.floorId = room.floorID;
                 this.roomId = room.getId();
                 mAdapter.resetData(floorId, roomId);

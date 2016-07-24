@@ -218,8 +218,18 @@ public class CommandMessage {
         }
     }
 
+    public void setChangeUserStatus(User user){
+        this.cmd = CMD_UPDATE_USER_STATUS;
+        this.str1 = new String(user.username);
+        if(user.status == Define.USER_STATUS_ENABLE){
+            data[0] = Define.USER_STATUS_DISABLE;
+        } else {
+            data[0] = Define.USER_STATUS_ENABLE;
+        }
+    }
+
     public byte[] getByteArray() {
-        int i;
+        int i = 0;
         byte[] b = new byte[401];
 
         b[0] = (byte) this.cmd;

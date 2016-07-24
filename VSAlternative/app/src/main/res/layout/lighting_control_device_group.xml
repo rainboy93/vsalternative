@@ -62,7 +62,7 @@
     <View
         android:id="@+id/lighting_control_device_group_divider"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="@color/gray" />
 
 </LinearLayout>

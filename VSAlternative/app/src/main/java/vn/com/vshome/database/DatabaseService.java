@@ -14,6 +14,7 @@ import vn.com.vshome.flexibleadapter.lightingcontrol.ControlShutterRelayChildIte
 import vn.com.vshome.flexibleadapter.ListFloorChildItem;
 import vn.com.vshome.flexibleadapter.ListFloorGroupItem;
 import vn.com.vshome.flexibleadapter.lightingscene.DayItem;
+import vn.com.vshome.flexibleadapter.user.RoomItem;
 import vn.com.vshome.utils.Define;
 
 /**
@@ -159,6 +160,19 @@ public class DatabaseService {
                 list.add(item);
             } else {
                 DayItem item = new DayItem(i + "", "T" + (i + 2));
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    public static List<AbstractFlexibleItem> getListRoomAddUser() {
+        List<AbstractFlexibleItem> list = new ArrayList<>();
+        List<Room> rooms = Room.listAll(Room.class, "id");
+        if (rooms != null && rooms.size() > 0) {
+            for (int i = 0; i < rooms.size(); i++) {
+                Room room = rooms.get(i);
+                RoomItem item = new RoomItem(i + "", room);
                 list.add(item);
             }
         }

@@ -265,7 +265,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 if (ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_OK) {
                     saveUserInfo();
 
-                    VSHome.userPriority = ret.data[1];
+                    VSHome.currentUser.username = username;
+                    VSHome.currentUser.priority = ret.data[1];
 
                     while (true) {
                         if (VSHome.socketManager.inputStream.available() > 0) {

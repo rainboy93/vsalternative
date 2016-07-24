@@ -1,5 +1,9 @@
 package vn.com.vshome.utils;
 
+import android.os.Environment;
+
+import java.io.File;
+
 import vn.com.vshome.R;
 
 /**
@@ -8,6 +12,8 @@ import vn.com.vshome.R;
 public class Define {
 
     public static boolean DEBUG = true;
+
+    public static String BASE_IMAGE_PATH = Environment.getExternalStorageDirectory() + File.separator + ".VSHome";
 
     public static String DEVICE_NOT_AVAILABLE = "Thiết bị chưa được cài đặt";
     public static String IN_DEVELOPING = "Đang phát triển";
@@ -35,6 +41,9 @@ public class Define {
 
     public static final String INTENT_FLOOR_ID = "FloorID";
     public static final String INTENT_ROOM_ID = "RoomID";
+    public static final int CODE_SELECT_PICTURE = 1000;
+    public static final int CODE_TAKE_PICTURE = 1001;
+    public static final int CODE_CROP_PICTURE = 1002;
 
     public static final int STATE_NONE = 0;
     public static final int STATE_OFF = 1;
@@ -61,6 +70,9 @@ public class Define {
 
     public static final int PRIORITY_ADMIN = 1;
     public static final int PRIORITY_USER = 2;
+
+    public static final int USER_STATUS_ENABLE = 1;
+    public static final int USER_STATUS_DISABLE = 0;
 
     public static final int DEVICE_TYPE_PIR = 4;
     public static final int DEVICE_TYPE_WIR = 5;

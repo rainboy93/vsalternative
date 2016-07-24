@@ -27,6 +27,8 @@ import vn.com.vshome.task.GetDeviceListTask;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.TimeOutManager;
+import vn.com.vshome.utils.Toaster;
+import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
 /**
@@ -44,7 +46,9 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        VSHome.socketManager.receiveThread.setLightingCallback(this);
+        if (VSHome.socketManager != null && VSHome.socketManager.receiveThread != null) {
+            VSHome.socketManager.receiveThread.setLightingCallback(this);
+        }
     }
 
     @Nullable
@@ -121,16 +125,27 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
     }
 
     @Override
-    public void onResponse(int status) {
-        if(status == CommandMessage.STATUS_ERROR){
+    public void onResponse(int id, int status) {
+        if (status == CommandMessage.STATUS_ERROR) {
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
+            Toaster.showMessage(getActivity(), Utils.getString(R.string.txt_no_response));
+            for (AbstractFlexibleItem item : mListItems) {
+                ControlGroupItem groupItem = (ControlGroupItem) item;
+                for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
+                    AbstractControlItem modelItem = (AbstractControlItem) subItem;
+                    if (id == modelItem.device.getId().intValue()) {
+                        mDeviceAdapter.updateItem(subItem, null);
+                        return;
+                    }
+                }
+            }
         }
     }
 
     @Override
     public void onTaskComplete() {
-        if(getDeviceListTask != null){
+        if (getDeviceListTask != null) {
             mListItems = getDeviceListTask.getListDevice();
             getActivity().runOnUiThread(new Runnable() {
                 @Override

@@ -122,6 +122,9 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
         }
         if(isControl){
             LightingDevice d = new LightingDevice(this.device);
+            if(d.deviceState == null){
+                d.deviceState = new DeviceState();
+            }
             if (deviceState.state == Define.STATE_ON) {
                 d.deviceState.state =  Define.STATE_OFF;
             } else if (deviceState.state == Define.STATE_OFF) {

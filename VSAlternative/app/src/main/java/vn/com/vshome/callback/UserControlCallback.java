@@ -5,6 +5,6 @@ package vn.com.vshome.callback;
  */
 public interface UserControlCallback {
     void onControl(int id);
-    void onResponse(int status);
+    void onResponse(int cmd, int status);
     void onGetUserListDone();
 }

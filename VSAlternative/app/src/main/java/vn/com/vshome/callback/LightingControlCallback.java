@@ -5,5 +5,5 @@ package vn.com.vshome.callback;
  */
 public interface LightingControlCallback {
     void onControl(int id, boolean isControlDevice);
-    void onResponse(int status);
+    void onResponse(int id, int status);
 }
