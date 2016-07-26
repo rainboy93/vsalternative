@@ -29,7 +29,6 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
      */
     IHeader header;
 
-    private long deviceId;
 
     public ControlRelayChildItem(String id, long deviceId) {
         super(id);
@@ -85,8 +84,10 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
             holder.mButtonSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    isSelected = !isSelected;
-                    adapter.notifyItemChanged(position);
+                    if(callback != null && callback.onSelect()){
+                        isSelected = !isSelected;
+                        adapter.notifyItemChanged(position);
+                    }
                 }
             });
             holder.mButtonControl.setOnClickListener(new View.OnClickListener() {

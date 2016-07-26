@@ -54,25 +54,36 @@ public class CommandMessage {
         this.str3 = new String();
     }
 
+    public CommandMessage(int cmd) {
+        this.cmd = cmd;
+        for (int i = 0; i < 250; i++)
+            this.data[i] = 0;
+        this.str1 = new String();
+        this.str2 = new String();
+        this.str3 = new String();
+    }
+
     public void setLoginMessage(String username, String password) {
         this.cmd = CMD_LOGIN;
         this.str1 = new String(username);
         this.str2 = new String(password);
     }
 
-    public void setControlMessage(LightingDevice device){
+    public void setControlMessage(LightingDevice device) {
         ArrayList<LightingDevice> devices = new ArrayList<>();
         devices.add(device);
-        setControlMessage(devices);
+        setControlMessage(devices, true);
     }
 
-    public void setControlMessage(ArrayList<LightingDevice> devices) {
-        this.cmd = CMD_LIGHTING_CONTROL;
-        for (int i = 0; i < 250; i++)
-            this.data[i] = 0;
-        data[0] = 1;
+    public void setControlMessage(ArrayList<LightingDevice> devices, boolean isControl) {
         int numberOfDevice = devices.size();
-        data[1] = numberOfDevice;
+        if (isControl) {
+            for (int i = 0; i < 250; i++)
+                this.data[i] = 0;
+            this.cmd = CMD_LIGHTING_CONTROL;
+            data[0] = 1;
+            data[1] = numberOfDevice;
+        }
         for (int i = 0; i < numberOfDevice; i++) {
             LightingDevice device = devices.get(i);
             int id = device.getId().intValue();
@@ -103,7 +114,7 @@ public class CommandMessage {
                     } else if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_OFF;
                         data[10 * (i + 1) + 7] = (byte) 0;
-                    } else if(state == Define.COMMAND_SET_PARAM){
+                    } else if (state == Define.COMMAND_SET_PARAM) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
                         data[10 * (i + 1) + 7] = (byte) param;
                     }
@@ -122,9 +133,9 @@ public class CommandMessage {
                         data[10 * (i + 1) + 7] = (byte) 100;
                     } else if (state == Define.COMMAND_CLOSE) {
                         data[10 * (i + 1) + 7] = (byte) 0;
-                    } else if(state == Define.COMMAND_SET_PARAM){
+                    } else if (state == Define.COMMAND_SET_PARAM) {
                         data[10 * (i + 1) + 7] = (byte) param;
-                    } else if(state == Define.COMMAND_STOP){
+                    } else if (state == Define.COMMAND_STOP) {
                         data[10 * (i + 1) + 7] = (byte) param;
                     }
                     break;
@@ -133,7 +144,7 @@ public class CommandMessage {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_ON;
                     } else if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_OFF;
-                    } else if(state == Define.STATE_PARAM){
+                    } else if (state == Define.STATE_PARAM) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
                     }
                     data[10 * (i + 1) + 7] = (byte) param1;
@@ -146,7 +157,7 @@ public class CommandMessage {
         }
     }
 
-    public void setDeleteScene(int sceneID){
+    public void setDeleteScene(int sceneID) {
         this.cmd = CMD_SCENE_DELETE;
         for (int i = 0; i < 250; i++)
             data[i] = 0;
@@ -156,7 +167,7 @@ public class CommandMessage {
         data[3] = (byte) (sceneID);
     }
 
-    public void setEditScene(Scene scene, ArrayList<LightingDevice> devices){
+    public void setEditScene(Scene scene, ArrayList<LightingDevice> devices) {
         int sceneID = scene.getId().intValue();
         this.cmd = CMD_SCENE_EDIT;
         for (int i = 0; i < 250; i++)
@@ -171,11 +182,30 @@ public class CommandMessage {
         data[7] = (byte) scene.minute;
         int numberOfDevice = devices.size();
         data[8] = (byte) numberOfDevice;
-//        data[9] = (byte) this.WeekDays;
-        setControlMessage(devices);
+        data[9] = (byte) getWeekDays(scene);
+        setControlMessage(devices, false);
     }
 
-    public void setCreateScene(Scene scene, ArrayList<LightingDevice> devices){
+    private int getWeekDays(Scene scene) {
+        int WeekDays = 0;
+        if (scene.monday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 0);
+        if (scene.tuesday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 1);
+        if (scene.wednesday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 2);
+        if (scene.thursday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 3);
+        if (scene.monday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 4);
+        if (scene.monday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 5);
+        if (scene.monday == Scene.DAY_ON)
+            WeekDays = WeekDays + (1 << 6);
+        return WeekDays;
+    }
+
+    public void setCreateScene(Scene scene, ArrayList<LightingDevice> devices) {
         this.cmd = CMD_SCENE_CREATE;
         for (int i = 0; i < 250; i++)
             data[i] = 0;
@@ -186,11 +216,11 @@ public class CommandMessage {
         data[4] = (byte) scene.minute;
         int numberOfDevice = devices.size();
         data[5] = (byte) numberOfDevice;
-//        data[6] = (byte) WeekDays;
-        setControlMessage(devices);
+        data[6] = (byte) getWeekDays(scene);
+        setControlMessage(devices, false);
     }
 
-    public void setSceneSchedule(Scene scene){
+    public void setSceneSchedule(Scene scene) {
         int sceneID = scene.getId().intValue();
         this.cmd = CMD_SCHEDULE_UPDATE;
         for (int i = 0; i < 250; i++)
@@ -199,15 +229,20 @@ public class CommandMessage {
         data[1] = (byte) (sceneID >> 16);
         data[2] = (byte) (sceneID >> 8);
         data[3] = (byte) (sceneID);
-        data[4] = (byte) scene.schedule;
+        int schedule = scene.schedule;
+        if (schedule == Scene.SCHEDULE_OFF) {
+            data[4] = (byte) Scene.SCHEDULE_ON;
+        } else {
+            data[4] = (byte) Scene.SCHEDULE_OFF;
+        }
     }
 
-    public void setDeleteUser(String username){
+    public void setDeleteUser(String username) {
         this.cmd = CMD_DELETE_USER;
         this.str1 = new String(username);
     }
 
-    public void setCreateUser(User user, int[] roomInt){
+    public void setCreateUser(User user, int[] roomInt) {
         this.cmd = CMD_ADD_NEW_USER;
         this.str1 = new String(user.username);
         this.str2 = new String(user.password);
@@ -218,10 +253,10 @@ public class CommandMessage {
         }
     }
 
-    public void setChangeUserStatus(User user){
+    public void setChangeUserStatus(User user) {
         this.cmd = CMD_UPDATE_USER_STATUS;
         this.str1 = new String(user.username);
-        if(user.status == Define.USER_STATUS_ENABLE){
+        if (user.status == Define.USER_STATUS_ENABLE) {
             data[0] = Define.USER_STATUS_DISABLE;
         } else {
             data[0] = Define.USER_STATUS_ENABLE;

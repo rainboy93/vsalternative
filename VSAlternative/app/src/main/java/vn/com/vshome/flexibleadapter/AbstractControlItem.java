@@ -6,6 +6,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.networks.CommandMessage;
@@ -28,6 +29,7 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
     private String id;
     private String title;
     private String subtitle;
+    public long deviceId;
     public LightingDevice device;
     public DeviceState deviceState;
     public boolean isControl = true;
@@ -93,4 +95,6 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
         VSHome.socketManager.receiveThread.currentControlDeviceId = device.getId().intValue();
         VSHome.socketManager.sendMessage(message);
     }
+
+    public DeviceSelectCallback callback;
 }

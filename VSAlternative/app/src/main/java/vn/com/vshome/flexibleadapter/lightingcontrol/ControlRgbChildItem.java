@@ -33,8 +33,6 @@ public class ControlRgbChildItem extends AbstractControlItem<ControlRgbChildItem
      */
     IHeader header;
 
-    private long deviceId;
-
     public ControlRgbChildItem(String id, long deviceId) {
         super(id);
 

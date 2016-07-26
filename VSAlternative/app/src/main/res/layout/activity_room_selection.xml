@@ -6,9 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <vn.com.vshome.view.NonSwipeViewPager
-        android:id="@+id/container"
+    <include
+        android:id="@+id/room_selection_action_bar"
+        layout="@layout/action_bar_layout" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/room_selection_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="@dimen/d60"
+        android:layout_below="@+id/room_selection_action_bar" />
+
+    <vn.com.vshome.view.NonSwipeViewPager
+        android:id="@+id/room_selection_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/room_selection_recycler_view" />
 
 </RelativeLayout>

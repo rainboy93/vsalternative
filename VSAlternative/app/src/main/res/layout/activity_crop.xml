@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/crop_button_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/d20"
+        android:layout_height="@dimen/d40"
         android:background="@color/blueActionbar">
 
         <ImageButton

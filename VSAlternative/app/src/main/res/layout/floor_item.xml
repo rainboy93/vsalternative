@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/floor_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/d60"
+    android:gravity="center">
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/floor_item_floor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TẦNG "
+        android:textColor="#27b8fa"
+        android:textSize="@dimen/d16"
+        android:visibility="gone"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/floor_item_number"
+        android:layout_width="@dimen/d20"
+        android:layout_height="@dimen/d20"
+        android:background="@drawable/circle_blue"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d16"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+</LinearLayout>

@@ -59,7 +59,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         mMenu.setImageResource(R.drawable.icon_back);
         mHome = (ImageButton) findViewById(R.id.action_bar_home);
         mTitle = (TextView) findViewById(R.id.action_bar_title);
-        mTitle.setText("Xin chào ");
+        mTitle.setText("Xin chào " + VSHome.currentUser.username);
 
         mMenu.setOnClickListener(this);
         mHome.setOnClickListener(this);

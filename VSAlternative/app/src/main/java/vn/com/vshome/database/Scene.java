@@ -25,6 +25,4 @@ public class Scene extends SugarRecord {
     public static final int SCHEDULE_OFF = 1;
     public static final int DAY_ON = 2;
     public static final int DAY_OFF = 1;
-    public static final int SCENE_STATE_ON = 2;
-    public static final int SCENE_STATE_OFF = 1;
 }

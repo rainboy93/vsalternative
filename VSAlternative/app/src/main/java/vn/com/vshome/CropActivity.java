@@ -2,12 +2,7 @@ package vn.com.vshome;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
-import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.R.id;
-import vn.com.vshome.R.layout;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.customview.CropableImageView;
@@ -17,11 +12,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 public class CropActivity extends Activity {
@@ -32,7 +24,7 @@ public class CropActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.activity_crop);
+        setContentView(R.layout.activity_crop);
 
         Uri uri = Uri.parse(getIntent().getExtras().getString("URI"));
         floorId = getIntent().getExtras().getInt(Define.INTENT_FLOOR_ID, 0);
@@ -73,7 +65,7 @@ public class CropActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
             String path = params[0];
-            SaveImage(bitmap, path);
+            saveImage(bitmap, path);
             bitmap.recycle();
             return null;
         }
@@ -85,16 +77,18 @@ public class CropActivity extends Activity {
         }
     }
 
-    private void SaveImage(Bitmap finalBitmap, String path) {
+    private void saveImage(Bitmap finalBitmap, String path) {
         File myDir = null;
         myDir = new File(Define.BASE_IMAGE_PATH + File.separator
                 + path);
         myDir.mkdirs();
         String fname = "Image" + ".png";
         File file = new File(myDir, fname);
-        if (file.exists())
-            file.delete();
+
         try {
+            if (!file.exists()){
+                file.createNewFile();
+            }
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();

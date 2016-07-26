@@ -118,11 +118,10 @@ public class SocketManager {
     }
 
     public void destroySocket() {
-
         try {
             heartBeatHandler.removeCallbacks(heartBeatRunnable);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         heartBeatRunnable = null;

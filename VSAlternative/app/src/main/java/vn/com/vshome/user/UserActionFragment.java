@@ -39,6 +39,7 @@ public class UserActionFragment extends Fragment implements View.OnClickListener
     private BaseAdapter mAdapter;
     private ImageButton mSave;
     private EditText mUsername, mPassword;
+    private User mUser;
 
     public UserActionFragment() {
     }
@@ -60,8 +61,11 @@ public class UserActionFragment extends Fragment implements View.OnClickListener
     }
 
     private void initView(View view) {
+
+        mUser = ((UserActivity) getActivity()).mEditUser;
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.user_list_room);
-        mListRoom = DatabaseService.getListRoomAddUser();
+        mListRoom = DatabaseService.getListRoomAddUser(mUser);
         mAdapter = new BaseAdapter(mListRoom);
         mRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
@@ -91,7 +95,7 @@ public class UserActionFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onTimeOut() {
                     ProgressHUD.hideLoading(getActivity());
-                    Toaster.showMessage(getActivity(), "asdf");
+                    Toaster.showMessage(getActivity(), "Có lỗi xảy ra. Hãy thử lại.");
                 }
             }, 5);
             VSHome.socketManager.sendMessage(newUser);

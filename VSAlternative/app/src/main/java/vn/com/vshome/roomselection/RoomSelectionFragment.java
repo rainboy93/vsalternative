@@ -3,9 +3,6 @@ package vn.com.vshome.roomselection;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,9 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-
-import net.the4thdimension.android.ImageUtils;
-import net.the4thdimension.android.ViewUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,8 +82,8 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     @Override
     public void onSelect(Room room) {
         Intent intent = new Intent(getActivity(), LightingControlActivity.class);
-        intent.putExtra(Define.INTENT_ROOM_ID, room.getId().intValue());
-        intent.putExtra(Define.INTENT_FLOOR_ID, room.floorID);
+        intent.putExtra(Define.INTENT_ROOM_ID, room.getId());
+        intent.putExtra(Define.INTENT_FLOOR_ID, (long) room.floorID);
         startActivity(intent);
         getActivity().finish();
     }
@@ -150,7 +144,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Define.CODE_CROP_PICTURE && resultCode == Activity.RESULT_OK) {
-            if(mAdapter != null){
+            if (mAdapter != null) {
                 mAdapter.notifyItemChanged(editPosition);
             }
         } else {

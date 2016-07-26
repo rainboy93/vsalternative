@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
+import vn.com.vshome.callback.SceneActionCallback;
 import vn.com.vshome.database.Scene;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ButtonSceneControl;
@@ -53,9 +54,10 @@ public class SceneAdapter extends RecyclerSwipeAdapter<SceneAdapter.SceneViewHol
 
     //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this)
 
-    public SceneAdapter(Context context, ArrayList<Scene> objects) {
+    public SceneAdapter(Context context, ArrayList<Scene> objects, SceneActionCallback callback) {
         this.mContext = context;
         this.mDataset = objects;
+        this.callback = callback;
     }
 
     @Override
@@ -66,14 +68,14 @@ public class SceneAdapter extends RecyclerSwipeAdapter<SceneAdapter.SceneViewHol
 
     @Override
     public void onBindViewHolder(final SceneViewHolder viewHolder, final int position) {
-        Scene item = mDataset.get(position);
+        final Scene item = mDataset.get(position);
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
         viewHolder.sceneName.setText(item.name);
         viewHolder.sceneDays.setText(getScheduleDays(item));
         viewHolder.sceneSchedule.setText(getScheduleTime(item));
 
-        if (item.schedule == Scene.SCHEDULE_ON) {
+        if (item.schedule != Scene.SCHEDULE_OFF) {
             viewHolder.sceneToggle.setSelected(true);
             viewHolder.sceneSchedule.setTextColor(Utils
                     .getColor(R.color.schedule_on));
@@ -81,7 +83,7 @@ public class SceneAdapter extends RecyclerSwipeAdapter<SceneAdapter.SceneViewHol
             viewHolder.sceneDays.setTextColor(Utils
                     .getColor(R.color.schedule_on));
 
-        } else if (item.schedule == Scene.SCHEDULE_OFF) {
+        } else {
             viewHolder.sceneToggle.setSelected(false);
             viewHolder.sceneSchedule.setTextColor(Utils
                     .getColor(R.color.gray));
@@ -94,7 +96,43 @@ public class SceneAdapter extends RecyclerSwipeAdapter<SceneAdapter.SceneViewHol
 
             @Override
             public void onClick(View v) {
+                if (callback != null) {
+                    callback.onScheduleChange(position);
+                }
+            }
+        });
 
+        viewHolder.sceneEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onEdit(position);
+                }
+            }
+        });
+
+        viewHolder.sceneDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onDelete(position);
+                }
+            }
+        });
+
+        viewHolder.buttonOnOff.setOnControlOnOffListener(new ButtonSceneControl.OnControlOnOffListener() {
+            @Override
+            public void OnControlOn() {
+                if (callback != null) {
+                    callback.onActive(position, true);
+                }
+            }
+
+            @Override
+            public void OnControlOff() {
+                if (callback != null) {
+                    callback.onActive(position, false);
+                }
             }
         });
 
@@ -140,4 +178,10 @@ public class SceneAdapter extends RecyclerSwipeAdapter<SceneAdapter.SceneViewHol
         result += (h >= 12) ? " PM" : " AM";
         return result;
     }
+
+    public void updateData(ArrayList<Scene> listScene) {
+        this.mDataset = listScene;
+    }
+
+    private SceneActionCallback callback;
 }

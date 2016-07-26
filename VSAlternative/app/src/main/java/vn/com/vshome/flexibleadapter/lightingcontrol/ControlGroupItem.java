@@ -114,7 +114,7 @@ public class ControlGroupItem
 		if(isExpanded()){
 			holder.mGroupSelector.setSelected(true);
 			holder.mContainer.setBackgroundResource(R.color.device_background);
-			holder.mDivider.setVisibility(View.INVISIBLE);
+			holder.mDivider.setVisibility(View.GONE);
 		} else {
 			holder.mGroupSelector.setSelected(false);
 			holder.mContainer.setBackgroundResource(R.color.white);

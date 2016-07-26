@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import java.util.Locale;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -23,6 +25,7 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
+import vn.com.vshome.VSHome;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
@@ -151,13 +154,16 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
         navigationView = (NavigationView) findViewById(R.id.lighting_control_navigation_view);
 
         mMenuTitle = (TextView) findViewById(R.id.lighting_control_list_floor_title);
+        mMenuTitle.setText("Xin chào " + VSHome.currentUser.username.toUpperCase(Locale.US));
         mMenuRecyclerView = (RecyclerView) findViewById(R.id.lighting_control_list_floor_recycler_view);
 
         mMenuAdapter = new BaseAdapter(DatabaseService.getListFloorItem());
         FlexibleAdapter.OnItemClickListener itemClickListener = this;
         mMenuAdapter.initializeListeners(itemClickListener);
         //Experimenting NEW features (v5.0.0)
-        mMenuAdapter.setAutoCollapseOnExpand(false)
+        mMenuAdapter
+                .expandItemsAtStartUp()
+                .setAutoCollapseOnExpand(false)
                 .setAutoScrollOnExpand(true)
                 .setRemoveOrphanHeaders(false)
                 .setAnimationOnScrolling(true)
@@ -232,7 +238,12 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
                 mAdapter.resetData(floorId, roomId);
                 mAdapter.notifyDataSetChanged();
             }
+            toggleMenu();
         }
         return false;
+    }
+
+    public boolean isDevice(){
+        return isDevice;
     }
 }

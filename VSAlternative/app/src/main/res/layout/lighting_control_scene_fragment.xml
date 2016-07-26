@@ -21,4 +21,29 @@
         android:src="@drawable/icon_add"
         app:layout_anchor="@+id/lighting_control_device_recycler_view" />
 
+    <LinearLayout
+        android:id="@+id/lighting_control_scene_empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/d50"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/d5"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icon_warning" />
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Không có ngữ cảnh"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/d20" />
+
+    </LinearLayout>
+
 </RelativeLayout>

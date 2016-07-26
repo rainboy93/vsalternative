@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 
 import net.the4thdimension.android.Utils;
@@ -77,6 +78,8 @@ public class RoomSelectionItem extends AbstractModelItem<RoomSelectionItem.RoomS
                 .fitCenter()
                 .placeholder(R.drawable.no_image_place_holder)
                 .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.mRoomImage);
         holder.mCapture.setOnClickListener(new View.OnClickListener() {
             @Override

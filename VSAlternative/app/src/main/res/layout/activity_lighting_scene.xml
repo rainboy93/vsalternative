@@ -2,20 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/device_background">
+
+    <include
+        android:id="@+id/lighting_scene_action_bar"
+        layout="@layout/action_bar_layout" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lighting_scene_day_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/lighting_scene_action_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/d10" />
 
     <LinearLayout
         android:id="@+id/lighting_scene_picker_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lighting_scene_day_recycler_view"
-        android:background="@color/device_background"
+        android:layout_marginTop="@dimen/d10"
+        android:layout_marginBottom="@dimen/d10"
+        android:background="@drawable/bottom_border_background"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -46,7 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/lighting_scene_button_save"
-        android:layout_below="@+id/lighting_scene_picker_layout" />
+        android:layout_below="@+id/lighting_scene_picker_layout"
+        android:background="@color/white" />
 
     <ImageButton
         android:id="@+id/lighting_scene_button_save"

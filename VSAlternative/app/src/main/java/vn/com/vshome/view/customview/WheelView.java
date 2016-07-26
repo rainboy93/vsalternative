@@ -1,5 +1,6 @@
 package vn.com.vshome.view.customview;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -21,11 +23,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Author: wangjie
- * Email: tiantian.china.2@gmail.com
- * Date: 7/1/14.
- */
 public class WheelView extends ScrollView {
     public static final String TAG = WheelView.class.getSimpleName();
 
@@ -345,13 +342,14 @@ public class WheelView extends ScrollView {
 
     }
 
-    public void setSeletion(int position) {
+    public void setSelection(int position) {
         final int p = position;
+
         selectedIndex = p + offset;
         this.post(new Runnable() {
             @Override
             public void run() {
-                WheelView.this.smoothScrollTo(0, p * itemHeight);
+                ObjectAnimator.ofInt(WheelView.this, "scrollY", p * itemHeight).setDuration(1000).start();
             }
         });
 

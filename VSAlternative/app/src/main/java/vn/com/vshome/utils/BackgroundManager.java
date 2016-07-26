@@ -91,9 +91,9 @@ public class BackgroundManager implements
 //						} catch (Exception e) {
 //						}
 //					}
-                    if (activity != null) {
-                        activity.finishAffinity();
-                    }
+//                    if (activity != null) {
+//                        activity.finishAffinity();
+//                    }
 
                     Log.d("dungnt", "Application went to background");
                 }

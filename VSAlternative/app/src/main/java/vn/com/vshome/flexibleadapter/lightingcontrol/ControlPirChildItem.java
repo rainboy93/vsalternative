@@ -34,8 +34,6 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
      */
     IHeader header;
 
-    private long deviceId;
-
     public ControlPirChildItem(String id, long deviceId) {
         super(id);
 
@@ -89,8 +87,10 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
             holder.mButtonSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    isSelected = !isSelected;
-                    adapter.notifyItemChanged(position);
+                    if(callback != null && callback.onSelect()){
+                        isSelected = !isSelected;
+                        adapter.notifyItemChanged(position);
+                    }
                 }
             });
             holder.mButtonControl.setOnClickListener(new View.OnClickListener() {

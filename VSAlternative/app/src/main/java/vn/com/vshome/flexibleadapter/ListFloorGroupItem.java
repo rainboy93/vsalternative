@@ -23,7 +23,7 @@ public class ListFloorGroupItem
 	private static final long serialVersionUID = -1882711111814491060L;
 
 	/* Flags for FlexibleAdapter */
-	private boolean mExpanded = false;
+	private boolean mExpanded = true;
 
 	/* subItems list */
 	private List<ListFloorChildItem> mListFloorChildItems;
@@ -37,7 +37,7 @@ public class ListFloorGroupItem
 
 		setDraggable(false);
 		setHidden(false);
-		setExpanded(false);
+		setExpanded(true);
 		setSelectable(false);
 	}
 

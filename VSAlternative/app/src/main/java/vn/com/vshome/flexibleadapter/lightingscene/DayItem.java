@@ -16,6 +16,7 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import in.workarounds.typography.ToggleButton;
 import vn.com.vshome.R;
+import vn.com.vshome.database.Scene;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.utils.Utils;
 
@@ -29,6 +30,7 @@ public class DayItem extends AbstractModelItem<DayItem.DayViewHolder>
      */
     IHeader header;
     private String day;
+    public int active = Scene.DAY_ON;
 
     public DayItem(String id, String day) {
         super(id);
@@ -71,11 +73,11 @@ public class DayItem extends AbstractModelItem<DayItem.DayViewHolder>
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        if (isChecked) {
-//            buttonView.setTextColor(Color.WHITE);
-//        } else {
-//            buttonView.setTextColor(buttonView.getContext().getResources().getColor(R.color.blueActionbar));
-//        }
+        if (isChecked) {
+            active = Scene.DAY_ON;
+        } else {
+            active = Scene.DAY_OFF;
+        }
     }
 
     class DayViewHolder extends FlexibleViewHolder {

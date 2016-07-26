@@ -43,12 +43,19 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
     private GetDeviceListTask getDeviceListTask;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onResume() {
+        super.onResume();
         if (VSHome.socketManager != null && VSHome.socketManager.receiveThread != null) {
             VSHome.socketManager.receiveThread.setLightingCallback(this);
         }
+    }
+
+    @Override
+    public void onPause() {
+        if (VSHome.socketManager != null && VSHome.socketManager.receiveThread != null) {
+            VSHome.socketManager.receiveThread.setLightingCallback(null);
+        }
+        super.onPause();
     }
 
     @Nullable
@@ -69,7 +76,9 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
     }
 
     private void initView(View v) {
-        resetData(1, 1);
+        floorId = getArguments().getLong(Define.INTENT_FLOOR_ID);
+        roomId = getArguments().getLong(Define.INTENT_ROOM_ID);
+        resetData(floorId, roomId);
         mRecyclerView = (RecyclerView) v.findViewById(R.id.lighting_control_device_recycler_view);
     }
 
@@ -79,7 +88,7 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
         this.floorId = floorID;
         this.roomId = roomID;
 
-        getDeviceListTask = new GetDeviceListTask((int) roomID, this);
+        getDeviceListTask = new GetDeviceListTask((int) roomID, this, mListItems);
         getDeviceListTask.execute(true);
 
 //        mListItems = DatabaseService.getListDeviceItem((int) this.roomId, true);
@@ -116,7 +125,7 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
             ControlGroupItem groupItem = (ControlGroupItem) item;
             for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
                 AbstractControlItem modelItem = (AbstractControlItem) subItem;
-                if (id == modelItem.device.getId().intValue()) {
+                if (id == modelItem.deviceId) {
                     mDeviceAdapter.updateItem(subItem, null);
                     return;
                 }
@@ -126,16 +135,24 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
 
     @Override
     public void onResponse(int id, int status) {
+        if (!((LightingControlActivity) getActivity()).isDevice()) {
+            return;
+        }
         if (status == CommandMessage.STATUS_ERROR) {
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
             Toaster.showMessage(getActivity(), Utils.getString(R.string.txt_no_response));
             for (AbstractFlexibleItem item : mListItems) {
                 ControlGroupItem groupItem = (ControlGroupItem) item;
-                for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
+                for (final AbstractFlexibleItem subItem : groupItem.getSubItems()) {
                     AbstractControlItem modelItem = (AbstractControlItem) subItem;
-                    if (id == modelItem.device.getId().intValue()) {
-                        mDeviceAdapter.updateItem(subItem, null);
+                    if (id == modelItem.deviceId) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDeviceAdapter.updateItem(subItem, null);
+                            }
+                        });
                         return;
                     }
                 }
@@ -151,7 +168,7 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
                 @Override
                 public void run() {
                     if (mDeviceAdapter != null) {
-                        mDeviceAdapter.updateDataSet(mListItems, true);
+                        mDeviceAdapter.updateDataSet(mListItems);
                     } else {
                         mDeviceAdapter = new BaseAdapter(mListItems);
                         FlexibleAdapter.OnItemClickListener listener = DeviceFragment.this;

@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import vn.com.vshome.lightingcontrol.LightingControlActivity;
+import vn.com.vshome.roomselection.RoomSelectionActivity;
+import vn.com.vshome.security.SecurityActivity;
 import vn.com.vshome.user.UserActivity;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Toaster;
@@ -42,9 +44,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = null;
         if (v == mButtonLight) {
-            intent = new Intent(this, LightingControlActivity.class);
+            intent = new Intent(this, RoomSelectionActivity.class);
         } else if (v == mButtonSecurity) {
-
+            intent = new Intent(this, SecurityActivity.class);
         } else if (v == mButtonSensor) {
             Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
         } else if (v == mButtonSun) {
@@ -54,7 +56,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (v == mButtonAdvance) {
             Toaster.showMessage(this, Define.IN_DEVELOPING);
         }
-        if(intent != null){
+        if (intent != null) {
             startActivity(intent);
         }
     }

@@ -13,6 +13,7 @@ import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LightingControlCallback;
 import vn.com.vshome.callback.LoginCallback;
 import vn.com.vshome.callback.SceneControlCallback;
+import vn.com.vshome.callback.SceneSetUpCallback;
 import vn.com.vshome.callback.UserControlCallback;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
@@ -39,6 +40,7 @@ public class ReceiveThread extends Thread {
     private SceneControlCallback sceneCallback;
     private LightingControlCallback lightingCallback;
     private UserControlCallback userCallback;
+    private SceneSetUpCallback sceneSetUpCallback;
     public int currentControlDeviceId = -1;
     public int currentUserId = -1;
 
@@ -48,6 +50,10 @@ public class ReceiveThread extends Thread {
 
     public void setSceneCallback(SceneControlCallback sceneCallback) {
         this.sceneCallback = sceneCallback;
+    }
+
+    public void setSceneSetUpCallback(SceneSetUpCallback sceneSetUpCallback){
+        this.sceneSetUpCallback = sceneSetUpCallback;
     }
 
     public void setLightingCallback(LightingControlCallback lightingCallback) {
@@ -113,6 +119,9 @@ public class ReceiveThread extends Thread {
                 case CommandMessage.CMD_GET_USER_LIST:
                     handleGetUserList(ret);
                     break;
+                case CommandMessage.CMD_DISCONNECT_ALL_USER:
+                    handleDisconnect(ret);
+                    break;
                 case CommandMessage.CMD_LIGHTING_CONTROL:
                     handleLightingControl(ret);
                     break;
@@ -152,6 +161,12 @@ public class ReceiveThread extends Thread {
                 default:
                     break;
             }
+        }
+    }
+
+    private void handleDisconnect(ReturnMessage ret){
+        if (userCallback != null) {
+            userCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
@@ -294,14 +309,14 @@ public class ReceiveThread extends Thread {
     }
 
     private void handleSceneCreate(ReturnMessage ret) {
-        if (sceneCallback != null) {
-            sceneCallback.onResponse(ret.status);
+        if (sceneSetUpCallback != null) {
+            sceneSetUpCallback.onResponse(ret.status);
         }
     }
 
     private void handleSceneEdit(ReturnMessage ret) {
-        if (sceneCallback != null) {
-            sceneCallback.onResponse(ret.status);
+        if (sceneSetUpCallback != null) {
+            sceneSetUpCallback.onResponse(ret.status);
         }
     }
 
@@ -487,17 +502,15 @@ public class ReceiveThread extends Thread {
             devices.add(device);
         }
 
-        if (sceneMode == 1) {
-            addScene(scene, devices);
-        } else if (sceneMode == 2) {
+        if (sceneMode == 2) {
             deleteScene(scene);
-        } else if (sceneMode == 3) {
+        } else {
             addScene(scene, devices);
         }
         PreferenceUtils.getInstance(mContext).setValue(PreferenceDefine.SCENE_DB_VERSION,
                 PreferenceUtils.getInstance(mContext).getIntValue(PreferenceDefine.SCENE_DB_VERSION, 0));
         if (sceneCallback != null) {
-            sceneCallback.onControl(sceneID);
+            sceneCallback.onControl(sceneID, sceneMode);
         }
     }
 
@@ -521,7 +534,6 @@ public class ReceiveThread extends Thread {
         if (scene == null) {
             return;
         }
-        SceneDevice.deleteAll(SceneDevice.class, "scene_id = ?", new String("" + scene.getId()));
         scene.delete();
     }
 

@@ -32,7 +32,6 @@ public class ListFloorChildItem extends AbstractControlItem<ListFloorChildItem.C
 		super(id);
 
 		this.roomId = roomId;
-
 //		setDraggable(true);
 	}
 
