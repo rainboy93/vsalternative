@@ -154,7 +154,9 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
         navigationView = (NavigationView) findViewById(R.id.lighting_control_navigation_view);
 
         mMenuTitle = (TextView) findViewById(R.id.lighting_control_list_floor_title);
-        mMenuTitle.setText("Xin chào " + VSHome.currentUser.username.toUpperCase(Locale.US));
+        if (VSHome.currentUser != null) {
+            mMenuTitle.setText("Xin chào " + VSHome.currentUser.username.toUpperCase(Locale.US));
+        }
         mMenuRecyclerView = (RecyclerView) findViewById(R.id.lighting_control_list_floor_recycler_view);
 
         mMenuAdapter = new BaseAdapter(DatabaseService.getListFloorItem());
@@ -177,9 +179,6 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
                 return true;
             }
         });
-        mMenuRecyclerView.addItemDecoration(new DividerItemDecoration(this,
-                R.drawable.divider, 0));//Increase to add gap between sections (Works only with LinearLayout!)
-        //mRecyclerView.setItemAnimator(new SlideInRightAnimator());
     }
 
     private void toggleMenu() {
@@ -233,6 +232,12 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
             Room room = childItem.getRoom();
 
             if (room != null && mAdapter != null) {
+                if (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN
+                        && VSHome.currentUser.roomControl.charAt(room.getId().intValue() - 1) != '1') {
+                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority, LightingControlActivity.this);
+                    return false;
+                }
+
                 this.floorId = room.floorID;
                 this.roomId = room.getId();
                 mAdapter.resetData(floorId, roomId);
@@ -243,7 +248,7 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
         return false;
     }
 
-    public boolean isDevice(){
+    public boolean isDevice() {
         return isDevice;
     }
 }

@@ -40,9 +40,10 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/lighting_control_device_group_selector"
+            android:background="@drawable/count_background"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/d16"
+            android:textSize="@dimen/d18"
             android:visibility="gone" />
 
         <ImageButton

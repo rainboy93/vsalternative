@@ -22,11 +22,13 @@ import vn.com.vshome.MainActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LoginCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.database.Floor;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.database.Scene;
+import vn.com.vshome.database.User;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.networks.ReturnMessage;
 import vn.com.vshome.utils.Define;
@@ -191,6 +193,9 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
         @Override
         protected Integer doInBackground(String... params) {
             int login = 0;
+            if (VSHome.socketManager == null) {
+                VSHome.socketManager = new SocketManager();
+            }
             if (VSHome.socketManager.canConnect(getActivity(), 0)
                     || VSHome.socketManager.canConnect(getActivity(), 1)) {
                 login = login();
@@ -200,7 +205,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            if(integer == CommandMessage.STATUS_OK){
+            if (integer == CommandMessage.STATUS_OK) {
 
             } else {
                 TimeOutManager.getInstance().cancelCountDown();
@@ -264,9 +269,13 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                 if (ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_OK) {
                     saveUserInfo();
-
+                    if (VSHome.currentUser == null) {
+                        VSHome.currentUser = new User();
+                    }
                     VSHome.currentUser.username = username;
                     VSHome.currentUser.priority = ret.data[1];
+                    VSHome.currentUser.status = Define.USER_STATUS_ENABLE;
+                    getRoomCode(ret);
 
                     while (true) {
                         if (VSHome.socketManager.inputStream.available() > 0) {
@@ -340,16 +349,16 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                             VSHome.socketManager.removeLoginCallback();
                         }
                     });
-                    if(sceneDBVersion != lastSceneDBVersion){
+                    if (sceneDBVersion != lastSceneDBVersion) {
                         Scene.deleteAll(Scene.class);
                         VSHome.socketManager.outputStream.write(1);
                     } else {
                         VSHome.socketManager.outputStream.write(0);
                     }
                     return CommandMessage.STATUS_OK;
-                } else  if(ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_ERROR){
+                } else if (ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_ERROR) {
                     return ret.data[0];
-                } else if(ret.cmd == CommandMessage.CMD_ERROR_MESSAGE){
+                } else if (ret.cmd == CommandMessage.CMD_ERROR_MESSAGE) {
                     return 4;
                 }
             } catch (IOException e) {
@@ -636,5 +645,23 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 // Preference.setUID(getActivity(), UID);
             }
         }
+    }
+
+    private String getRoomCode(ReturnMessage ret) {
+        StringBuilder sb = new StringBuilder(Byte.SIZE);
+        for (int j = 0; j < 10; j++) {
+            byte b = (byte) ret.data[j + 2];
+            for (int i = Byte.SIZE - 1; i >= 0; i--)
+                sb.append((b << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
+        }
+        if (VSHome.currentUser.priority == Define.PRIORITY_ADMIN) {
+            VSHome.currentUser.roomControl = "";
+            for (int i = 0; i < 80; i++) {
+                VSHome.currentUser.roomControl += "1";
+            }
+        } else {
+            VSHome.currentUser.roomControl = sb.toString();
+        }
+        return sb.toString();
     }
 }

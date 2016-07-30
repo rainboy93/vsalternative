@@ -13,9 +13,10 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import vn.com.vshome.R;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
+import vn.com.vshome.flexibleadapter.AbstractModelItem;
 
-public class ControlEmptyItem extends AbstractControlItem<ControlEmptyItem.ControlPirChildViewHolder>
-        implements ISectionable<ControlEmptyItem.ControlPirChildViewHolder, IHeader>, IFilterable {
+public class ControlEmptyItem extends AbstractModelItem<ControlEmptyItem.ControlEmptyChildViewHolder>
+        implements ISectionable<ControlEmptyItem.ControlEmptyChildViewHolder, IHeader>, IFilterable {
 
     private static final long serialVersionUID = 2519281529221244210L;
 
@@ -46,13 +47,13 @@ public class ControlEmptyItem extends AbstractControlItem<ControlEmptyItem.Contr
     }
 
     @Override
-    public ControlPirChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new ControlPirChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public ControlEmptyChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new ControlEmptyChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, ControlPirChildViewHolder holder, int position, List payloads) {
+    public void bindViewHolder(FlexibleAdapter adapter, ControlEmptyChildViewHolder holder, int position, List payloads) {
 
     }
 
@@ -61,10 +62,10 @@ public class ControlEmptyItem extends AbstractControlItem<ControlEmptyItem.Contr
         return getTitle() != null && getTitle().toLowerCase().trim().contains(constraint);
     }
 
-    class ControlPirChildViewHolder extends FlexibleViewHolder {
+    class ControlEmptyChildViewHolder extends FlexibleViewHolder {
 
 
-        public ControlPirChildViewHolder(View view, FlexibleAdapter adapter) {
+        public ControlEmptyChildViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
         }
 

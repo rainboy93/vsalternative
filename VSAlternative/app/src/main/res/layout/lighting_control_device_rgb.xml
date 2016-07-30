@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@color/device_background"
     android:gravity="center_vertical"
-    android:padding="@dimen/d10"
-    android:minHeight="@dimen/d100" >
+    android:minHeight="@dimen/d100"
+    android:padding="@dimen/d10">
 
     <ImageButton
         android:id="@+id/lighting_control_rgb_button_select"
@@ -21,10 +21,10 @@
         android:id="@+id/lighting_control_rgb_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/d10"
         android:layout_below="@+id/lighting_control_rgb_button_select"
         android:background="@drawable/lighting_control_background"
-        android:gravity="center_vertical" >
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/d10">
 
         <in.workarounds.typography.TextView
             android:id="@+id/lighting_control_rgb_name"
@@ -46,17 +46,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:background="@null"
             android:paddingLeft="@dimen/d10"
             android:paddingRight="@dimen/d10"
             android:scaleType="fitCenter"
-            android:background="@null"
             android:src="@drawable/selector_on_off" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lighting_control_rgb_name"
-            android:layout_marginTop="10dp" >
+            android:layout_marginTop="10dp">
 
             <vn.com.vshome.view.customview.ColorPickerView
                 android:id="@+id/lighting_control_rgb_color_picker"
@@ -79,7 +79,7 @@
                 android:textSize="14sp"
                 android:visibility="gone"
                 app:font_name="@string/font_name"
-                app:font_variant="@string/font_bold"/>
+                app:font_variant="@string/font_bold" />
 
             <ImageView
                 android:id="@+id/lighting_control_rgb_color_selected"
@@ -101,7 +101,7 @@
                 android:layout_below="@+id/lighting_control_rgb_color_selected"
                 android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <in.workarounds.typography.TextView
                     android:layout_width="0dp"
@@ -134,7 +134,7 @@
                 android:layout_below="@+id/layout_red"
                 android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <in.workarounds.typography.TextView
                     android:layout_width="0dp"
@@ -163,13 +163,13 @@
             <LinearLayout
                 android:id="@+id/layout_blue"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/lighting_control_rgb_color_selected"
                 android:layout_alignRight="@+id/lighting_control_rgb_color_selected"
                 android:layout_below="@+id/layout_green"
                 android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <in.workarounds.typography.TextView
                     android:layout_width="0dp"

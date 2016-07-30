@@ -19,6 +19,7 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.callback.DialogCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.Floor;
@@ -36,7 +37,7 @@ public class Utils {
                                        Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_error);
+        dialog.setContentView(R.layout.view_dialog_error);
 
         TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_error_title);
         mTitle.setText(title);
@@ -56,7 +57,7 @@ public class Utils {
                                        Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_error);
+        dialog.setContentView(R.layout.view_dialog_error);
 
         TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_error_title);
         mTitle.setText(context.getResources().getString(title));
@@ -67,6 +68,36 @@ public class Utils {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
+            }
+        });
+        dialog.show();
+    }
+
+    public static void showConfirmDialog(String title, String message,
+                                         Context context, final DialogCallback callback) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.view_dialog_confirm);
+
+        TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_confirm_title);
+        mTitle.setText(title);
+        TextView mContent = (TextView) dialog.findViewById(R.id.dialog_confirm_content);
+        mContent.setText(message);
+        Button mCancel = (Button) dialog.findViewById(R.id.dialog_confirm_cancel_button);
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        Button mOk = (Button) dialog.findViewById(R.id.dialog_confirm_confirm_button);
+        mOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                if (callback != null) {
+                    callback.onConfirm();
+                }
             }
         });
         dialog.show();

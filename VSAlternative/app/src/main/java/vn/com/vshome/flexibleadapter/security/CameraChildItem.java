@@ -17,9 +17,10 @@ import vn.com.vshome.R;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
+import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.utils.Define;
 
-public class CameraChildItem extends AbstractControlItem<CameraChildItem.ControlRelayChildViewHolder>
+public class CameraChildItem extends AbstractModelItem<CameraChildItem.ControlRelayChildViewHolder>
         implements ISectionable<CameraChildItem.ControlRelayChildViewHolder, IHeader>, IFilterable,View.OnClickListener {
 
     private static final long serialVersionUID = 2519281529221244210L;
@@ -62,52 +63,7 @@ public class CameraChildItem extends AbstractControlItem<CameraChildItem.Control
     @SuppressWarnings("deprecation")
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, ControlRelayChildViewHolder holder, final int position, List payloads) {
-        device = LightingDevice.findById(LightingDevice.class, deviceId);
-        deviceState = LightingDevice.findById(DeviceState.class, deviceId);
-        holder.mName.setText(device.name);
 
-        if(!isControl){
-            holder.mButtonSelect.setVisibility(View.VISIBLE);
-            if (tempState.state == Define.STATE_ON) {
-                holder.mButtonControl.setSelected(true);
-            } else if (tempState.state == Define.STATE_OFF) {
-                holder.mButtonControl.setSelected(false);
-            }
-
-            if(isSelected){
-                holder.mCover.setVisibility(View.GONE);
-                holder.mButtonControl.setEnabled(true);
-            } else {
-                holder.mCover.setVisibility(View.VISIBLE);
-                holder.mButtonControl.setEnabled(false);
-            }
-            holder.mButtonSelect.setSelected(isSelected);
-            holder.mButtonSelect.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isSelected = !isSelected;
-                    adapter.notifyItemChanged(position);
-                }
-            });
-            holder.mButtonControl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (tempState.state == Define.STATE_ON) {
-                        tempState.state = Define.STATE_OFF;
-                    } else if (tempState.state == Define.STATE_OFF) {
-                        tempState.state = Define.STATE_ON;
-                    }
-                    adapter.notifyItemChanged(position);
-                }
-            });
-        } else {
-            holder.mButtonControl.setOnClickListener(this);
-            if (deviceState.state == Define.STATE_ON) {
-                holder.mButtonControl.setSelected(true);
-            } else if (deviceState.state == Define.STATE_OFF) {
-                holder.mButtonControl.setSelected(false);
-            }
-        }
     }
 
     @Override
@@ -117,21 +73,7 @@ public class CameraChildItem extends AbstractControlItem<CameraChildItem.Control
 
     @Override
     public void onClick(View v) {
-        if(device == null || deviceState == null){
-            return;
-        }
-        if(isControl){
-            LightingDevice d = new LightingDevice(this.device);
-            if(d.deviceState == null){
-                d.deviceState = new DeviceState();
-            }
-            if (deviceState.state == Define.STATE_ON) {
-                d.deviceState.state =  Define.STATE_OFF;
-            } else if (deviceState.state == Define.STATE_OFF) {
-                d.deviceState.state =  Define.STATE_ON;
-            }
-            startSendControlMessage(d);
-        }
+
     }
 
     class ControlRelayChildViewHolder extends FlexibleViewHolder {

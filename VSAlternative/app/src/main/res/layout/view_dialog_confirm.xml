@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_background"
+    android:orientation="vertical">
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/dialog_confirm_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/blueActionbar"
+        android:textSize="@dimen/d16"
+        app:font_name="OpenSans"
+        app:font_variant="Semibold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/blueActionbar" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/dialog_confirm_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:padding="@dimen/d10"
+        android:text="adsfasdfadf"
+        android:textColor="@color/blueActionbar"
+        android:textSize="@dimen/d14"
+        app:font_name="OpenSans"
+        app:font_variant="Regular" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <in.workarounds.typography.Button
+            android:id="@+id/dialog_confirm_confirm_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/base_selector_background"
+            android:gravity="center"
+            android:text="Ok"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Semibold" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/dialog_confirm_cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/base_selector_background"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="OpenSans"
+            app:font_variant="Semibold" />
+    </LinearLayout>
+
+
+</LinearLayout>

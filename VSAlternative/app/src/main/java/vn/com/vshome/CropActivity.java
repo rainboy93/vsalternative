@@ -78,8 +78,7 @@ public class CropActivity extends Activity {
     }
 
     private void saveImage(Bitmap finalBitmap, String path) {
-        File myDir = null;
-        myDir = new File(Define.BASE_IMAGE_PATH + File.separator
+        File myDir = new File(Define.BASE_IMAGE_PATH + File.separator
                 + path);
         myDir.mkdirs();
         String fname = "Image" + ".png";

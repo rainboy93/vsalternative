@@ -8,10 +8,59 @@
         android:id="@+id/user_action_bar"
         layout="@layout/action_bar_layout" />
 
-    <vn.com.vshome.view.NonSwipeViewPager
-        android:id="@+id/user_view_pager"
+    <RelativeLayout
+        android:id="@+id/user_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d50"
+        android:layout_below="@+id/user_action_bar"
+        android:background="#e6e6e6">
+
+        <ImageView
+            android:id="@+id/user_top_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/d10"
+            android:adjustViewBounds="true"
+            android:src="@drawable/user_icon" />
+
+        <ImageButton
+            android:id="@+id/user_button_shut_down"
+            android:layout_width="@dimen/d50"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/shutdown_icon" />
+
+        <in.workarounds.typography.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/user_button_shut_down"
+            android:layout_toRightOf="@id/user_top_icon"
+            android:text="Các thành viên"
+            android:textColor="@color/black"
+            android:textSize="@dimen/d14"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_bold" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/user_action_bar" />
+        android:layout_below="@+id/user_top_layout" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/user_button_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/d10"
+        android:src="@drawable/icon_add"
+        app:backgroundTint="@color/floating_action_button_color" />
+
 
 </RelativeLayout>

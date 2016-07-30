@@ -5,5 +5,5 @@ package vn.com.vshome.callback;
  */
 public interface SceneControlCallback {
     void onControl(int id, int mode);
-    void onResponse(int status);
+    void onResponse(int cmd, int status);
 }

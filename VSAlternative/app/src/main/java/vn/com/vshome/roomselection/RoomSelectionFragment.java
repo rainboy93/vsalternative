@@ -24,12 +24,14 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.CropActivity;
 import vn.com.vshome.R;
+import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.RoomSelectionCallback;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
 import vn.com.vshome.flexibleadapter.roomselection.RoomSelectionItem;
 import vn.com.vshome.lightingcontrol.LightingControlActivity;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 7/22/16.
@@ -81,6 +83,12 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
 
     @Override
     public void onSelect(Room room) {
+        if (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN
+                && VSHome.currentUser.roomControl.charAt(room.getId().intValue() - 1) != '1') {
+            Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority, getActivity());
+            return;
+        }
+
         Intent intent = new Intent(getActivity(), LightingControlActivity.class);
         intent.putExtra(Define.INTENT_ROOM_ID, room.getId());
         intent.putExtra(Define.INTENT_FLOOR_ID, (long) room.floorID);
@@ -105,7 +113,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        dialog.setContentView(R.layout.dialog_choose_intent);
+        dialog.setContentView(R.layout.view_dialog_choose_intent);
 
         TextView camera = (TextView) dialog
                 .findViewById(R.id.dialog_choose_camera);
@@ -120,6 +128,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                 selectedUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory()
                         + File.separator + "Temp.png"));
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedUri);
+                VSHome.isTakePhoto = true;
                 startActivityForResult(cameraIntent, Define.CODE_TAKE_PICTURE);
             }
         });
@@ -131,17 +140,21 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
+                VSHome.isTakePhoto = true;
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), Define.CODE_SELECT_PICTURE);
             }
         });
-
         dialog.show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return;
+        }
 
         if (requestCode == Define.CODE_CROP_PICTURE && resultCode == Activity.RESULT_OK) {
             if (mAdapter != null) {

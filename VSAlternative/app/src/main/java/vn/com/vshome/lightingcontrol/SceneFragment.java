@@ -2,6 +2,7 @@ package vn.com.vshome.lightingcontrol;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import in.workarounds.typography.Button;
+import in.workarounds.typography.EditText;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
@@ -31,8 +33,10 @@ import vn.com.vshome.callback.SceneControlCallback;
 import vn.com.vshome.database.Scene;
 import vn.com.vshome.flexibleadapter.lightingscene.SceneAdapter;
 import vn.com.vshome.networks.CommandMessage;
+import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.TimeOutManager;
+import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
@@ -89,9 +93,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
         mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LightingSceneActivity.class);
-                intent.putExtra("RoomId", roomId);
-                startActivityForResult(intent, 1000);
+                showAddSceneDialog();
             }
         });
 
@@ -164,7 +166,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
         mAdapter.closeAllItems();
         Intent intent = new Intent(getActivity(), LightingSceneActivity.class);
         intent.putExtra("SceneId", mListScene.get(position).getId());
-        intent.putExtra("RoomId", roomId);
+        intent.putExtra(Define.INTENT_ROOM_ID, roomId);
         startActivityForResult(intent, 1001);
     }
 
@@ -183,11 +185,11 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 Scene sceneAdd = Scene.findById(Scene.class, id);
                 if (sceneAdd != null) {
                     mListScene.add(sceneAdd);
-                    mAdapter.updateData(mListScene);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.notifyItemInserted(mListScene.size() - 2);
+                            mAdapter.updateData(mListScene);
+                            mAdapter.notifyItemInserted(mListScene.size() - 1);
                             if (mEmptyLayout.getVisibility() == View.VISIBLE) {
                                 mEmptyLayout.setVisibility(View.GONE);
                             }
@@ -240,9 +242,9 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
     }
 
     @Override
-    public void onResponse(int status) {
+    public void onResponse(int cmd, int status) {
         mAdd.show();
-        switch (status) {
+        switch (cmd) {
             case CommandMessage.CMD_SCENE_DELETE:
                 ProgressHUD.hideLoading(getActivity());
                 TimeOutManager.getInstance().cancelCountDown();
@@ -292,6 +294,42 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
             }
         });
 
+        dialog.show();
+    }
+
+    private void showAddSceneDialog() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.view_dialog_add_scene);
+
+        final EditText name = (EditText) dialog.findViewById(R.id.dialog_add_scene_name);
+
+        ImageButton mCancel = (ImageButton) dialog.findViewById(R.id.dialog_add_scene_button_cancel);
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        Button mOk = (Button) dialog.findViewById(R.id.dialog_add_scene_button_confirm);
+        mOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str = name.getText().toString();
+                if(str.length() == 0){
+                    Toaster.showMessage(getActivity(), "Chưa đặt tên cảnh!");
+                    return;
+                } else if(str.getBytes().length > 49){
+                    Toaster.showMessage(getActivity(), "Tên cảnh quá dài!");
+                    return;
+                }
+                dialog.cancel();
+                Intent intent = new Intent(getActivity(), LightingSceneActivity.class);
+                intent.putExtra(Define.INTENT_ROOM_ID, roomId);
+                intent.putExtra(Define.INTENT_SCENE_NAME, str);
+                startActivityForResult(intent, 1000);
+            }
+        });
         dialog.show();
     }
 }

@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IHeader;
 import eu.davidea.flexibleadapter.items.ISectionable;
@@ -17,7 +18,9 @@ import vn.com.vshome.R;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
+import vn.com.vshome.lightingcontrol.LightingSceneActivity;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
 
 public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChildItem.ControlRelayChildViewHolder>
         implements ISectionable<ControlRelayChildItem.ControlRelayChildViewHolder, IHeader>, IFilterable,View.OnClickListener {
@@ -31,9 +34,7 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
 
 
     public ControlRelayChildItem(String id, long deviceId) {
-        super(id);
-
-        this.deviceId = deviceId;
+        super(id, deviceId);
 
 //		setDraggable(true);
     }
@@ -67,10 +68,10 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
 
         if(!isControl){
             holder.mButtonSelect.setVisibility(View.VISIBLE);
-            if (tempState.state == Define.STATE_ON) {
-                holder.mButtonControl.setSelected(true);
-            } else if (tempState.state == Define.STATE_OFF) {
+            if (tempState.state == Define.STATE_OFF) {
                 holder.mButtonControl.setSelected(false);
+            } else {
+                holder.mButtonControl.setSelected(true);
             }
 
             if(isSelected){
@@ -88,6 +89,7 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
                         isSelected = !isSelected;
                         adapter.notifyItemChanged(position);
                     }
+                    adapter.updateItem(header, null);
                 }
             });
             holder.mButtonControl.setOnClickListener(new View.OnClickListener() {
@@ -103,10 +105,10 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
             });
         } else {
             holder.mButtonControl.setOnClickListener(this);
-            if (deviceState.state == Define.STATE_ON) {
-                holder.mButtonControl.setSelected(true);
-            } else if (deviceState.state == Define.STATE_OFF) {
+            if (deviceState.state == Define.STATE_OFF) {
                 holder.mButtonControl.setSelected(false);
+            } else {
+                holder.mButtonControl.setSelected(true);
             }
         }
     }
@@ -126,13 +128,21 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
             if(d.deviceState == null){
                 d.deviceState = new DeviceState();
             }
-            if (deviceState.state == Define.STATE_ON) {
-                d.deviceState.state =  Define.STATE_OFF;
-            } else if (deviceState.state == Define.STATE_OFF) {
+            if (deviceState.state == Define.STATE_OFF) {
                 d.deviceState.state =  Define.STATE_ON;
+            } else {
+                d.deviceState.state =  Define.STATE_OFF;
             }
             startSendControlMessage(d);
         }
+    }
+
+    private void updateParent(){
+        ControlGroupItem groupItem = (ControlGroupItem) getHeader();
+        List<AbstractFlexibleItem> itemList = groupItem.getSubItems();
+        int index = itemList.indexOf(this);
+        Logger.LogD("Index " + index);
+
     }
 
     class ControlRelayChildViewHolder extends FlexibleViewHolder {

@@ -33,19 +33,17 @@
                     android:src="@drawable/capture_icon" />
             </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/d120"
                 android:layout_marginLeft="@dimen/d20"
                 android:layout_marginRight="@dimen/d20"
-                android:background="@drawable/user_action_field_background"
-                android:orientation="vertical">
+                android:background="@drawable/user_action_field_background">
 
                 <in.workarounds.typography.EditText
                     android:id="@+id/user_username"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="@dimen/d60"
                     android:background="@color/transparent"
                     android:hint="Tên người dùng"
                     android:paddingLeft="@dimen/d10"
@@ -58,8 +56,8 @@
                 <in.workarounds.typography.EditText
                     android:id="@+id/user_password"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="@dimen/d60"
+                    android:layout_below="@+id/user_username"
                     android:background="@color/transparent"
                     android:hint="Mật khẩu"
                     android:paddingLeft="@dimen/d10"
@@ -69,7 +67,23 @@
                     app:font_name="@string/font_name"
                     app:font_variant="@string/font_regular" />
 
-            </LinearLayout>
+                <ImageButton
+                    android:id="@+id/user_button_change_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/user_password"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/user_password"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:paddingLeft="@dimen/d10"
+                    android:paddingRight="@dimen/d10"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/edit_password_icon"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

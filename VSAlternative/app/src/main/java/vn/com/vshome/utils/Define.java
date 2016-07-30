@@ -18,15 +18,6 @@ public class Define {
     public static String DEVICE_NOT_AVAILABLE = "Thiết bị chưa được cài đặt";
     public static String IN_DEVELOPING = "Đang phát triển";
 
-    public static final int NUMBER_OF_GROUP = 6;
-
-    public static final int[] mIcons = new int[]{R.drawable.control_group_relay_icon, R.drawable.control_group_dimmer_icon,
-            R.drawable.control_group_blind_icon, R.drawable.control_group_rgb_icon, R.drawable.control_group_pir_icon,
-            R.drawable.control_group_favorite_icon};
-    public static final String[] mSectionNames = new String[]{"Đèn / Thiết bị đóng cắt",
-            "Đèn Dimmer", "Rèm", "Đèn RGB", "Cảm biến chuyển động",
-            "Nhóm thiết bị yêu thích"};
-
     public enum NetworkType {
         NotDetermine,
         LocalNetwork,
@@ -34,16 +25,19 @@ public class Define {
     }
 
     public static NetworkType NETWORK_TYPE = NetworkType.NotDetermine;
-    public static String IP_ADDRESS = "";
-    public static String DNS_ADDRESS = "";
-    public static int IP_PORT = 0;
-    public static int DNS_PORT = 0;
 
     public static final String INTENT_FLOOR_ID = "FloorID";
     public static final String INTENT_ROOM_ID = "RoomID";
+
+    public static final String INTENT_USER = "UserID";
+    public static final String INTENT_SCENE_NAME = "SceneName";
+
     public static final int CODE_SELECT_PICTURE = 1000;
     public static final int CODE_TAKE_PICTURE = 1001;
     public static final int CODE_CROP_PICTURE = 1002;
+
+    public static final int CODE_USER_EDIT = 1003;
+    public static final int CODE_USER_CREATE = 1004;
 
     public static final int STATE_NONE = 0;
     public static final int STATE_OFF = 1;

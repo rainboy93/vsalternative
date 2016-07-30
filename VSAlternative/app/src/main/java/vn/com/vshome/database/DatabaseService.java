@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IHeader;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
 import vn.com.vshome.flexibleadapter.lightingcontrol.ControlDimmerChildItem;
@@ -24,6 +25,8 @@ import vn.com.vshome.utils.Define;
  * Created by anlab on 7/8/16.
  */
 public class DatabaseService {
+
+    private static final int NUMBER_OF_TYPE = 6;
 
     public static List<AbstractFlexibleItem> getListFloorItem() {
         List<AbstractFlexibleItem> list = new ArrayList<>();
@@ -59,12 +62,11 @@ public class DatabaseService {
         }
 
         List<AbstractFlexibleItem> list = new ArrayList<>();
-        ControlGroupItem group1 = new ControlGroupItem(0 + "", 0);
-        ControlGroupItem group2 = new ControlGroupItem(1 + "", 1);
-        ControlGroupItem group3 = new ControlGroupItem(2 + "", 2);
-        ControlGroupItem group4 = new ControlGroupItem(3 + "", 3);
-        ControlGroupItem group5 = new ControlGroupItem(4 + "", 4);
-        ControlGroupItem group6 = new ControlGroupItem(5 + "", 5);
+        for (int i = 0; i < NUMBER_OF_TYPE; i++) {
+            ControlGroupItem group = new ControlGroupItem(i + "", i);
+            group.isControl = isControl;
+            list.add(group);
+        }
 
         List<LightingDevice> relays = LightingDevice.find(
                 LightingDevice.class, "room_id = ? and type_id = ?", new String(roomId + "")
@@ -75,27 +77,14 @@ public class DatabaseService {
                 ControlRelayChildItem relayItem = new ControlRelayChildItem("1-" + i, device.getId());
                 relayItem.callback = callback;
                 relayItem.isControl = isControl;
-                relayItem.setHeader(group1);
-                if (sceneDevices != null) {
-                    for (SceneDevice sceneDevice : sceneDevices) {
-                        if (sceneDevice.deviceId == relayItem.deviceId) {
-                            relayItem.isSelected = true;
-                            relayItem.tempState = new DeviceState();
-                            relayItem.tempState.state = sceneDevice.state;
-                            relayItem.tempState.param = sceneDevice.param;
-                            relayItem.tempState.param1 = sceneDevice.param1;
-                            relayItem.tempState.param2 = sceneDevice.param2;
-                            relayItem.tempState.param3 = sceneDevice.param3;
-                            break;
-                        }
-                    }
-                }
-                group1.addSubItem(relayItem);
+                relayItem.setHeader((ControlGroupItem) list.get(0));
+                findSelectedDevice(sceneDevices, relayItem);
+                ((ControlGroupItem) list.get(0)).addSubItem(relayItem);
             }
         } else {
             ControlEmptyItem emptyItem = new ControlEmptyItem("1-0");
-            emptyItem.setHeader(group1);
-            group1.addSubItem(emptyItem);
+            emptyItem.setHeader((ControlGroupItem) list.get(0));
+            ((ControlGroupItem) list.get(0)).addSubItem(emptyItem);
         }
 
         List<LightingDevice> dimmer = LightingDevice.find(
@@ -107,27 +96,14 @@ public class DatabaseService {
                 ControlDimmerChildItem dimmerItem = new ControlDimmerChildItem("1-" + i, device.getId());
                 dimmerItem.callback = callback;
                 dimmerItem.isControl = isControl;
-                dimmerItem.setHeader(group2);
-                if (sceneDevices != null) {
-                    for (SceneDevice sceneDevice : sceneDevices) {
-                        if (sceneDevice.deviceId == dimmerItem.deviceId) {
-                            dimmerItem.isSelected = true;
-                            dimmerItem.tempState = new DeviceState();
-                            dimmerItem.tempState.state = sceneDevice.state;
-                            dimmerItem.tempState.param = sceneDevice.param;
-                            dimmerItem.tempState.param1 = sceneDevice.param1;
-                            dimmerItem.tempState.param2 = sceneDevice.param2;
-                            dimmerItem.tempState.param3 = sceneDevice.param3;
-                            break;
-                        }
-                    }
-                }
-                group2.addSubItem(dimmerItem);
+                dimmerItem.setHeader((ControlGroupItem) list.get(1));
+                findSelectedDevice(sceneDevices, dimmerItem);
+                ((ControlGroupItem) list.get(1)).addSubItem(dimmerItem);
             }
         } else {
             ControlEmptyItem emptyItem = new ControlEmptyItem("1-1");
-            emptyItem.setHeader(group1);
-            group2.addSubItem(emptyItem);
+            emptyItem.setHeader((ControlGroupItem) list.get(1));
+            ((ControlGroupItem) list.get(1)).addSubItem(emptyItem);
         }
 
         List<LightingDevice> shutterRelays = LightingDevice.find(
@@ -139,27 +115,14 @@ public class DatabaseService {
                 ControlShutterRelayChildItem shutterRelayChildItem = new ControlShutterRelayChildItem("1-" + i, device.getId());
                 shutterRelayChildItem.callback = callback;
                 shutterRelayChildItem.isControl = isControl;
-                shutterRelayChildItem.setHeader(group3);
-                if (sceneDevices != null) {
-                    for (SceneDevice sceneDevice : sceneDevices) {
-                        if (sceneDevice.deviceId == shutterRelayChildItem.deviceId) {
-                            shutterRelayChildItem.isSelected = true;
-                            shutterRelayChildItem.tempState = new DeviceState();
-                            shutterRelayChildItem.tempState.state = sceneDevice.state;
-                            shutterRelayChildItem.tempState.param = sceneDevice.param;
-                            shutterRelayChildItem.tempState.param1 = sceneDevice.param1;
-                            shutterRelayChildItem.tempState.param2 = sceneDevice.param2;
-                            shutterRelayChildItem.tempState.param3 = sceneDevice.param3;
-                            break;
-                        }
-                    }
-                }
-                group3.addSubItem(shutterRelayChildItem);
+                shutterRelayChildItem.setHeader((ControlGroupItem) list.get(2));
+                findSelectedDevice(sceneDevices, shutterRelayChildItem);
+                ((ControlGroupItem) list.get(2)).addSubItem(shutterRelayChildItem);
             }
         } else {
             ControlEmptyItem emptyItem = new ControlEmptyItem("1-2");
-            emptyItem.setHeader(group1);
-            group3.addSubItem(emptyItem);
+            emptyItem.setHeader((ControlGroupItem) list.get(2));
+            ((ControlGroupItem) list.get(2)).addSubItem(emptyItem);
         }
 
         List<LightingDevice> rgb = LightingDevice.find(
@@ -171,27 +134,14 @@ public class DatabaseService {
                 ControlRgbChildItem rgbChildItem = new ControlRgbChildItem("1-" + i, device.getId());
                 rgbChildItem.callback = callback;
                 rgbChildItem.isControl = isControl;
-                rgbChildItem.setHeader(group4);
-                if (sceneDevices != null) {
-                    for (SceneDevice sceneDevice : sceneDevices) {
-                        if (sceneDevice.deviceId == rgbChildItem.deviceId) {
-                            rgbChildItem.isSelected = true;
-                            rgbChildItem.tempState = new DeviceState();
-                            rgbChildItem.tempState.state = sceneDevice.state;
-                            rgbChildItem.tempState.param = sceneDevice.param;
-                            rgbChildItem.tempState.param1 = sceneDevice.param1;
-                            rgbChildItem.tempState.param2 = sceneDevice.param2;
-                            rgbChildItem.tempState.param3 = sceneDevice.param3;
-                            break;
-                        }
-                    }
-                }
-                group4.addSubItem(rgbChildItem);
+                rgbChildItem.setHeader((ControlGroupItem) list.get(3));
+                findSelectedDevice(sceneDevices, rgbChildItem);
+                ((ControlGroupItem) list.get(3)).addSubItem(rgbChildItem);
             }
         } else {
             ControlEmptyItem emptyItem = new ControlEmptyItem("1-3");
-            emptyItem.setHeader(group1);
-            group4.addSubItem(emptyItem);
+            emptyItem.setHeader((ControlGroupItem) list.get(3));
+            ((ControlGroupItem) list.get(3)).addSubItem(emptyItem);
         }
 
         List<LightingDevice> pir = LightingDevice.find(
@@ -205,39 +155,19 @@ public class DatabaseService {
                 pirChildItem.callback = callback;
                 pirChildItem.isControl = isControl;
                 pirChildItem.tempState.state = Define.STATE_DISBALE;
-                pirChildItem.setHeader(group5);
-                if (sceneDevices != null) {
-                    for (SceneDevice sceneDevice : sceneDevices) {
-                        if (sceneDevice.deviceId == pirChildItem.deviceId) {
-                            pirChildItem.isSelected = true;
-                            pirChildItem.tempState = new DeviceState();
-                            pirChildItem.tempState.state = sceneDevice.state;
-                            pirChildItem.tempState.param = sceneDevice.param;
-                            pirChildItem.tempState.param1 = sceneDevice.param1;
-                            pirChildItem.tempState.param2 = sceneDevice.param2;
-                            pirChildItem.tempState.param3 = sceneDevice.param3;
-                            break;
-                        }
-                    }
-                }
-                group5.addSubItem(pirChildItem);
+                pirChildItem.setHeader((ControlGroupItem) list.get(4));
+                findSelectedDevice(sceneDevices, pirChildItem);
+                ((ControlGroupItem) list.get(4)).addSubItem(pirChildItem);
             }
         } else {
             ControlEmptyItem emptyItem = new ControlEmptyItem("1-4");
-            emptyItem.setHeader(group1);
-            group5.addSubItem(emptyItem);
+            emptyItem.setHeader((ControlGroupItem) list.get(4));
+            ((ControlGroupItem) list.get(4)).addSubItem(emptyItem);
         }
 
         ControlEmptyItem emptyItem = new ControlEmptyItem("1-0");
-        emptyItem.setHeader(group1);
-        group6.addSubItem(emptyItem);
-
-        list.add(group1);
-        list.add(group2);
-        list.add(group3);
-        list.add(group4);
-        list.add(group5);
-        list.add(group6);
+        emptyItem.setHeader((ControlGroupItem) list.get(5));
+        ((ControlGroupItem) list.get(5)).addSubItem(emptyItem);
 
         if (previousList != null) {
             for (int i = 0; i < previousList.size(); i++) {
@@ -249,6 +179,23 @@ public class DatabaseService {
         }
 
         return list;
+    }
+
+    private static void findSelectedDevice(List<SceneDevice> sceneDevices, AbstractControlItem controlItem) {
+        if (sceneDevices != null) {
+            for (SceneDevice sceneDevice : sceneDevices) {
+                if (sceneDevice.deviceId == controlItem.deviceId) {
+                    controlItem.isSelected = true;
+                    controlItem.tempState = new DeviceState();
+                    controlItem.tempState.state = sceneDevice.state;
+                    controlItem.tempState.param = sceneDevice.param;
+                    controlItem.tempState.param1 = sceneDevice.param1;
+                    controlItem.tempState.param2 = sceneDevice.param2;
+                    controlItem.tempState.param3 = sceneDevice.param3;
+                    break;
+                }
+            }
+        }
     }
 
     public static List<AbstractFlexibleItem> getListDayItem(Scene scene) {
@@ -285,10 +232,13 @@ public class DatabaseService {
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
                 RoomItem item = new RoomItem(i + "", room);
-                if (roomCode != "" && roomCode.charAt(room.getId().intValue()) == '1') {
+                if (roomCode != "" && roomCode.charAt(room.getId().intValue() - 1) == '1') {
                     item.isSelected = true;
                 } else {
                     item.isSelected = false;
+                }
+                if (user != null && user.priority == Define.PRIORITY_ADMIN) {
+                    item.isAdmin = true;
                 }
                 list.add(item);
             }

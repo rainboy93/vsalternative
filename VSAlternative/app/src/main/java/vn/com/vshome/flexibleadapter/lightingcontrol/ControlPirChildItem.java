@@ -35,9 +35,7 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
     IHeader header;
 
     public ControlPirChildItem(String id, long deviceId) {
-        super(id);
-
-        this.deviceId = deviceId;
+        super(id, deviceId);
 //		setDraggable(true);
     }
 
@@ -70,10 +68,10 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
 
         if(!isControl){
             holder.mButtonSelect.setVisibility(View.VISIBLE);
-            if (tempState.state == Define.STATE_ENABLE) {
-                holder.mButtonControl.setSelected(true);
-            } else if (tempState.state == Define.STATE_DISBALE) {
+            if (tempState.state == Define.STATE_DISBALE) {
                 holder.mButtonControl.setSelected(false);
+            } else {
+                holder.mButtonControl.setSelected(true);
             }
 
             if(isSelected){
@@ -91,6 +89,7 @@ public class ControlPirChildItem extends AbstractControlItem<ControlPirChildItem
                         isSelected = !isSelected;
                         adapter.notifyItemChanged(position);
                     }
+                    adapter.updateItem(header, null);
                 }
             });
             holder.mButtonControl.setOnClickListener(new View.OnClickListener() {

@@ -29,6 +29,7 @@ public class RoomItem extends AbstractModelItem<RoomItem.RoomViewHolder>
     IHeader header;
     public Room room;
     public boolean isSelected;
+    public boolean isAdmin = false;
 
     public RoomItem(String id, Room room) {
         super(id);
@@ -60,19 +61,25 @@ public class RoomItem extends AbstractModelItem<RoomItem.RoomViewHolder>
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, RoomViewHolder holder, final int position, List payloads) {
         holder.mRoomName.setText(room.name);
-        if (isSelected) {
+        if (isAdmin || isSelected) {
             holder.mButtonControl.setSelected(true);
         } else {
             holder.mButtonControl.setSelected(false);
         }
 
-        holder.mButtonControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isSelected = !isSelected;
-                adapter.notifyItemChanged(position);
-            }
-        });
+        if(isAdmin){
+            holder.mButtonControl.setOnClickListener(null);
+            holder.mButtonControl.setAlpha(0.5f);
+        } else {
+            holder.mButtonControl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isSelected = !isSelected;
+                    adapter.notifyItemChanged(position);
+                }
+            });
+            holder.mButtonControl.setAlpha(1.0f);
+        }
     }
 
     @Override

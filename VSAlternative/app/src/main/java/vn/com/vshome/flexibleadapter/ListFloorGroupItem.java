@@ -16,7 +16,7 @@ import vn.com.vshome.R;
 import vn.com.vshome.database.Floor;
 
 public class ListFloorGroupItem
-		extends AbstractControlItem<ListFloorGroupItem.ListFloorGroupHolder>
+		extends AbstractModelItem<ListFloorGroupItem.ListFloorGroupHolder>
 		implements IExpandable<ListFloorGroupItem.ListFloorGroupHolder, ListFloorChildItem>,
 		IHeader<ListFloorGroupItem.ListFloorGroupHolder> {
 

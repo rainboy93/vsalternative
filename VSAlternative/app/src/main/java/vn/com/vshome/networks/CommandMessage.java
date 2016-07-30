@@ -101,10 +101,10 @@ public class CommandMessage {
             int param3 = device.deviceState.param3;
             switch (type) {
                 case Define.DEVICE_TYPE_RELAY:
-                    if (state == Define.STATE_ON) {
-                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_ON;
-                    } else if (state == Define.STATE_OFF) {
+                    if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_OFF;
+                    } else {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_ON;
                     }
                     break;
                 case Define.DEVICE_TYPE_DIMMER:
@@ -114,29 +114,29 @@ public class CommandMessage {
                     } else if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_OFF;
                         data[10 * (i + 1) + 7] = (byte) 0;
-                    } else if (state == Define.COMMAND_SET_PARAM) {
+                    } else {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
                         data[10 * (i + 1) + 7] = (byte) param;
                     }
                     break;
                 case Define.DEVICE_TYPE_PIR:
                 case Define.DEVICE_TYPE_WIR:
-                    if (state == Define.STATE_ENABLE) {
-                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_ENABLE;
-                    } else if (state == Define.STATE_DISBALE) {
+                    if (state == Define.STATE_DISBALE) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_DISABLE;
+                    } else {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_ENABLE;
                     }
                     break;
                 case Define.DEVICE_TYPE_SHUTTER_RELAY:
-                    data[10 * (i + 1) + 6] = (byte) state;
-                    if (state == Define.COMMAND_OPEN) {
-                        data[10 * (i + 1) + 7] = (byte) 100;
-                    } else if (state == Define.COMMAND_CLOSE) {
-                        data[10 * (i + 1) + 7] = (byte) 0;
-                    } else if (state == Define.COMMAND_SET_PARAM) {
+                    if (state == Define.STATE_ON) {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_OPEN;
+                    } else if (state == Define.STATE_OFF) {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_CLOSE;
+                    } else if (state == Define.STATE_PARAM) {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
                         data[10 * (i + 1) + 7] = (byte) param;
-                    } else if (state == Define.COMMAND_STOP) {
-                        data[10 * (i + 1) + 7] = (byte) param;
+                    } else if (state == Define.STATE_STOP) {
+                        data[10 * (i + 1) + 6] = (byte) Define.COMMAND_STOP;
                     }
                     break;
                 case Define.DEVICE_TYPE_RGB:
@@ -144,12 +144,12 @@ public class CommandMessage {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_ON;
                     } else if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_TURN_OFF;
-                    } else if (state == Define.STATE_PARAM) {
+                    } else {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
+                        data[10 * (i + 1) + 7] = (byte) param1;
+                        data[10 * (i + 1) + 8] = (byte) param2;
+                        data[10 * (i + 1) + 9] = (byte) param3;
                     }
-                    data[10 * (i + 1) + 7] = (byte) param1;
-                    data[10 * (i + 1) + 8] = (byte) param2;
-                    data[10 * (i + 1) + 9] = (byte) param3;
                     break;
                 default:
                     break;
@@ -183,6 +183,9 @@ public class CommandMessage {
         int numberOfDevice = devices.size();
         data[8] = (byte) numberOfDevice;
         data[9] = (byte) getWeekDays(scene);
+
+        str1 = scene.name;
+
         setControlMessage(devices, false);
     }
 
@@ -217,6 +220,7 @@ public class CommandMessage {
         int numberOfDevice = devices.size();
         data[5] = (byte) numberOfDevice;
         data[6] = (byte) getWeekDays(scene);
+        str1 = scene.name;
         setControlMessage(devices, false);
     }
 
@@ -251,6 +255,21 @@ public class CommandMessage {
         for (int i = 2; i <= 11; i++) {
             this.data[i] = roomInt[i - 2];
         }
+    }
+
+    public void setUpdateRoomUser(User user, int[] roomInt) {
+        this.cmd = CMD_UPDATE_USER_ROOM;
+        this.str1 = new String(user.username);
+        for (int i = 2; i <= 11; i++) {
+            this.data[i] = roomInt[i - 2];
+        }
+    }
+
+    public void setUpdatePassword(String username, String newPassword) {
+        this.cmd = CMD_UPDATE_USER_PASSWORD;
+        this.str1 = username;
+        this.str2 = newPassword;
+
     }
 
     public void setChangeUserStatus(User user) {

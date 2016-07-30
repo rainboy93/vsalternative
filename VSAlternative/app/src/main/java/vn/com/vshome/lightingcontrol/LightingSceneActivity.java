@@ -16,6 +16,7 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
@@ -33,6 +34,7 @@ import vn.com.vshome.flexibleadapter.lightingcontrol.ControlGroupItem;
 import vn.com.vshome.flexibleadapter.lightingscene.DayItem;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.task.GetDeviceListTask;
+import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Utils;
@@ -61,11 +63,14 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
 
     private long mRoomId = 1;
 
+    private String sceneName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRoomId = getIntent().getLongExtra("RoomId", 0);
+        mRoomId = getIntent().getLongExtra(Define.INTENT_ROOM_ID, 0);
+        sceneName = getIntent().getStringExtra(Define.INTENT_SCENE_NAME);
         try {
             long sceneId = getIntent().getLongExtra("SceneId", -1);
             scene = Scene.findById(Scene.class, sceneId);
@@ -77,7 +82,26 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
 
     int hPosition, mPosition, tPosition, sPosition;
 
+    private ImageButton mMenu, mHome;
+    private TextView mTitle;
+
+    private void initActionBar() {
+        mMenu = (ImageButton) findViewById(R.id.action_bar_menu);
+        mHome = (ImageButton) findViewById(R.id.action_bar_home);
+        mTitle = (TextView) findViewById(R.id.action_bar_title);
+        if (scene != null) {
+            mTitle.setText(scene.name);
+        } else {
+            mTitle.setText(sceneName);
+        }
+        mMenu.setImageResource(R.drawable.icon_back);
+        mMenu.setOnClickListener(this);
+        mHome.setVisibility(View.GONE);
+    }
+
     private void initView() {
+        initActionBar();
+
         calendar = GregorianCalendar.getInstance();
         int h;
         if (scene != null) {
@@ -227,17 +251,23 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
         CommandMessage saveScene = new CommandMessage();
         ArrayList<LightingDevice> devices = new ArrayList<>();
         for (AbstractFlexibleItem item : mListItems) {
-            if (item instanceof AbstractControlItem && !(item instanceof ControlEmptyItem)) {
-                AbstractControlItem controlItem = (AbstractControlItem) item;
-                if (controlItem.isSelected) {
-                    LightingDevice device = controlItem.device;
-                    device.deviceState = controlItem.tempState;
-                    devices.add(device);
+            if (item instanceof ControlGroupItem) {
+                ControlGroupItem groupItem = (ControlGroupItem) item;
+                for(AbstractFlexibleItem item1 : groupItem.getSubItems()){
+                    if(!(item1 instanceof ControlEmptyItem)){
+                        AbstractControlItem controlItem = (AbstractControlItem) item1;
+                        if (controlItem.isSelected) {
+                            LightingDevice device = controlItem.device;
+                            device.deviceState = controlItem.tempState;
+                            devices.add(device);
+                        }
+                    }
                 }
             }
         }
         if (scene == null) {
             Scene scene = new Scene();
+            scene.name = sceneName;
             scene.monday = ((DayItem) mListDays.get(0)).active;
             scene.tuesday = ((DayItem) mListDays.get(1)).active;
             scene.wednesday = ((DayItem) mListDays.get(2)).active;
@@ -315,6 +345,8 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
                 return;
             }
             saveScene();
+        } else if (v == mMenu) {
+            onBackPressed();
         }
     }
 

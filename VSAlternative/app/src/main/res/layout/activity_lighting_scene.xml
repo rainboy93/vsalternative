@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lighting_scene_day_recycler_view"
-        android:layout_marginTop="@dimen/d10"
         android:layout_marginBottom="@dimen/d10"
+        android:layout_marginTop="@dimen/d10"
         android:background="@drawable/bottom_border_background"
         android:gravity="center"
         android:orientation="horizontal">
@@ -49,13 +49,12 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lighting_scene_recycler_view"
+    <include
+        layout="@layout/list_add_scene_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/lighting_scene_button_save"
-        android:layout_below="@+id/lighting_scene_picker_layout"
-        android:background="@color/white" />
+        android:layout_below="@+id/lighting_scene_picker_layout" />
 
     <ImageButton
         android:id="@+id/lighting_scene_button_save"

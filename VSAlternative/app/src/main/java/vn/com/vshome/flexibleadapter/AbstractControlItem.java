@@ -37,8 +37,10 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
     public boolean isSelected = false;
     public DeviceState tempState;
 
-    public AbstractControlItem(String id) {
+    public AbstractControlItem(String id, long deviceId) {
         this.id = id;
+        this.deviceId = deviceId;
+        device = LightingDevice.findById(LightingDevice.class, deviceId);
         tempState = new DeviceState();
     }
 

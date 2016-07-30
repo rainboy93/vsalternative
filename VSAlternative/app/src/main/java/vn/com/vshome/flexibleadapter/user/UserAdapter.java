@@ -32,10 +32,9 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
     private int currentUserControl = -1;
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-        SwipeLayout swipeLayout;
-        TextView userName;
-        ImageButton buttonControl;
-
+            SwipeLayout swipeLayout;
+            TextView userName;
+            ImageButton buttonControl;
 
         public ImageButton userEdit;
         public ImageButton userDelete;
@@ -62,7 +61,7 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
         this.mDataset = objects;
     }
 
-    public void updateData(ArrayList<User> objects){
+    public void updateData(ArrayList<User> objects) {
         this.mDataset = objects;
     }
 
@@ -78,7 +77,8 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         viewHolder.userName.setText(user.username);
         mItemManger.bindView(viewHolder.itemView, position);
-        if (user.priority == Define.PRIORITY_ADMIN) {
+        if (user.priority == Define.PRIORITY_ADMIN
+                || (VSHome.currentUser != null && VSHome.currentUser.priority == Define.PRIORITY_USER)) {
             viewHolder.buttonControl.setEnabled(false);
             viewHolder.buttonControl.setAlpha(0.5f);
             viewHolder.userDelete.setVisibility(View.GONE);
@@ -110,7 +110,7 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
         viewHolder.userDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(callback != null){
+                if (callback != null) {
                     callback.onDeleteUser(user, position);
                 }
             }
@@ -119,7 +119,7 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
         viewHolder.userEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(callback != null){
+                if (callback != null) {
                     callback.onEditUser(user, position);
                 }
             }
@@ -137,7 +137,7 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
     }
 
     public void updateUserRow() {
-        if(currentUserControl >= 0 && currentUserControl < mDataset.size()){
+        if (currentUserControl >= 0 && currentUserControl < mDataset.size()) {
             VSHome.activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -145,17 +145,19 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
                     currentUserControl = -1;
                 }
             });
-        };
+        }
+        ;
     }
 
-    public void setUserControlCallback(UserControlCallback callback){
+    public void setUserControlCallback(UserControlCallback callback) {
         this.callback = callback;
     }
 
     private UserControlCallback callback;
 
-    public interface UserControlCallback{
+    public interface UserControlCallback {
         void onEditUser(User user, int position);
+
         void onDeleteUser(User user, int position);
     }
 }

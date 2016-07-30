@@ -34,9 +34,7 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
     IHeader header;
 
     public ControlDimmerChildItem(String id, long deviceId) {
-        super(id);
-
-        this.deviceId = deviceId;
+        super(id, deviceId);
 //		setDraggable(true);
     }
 
@@ -71,18 +69,17 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, ControlDimmerChildViewHolder holder, final int position, List payloads) {
         device = LightingDevice.findById(LightingDevice.class, deviceId);
-        deviceState = LightingDevice.findById(DeviceState.class, deviceId);
+        deviceState = DeviceState.findById(DeviceState.class, deviceId);
         holder.mName.setText(device.name);
 
         if (!isControl) {
             holder.mButtonSelect.setVisibility(View.VISIBLE);
             holder.mSlider.setCurrentProgress(tempState.param);
 
-            if (tempState.state == Define.STATE_ON
-                    || tempState.state == Define.STATE_PARAM) {
-                holder.mButtonControl.setSelected(true);
-            } else if (tempState.state == Define.STATE_OFF) {
+            if (tempState.state == Define.STATE_OFF) {
                 holder.mButtonControl.setSelected(false);
+            } else {
+                holder.mButtonControl.setSelected(true);
             }
 
             if (isSelected) {
@@ -130,22 +127,20 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
             holder.mButtonSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(callback != null && callback.onSelect()){
+                    if (callback != null && callback.onSelect()) {
                         isSelected = !isSelected;
                         adapter.notifyItemChanged(position);
                     }
+                    adapter.updateItem(header, null);
                 }
             });
             holder.mButtonControl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (tempState.state == Define.STATE_ON
-                            || tempState.state == Define.STATE_PARAM) {
-                        tempState.state = Define.STATE_OFF;
-                        tempState.param = 0;
-                    } else if (tempState.state == Define.STATE_OFF) {
+                    if (tempState.param == 0) {
                         tempState.state = Define.STATE_ON;
-                        tempState.param = 100;
+                    } else {
+                        tempState.state = Define.STATE_OFF;
                     }
                     adapter.notifyItemChanged(position);
                 }
@@ -154,11 +149,10 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
             holder.mSlider.setCurrentProgress(deviceState.param);
             holder.mButtonControl.setOnClickListener(this);
             holder.mSlider.setOnControlListener(this);
-            if (deviceState.state == Define.STATE_ON
-                    || deviceState.state == Define.STATE_PARAM) {
-                holder.mButtonControl.setSelected(true);
-            } else if (deviceState.state == Define.STATE_OFF) {
+            if (deviceState.state == Define.STATE_OFF) {
                 holder.mButtonControl.setSelected(false);
+            } else {
+                holder.mButtonControl.setSelected(true);
             }
         }
     }
@@ -187,7 +181,7 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
 
         if (isControl) {
             LightingDevice d = new LightingDevice(this.device);
-            if(d.deviceState == null){
+            if (d.deviceState == null) {
                 d.deviceState = new DeviceState();
             }
             d.deviceState.state = Define.STATE_PARAM;
@@ -208,14 +202,13 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
         }
         if (isControl) {
             LightingDevice d = new LightingDevice(this.device);
-            if(d.deviceState == null){
+            if (d.deviceState == null) {
                 d.deviceState = new DeviceState();
             }
-            if (deviceState.state == Define.STATE_ON
-                    || deviceState.state == Define.STATE_PARAM) {
-                d.deviceState.state = Define.STATE_OFF;
-            } else if (deviceState.state == Define.STATE_OFF) {
+            if (deviceState.param == 0) {
                 d.deviceState.state = Define.STATE_ON;
+            } else {
+                d.deviceState.state = Define.STATE_OFF;
             }
             startSendControlMessage(d);
         }

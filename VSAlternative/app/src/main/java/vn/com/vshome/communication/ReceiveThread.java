@@ -52,7 +52,7 @@ public class ReceiveThread extends Thread {
         this.sceneCallback = sceneCallback;
     }
 
-    public void setSceneSetUpCallback(SceneSetUpCallback sceneSetUpCallback){
+    public void setSceneSetUpCallback(SceneSetUpCallback sceneSetUpCallback) {
         this.sceneSetUpCallback = sceneSetUpCallback;
     }
 
@@ -164,7 +164,7 @@ public class ReceiveThread extends Thread {
         }
     }
 
-    private void handleDisconnect(ReturnMessage ret){
+    private void handleDisconnect(ReturnMessage ret) {
         if (userCallback != null) {
             userCallback.onResponse(ret.cmd, ret.status);
         }
@@ -322,7 +322,7 @@ public class ReceiveThread extends Thread {
 
     private void handleSceneDelete(ReturnMessage ret) {
         if (sceneCallback != null) {
-            sceneCallback.onResponse(ret.status);
+            sceneCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
@@ -413,7 +413,7 @@ public class ReceiveThread extends Thread {
 
     private void handleSceneScheduleUpdate(ReturnMessage ret) {
         if (sceneCallback != null) {
-            sceneCallback.onResponse(ret.status);
+            sceneCallback.onResponse(ret.cmd, ret.status);
         }
     }
 
@@ -542,6 +542,7 @@ public class ReceiveThread extends Thread {
             return;
         }
         scene.save();
+        SceneDevice.deleteAll(SceneDevice.class, "scene_id = ?", new String[]{scene.getId() + ""});
         for (SceneDevice device : devices) {
             device.save();
         }

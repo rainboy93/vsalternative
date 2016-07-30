@@ -139,6 +139,7 @@ public class ColorPickerView extends View {
 		if (!canDraw) {
 			return true;
 		}
+		colorHSV[2] = 1.0f;
 		int action = event.getAction();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
@@ -220,11 +221,11 @@ public class ColorPickerView extends View {
 	}
 
 	public interface OnColorPickerListener {
-		public void onColorPicker(float[] currentHSV);
+		void onColorPicker(float[] currentHSV);
 
-		public void onTouchDown(float[] currentHSV);
+		void onTouchDown(float[] currentHSV);
 
-		public void onTouchUp(float[] currentHSV);
+		void onTouchUp(float[] currentHSV);
 	}
 
 	private Bitmap createColorWheelBitmap(int width, int height) {

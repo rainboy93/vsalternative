@@ -1,5 +1,6 @@
 package vn.com.vshome.flexibleadapter.lightingcontrol;
 
+import android.animation.Animator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,148 +23,182 @@ import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.utils.Define;
 
 public class ControlGroupItem
-		extends AbstractModelItem<ControlGroupItem.ControlGroupHolder>
-		implements IExpandable<ControlGroupItem.ControlGroupHolder, AbstractFlexibleItem>,
-		IHeader<ControlGroupItem.ControlGroupHolder> {
+        extends AbstractModelItem<ControlGroupItem.ControlGroupHolder>
+        implements IExpandable<ControlGroupItem.ControlGroupHolder, AbstractFlexibleItem>,
+        IHeader<ControlGroupItem.ControlGroupHolder> {
 
-	private static final long serialVersionUID = -1882711111814491060L;
+    private static final long serialVersionUID = -1882711111814491060L;
 
-	/* Flags for FlexibleAdapter */
-	private boolean mExpanded = false;
+    private final int[] mIcons = new int[]{
+            R.drawable.control_group_relay_icon,
+            R.drawable.control_group_dimmer_icon,
+            R.drawable.control_group_blind_icon,
+            R.drawable.control_group_rgb_icon,
+            R.drawable.control_group_pir_icon,
+            R.drawable.control_group_favorite_icon};
+    private final String[] mSectionNames = new String[]{
+            "Đèn / Thiết bị đóng cắt",
+            "Đèn Dimmer",
+            "Rèm",
+            "Đèn RGB",
+            "Cảm biến chuyển động",
+            "Nhóm thiết bị yêu thích"};
 
-	/* subItems list */
-	private List<AbstractFlexibleItem> mListChildItems;
+    /* Flags for FlexibleAdapter */
+    private boolean mExpanded = false;
 
-	private int deviceType;
+    /* subItems list */
+    private List<AbstractFlexibleItem> mListChildItems;
 
-	public ControlGroupItem(String id, int deviceType) {
-		super(id);
+    private int deviceType;
 
-		this.deviceType = deviceType;
+    public boolean isControl = true;
 
-		setDraggable(false);
-		setHidden(false);
-		setExpanded(false);
-		setSelectable(false);
-	}
+    public ControlGroupItem(String id, int deviceType) {
+        super(id);
 
-	@Override
-	public boolean isExpanded() {
-		return mExpanded;
-	}
+        this.deviceType = deviceType;
 
-	@Override
-	public void setExpanded(boolean expanded) {
-		mExpanded = expanded;
-	}
+        setDraggable(false);
+        setHidden(false);
+        setExpanded(false);
+        setSelectable(false);
+    }
 
-	@Override
-	public int getExpansionLevel() {
-		return 0;
-	}
+    @Override
+    public boolean isExpanded() {
+        return mExpanded;
+    }
 
-	@Override
-	public List<AbstractFlexibleItem> getSubItems() {
-		return mListChildItems;
-	}
+    @Override
+    public void setExpanded(boolean expanded) {
+        mExpanded = expanded;
+    }
 
-	public final boolean hasSubItems() {
-		return mListChildItems != null && mListChildItems.size() > 0;
-	}
+    @Override
+    public int getExpansionLevel() {
+        return 0;
+    }
 
-	public boolean removeSubItem(ControlRelayChildItem item) {
-		return item != null && mListChildItems.remove(item);
-	}
+    @Override
+    public List<AbstractFlexibleItem> getSubItems() {
+        return mListChildItems;
+    }
 
-	public boolean removeSubItem(int position) {
-		if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
-			mListChildItems.remove(position);
-			return true;
-		}
-		return false;
-	}
+    public final boolean hasSubItems() {
+        return mListChildItems != null && mListChildItems.size() > 0;
+    }
 
-	public void addSubItem(AbstractFlexibleItem childItem) {
-		if (mListChildItems == null)
-			mListChildItems = new ArrayList<>();
-		mListChildItems.add(childItem);
-	}
+    public boolean removeSubItem(ControlRelayChildItem item) {
+        return item != null && mListChildItems.remove(item);
+    }
 
-	public void addSubItem(int position, AbstractFlexibleItem childItem) {
-		if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
-			mListChildItems.add(position, childItem);
-		} else
-			addSubItem(childItem);
-	}
+    public boolean removeSubItem(int position) {
+        if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
+            mListChildItems.remove(position);
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public int getLayoutRes() {
-		return R.layout.lighting_control_device_group;
-	}
+    public void addSubItem(AbstractFlexibleItem childItem) {
+        if (mListChildItems == null)
+            mListChildItems = new ArrayList<>();
+        mListChildItems.add(childItem);
+    }
 
-	@Override
-	public ControlGroupHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-		return new ControlGroupHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
-	}
+    public void addSubItem(int position, AbstractFlexibleItem childItem) {
+        if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
+            mListChildItems.add(position, childItem);
+        } else
+            addSubItem(childItem);
+    }
 
-	@Override
-	public void bindViewHolder(FlexibleAdapter adapter, ControlGroupHolder holder, int position, List payloads) {
-		holder.mGroupName.setText(Define.mSectionNames[deviceType]);
-		holder.mGroupIcon.setImageResource(Define.mIcons[deviceType]);
+    @Override
+    public int getLayoutRes() {
+        return R.layout.lighting_control_device_group;
+    }
 
-		if(isExpanded()){
-			holder.mGroupSelector.setSelected(true);
-			holder.mContainer.setBackgroundResource(R.color.device_background);
-			holder.mDivider.setVisibility(View.GONE);
-		} else {
-			holder.mGroupSelector.setSelected(false);
-			holder.mContainer.setBackgroundResource(R.color.white);
-			holder.mDivider.setVisibility(View.VISIBLE);
-		}
-	}
+    @Override
+    public ControlGroupHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new ControlGroupHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    }
 
-	class ControlGroupHolder extends ExpandableViewHolder {
+    @Override
+    public void bindViewHolder(FlexibleAdapter adapter, final ControlGroupHolder holder, int position, List payloads) {
+        holder.mGroupName.setText(mSectionNames[deviceType]);
+        holder.mGroupIcon.setImageResource(mIcons[deviceType]);
 
-		public TextView mGroupName;
-		public ImageView mGroupIcon;
-		public ImageButton mGroupSelector;
-		public RelativeLayout mContainer;
-		public View mDivider;
+        if (!isControl) {
+            holder.mGroupCount.setVisibility(View.VISIBLE);
+            holder.mGroupCount.setText(String.valueOf(count()));
+        }
+        if (isExpanded()) {
+            holder.mGroupSelector.animate().rotation(90).setDuration(500)
+                    .start();
+            holder.mContainer.setBackgroundResource(R.color.device_background);
+            holder.mDivider.setVisibility(View.GONE);
+        } else {
+            holder.mGroupSelector.setRotation(0);
+            holder.mGroupSelector.setSelected(false);
+            holder.mContainer.setBackgroundResource(R.color.white);
+            holder.mDivider.setVisibility(View.VISIBLE);
+        }
+    }
 
-		public ControlGroupHolder(View view, FlexibleAdapter adapter) {
-			super(view, adapter, true);//True for sticky
-			mGroupName = (TextView) view.findViewById(R.id.lighting_control_device_group_name);
-			mGroupIcon = (ImageView) view.findViewById(R.id.lighting_control_device_group_icon);
-			mGroupSelector = (ImageButton) view.findViewById(R.id.lighting_control_device_group_selector);
-			mGroupSelector.setEnabled(false);
-			mContainer = (RelativeLayout) view.findViewById(R.id.lighting_control_device_group_container);
-			mDivider = view.findViewById(R.id.lighting_control_device_group_divider);
-		}
+    class ControlGroupHolder extends ExpandableViewHolder {
 
-		@Override
-		protected boolean isViewExpandableOnClick() {
-			return true;//true by default
-		}
+        public TextView mGroupName, mGroupCount;
+        public ImageView mGroupIcon;
+        public ImageButton mGroupSelector;
+        public RelativeLayout mContainer;
+        public View mDivider;
 
-		@Override
-		protected void expandView(int position) {
-			super.expandView(position);
-			//Let's notify the item has been expanded
-			if (mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
-		}
+        public ControlGroupHolder(View view, FlexibleAdapter adapter) {
+            super(view, adapter, true);//True for sticky
+            mGroupName = (TextView) view.findViewById(R.id.lighting_control_device_group_name);
+            mGroupIcon = (ImageView) view.findViewById(R.id.lighting_control_device_group_icon);
+            mGroupSelector = (ImageButton) view.findViewById(R.id.lighting_control_device_group_selector);
+            mGroupSelector.setEnabled(false);
+            mContainer = (RelativeLayout) view.findViewById(R.id.lighting_control_device_group_container);
+            mDivider = view.findViewById(R.id.lighting_control_device_group_divider);
+            mGroupCount = (TextView) view.findViewById(R.id.lighting_control_device_group_count);
+        }
 
-		@Override
-		protected void collapseView(int position) {
-			super.collapseView(position);
-			//Let's notify the item has been collapsed
-			if (!mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
-		}
+        @Override
+        protected boolean isViewExpandableOnClick() {
+            return true;//true by default
+        }
 
-	}
+        @Override
+        protected void expandView(int position) {
+            super.expandView(position);
+            //Let's notify the item has been expanded
+            if (mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
+        }
 
-	@Override
-	public String toString() {
-		return "ListFloorGroupItem[" + super.toString() + "//SubItems" + mListChildItems + "]";
-	}
+        @Override
+        protected void collapseView(int position) {
+            super.collapseView(position);
+            //Let's notify the item has been collapsed
+            if (!mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
+        }
+
+    }
+
+    private int count() {
+        int count = 0;
+        for (AbstractFlexibleItem item : mListChildItems) {
+            if (item instanceof AbstractControlItem && ((AbstractControlItem) item).isSelected) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public String toString() {
+        return "ListFloorGroupItem[" + super.toString() + "//SubItems" + mListChildItems + "]";
+    }
 
 }

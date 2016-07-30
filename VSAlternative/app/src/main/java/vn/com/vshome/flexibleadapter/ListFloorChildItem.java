@@ -15,7 +15,7 @@ import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.database.Room;
 
-public class ListFloorChildItem extends AbstractControlItem<ListFloorChildItem.ChildViewHolder>
+public class ListFloorChildItem extends AbstractModelItem<ListFloorChildItem.ChildViewHolder>
 		implements ISectionable<ListFloorChildItem.ChildViewHolder, IHeader>, IFilterable {
 
 	private static final long serialVersionUID = 2519281529221244210L;
