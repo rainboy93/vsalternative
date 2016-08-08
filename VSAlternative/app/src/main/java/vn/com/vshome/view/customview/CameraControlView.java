@@ -9,8 +9,13 @@ import android.view.View;
 
 import com.alexvasilkov.gestures.GestureController;
 import com.alexvasilkov.gestures.views.GestureImageView;
+import com.fos.sdk.FosSdkJNI;
+import com.fos.sdk.PtzCmd;
 
 import vn.com.vshome.R;
+import vn.com.vshome.database.Camera;
+import vn.com.vshome.foscamsdk.CameraManager;
+import vn.com.vshome.foscamsdk.CameraSession;
 
 /**
  * Created by anlab on 7/27/16.
@@ -19,6 +24,8 @@ public class CameraControlView extends GridLayout {
 
     private GestureImageView mLeftUp, mUp, mRightUp, mLeft, mMinimize, mRight, mLeftDown, mDown, mRightDown;
     private boolean isFullScreen = false;
+    private int handler = -1;
+    private Camera camera;
 
     public CameraControlView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -33,6 +40,10 @@ public class CameraControlView extends GridLayout {
     public CameraControlView(Context context) {
         super(context);
         initView();
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 
     public void setFullScreen() {
@@ -110,22 +121,71 @@ public class CameraControlView extends GridLayout {
     }
 
     private void handleLongPress(GestureImageView gestureImageView) {
+        CameraSession session = CameraManager.getInstance().getCameraSession(camera);
+        if (handler != session.handler) {
+            handler = session.handler;
+        }
+
+        if (handler < 0) {
+            return;
+        }
+
         if (gestureImageView == mLeftUp) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_UP, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mUp) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_UP, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mRightUp) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_UP, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mLeft) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mRight) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mLeftDown) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_DOWN, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mDown) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_DOWN, 1000);
+                }
+            }).start();
         } else if (gestureImageView == mRightDown) {
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_DOWN, 1000);
+                }
+            }).start();
         }
     }
 }

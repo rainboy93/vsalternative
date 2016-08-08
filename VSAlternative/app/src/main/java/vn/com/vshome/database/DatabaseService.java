@@ -18,6 +18,8 @@ import vn.com.vshome.flexibleadapter.ListFloorChildItem;
 import vn.com.vshome.flexibleadapter.ListFloorGroupItem;
 import vn.com.vshome.flexibleadapter.lightingscene.DayItem;
 import vn.com.vshome.flexibleadapter.roomselection.FloorItem;
+import vn.com.vshome.flexibleadapter.security.CameraChildItem;
+import vn.com.vshome.flexibleadapter.security.CameraGroupItem;
 import vn.com.vshome.flexibleadapter.user.RoomItem;
 import vn.com.vshome.utils.Define;
 
@@ -266,6 +268,22 @@ public class DatabaseService {
             for (int i = floors.size(); i < 4; i++) {
                 FloorItem item = new FloorItem(i, null);
                 list.add(item);
+            }
+        }
+        return list;
+    }
+
+    public static List<AbstractFlexibleItem> getListCamera() {
+        List<AbstractFlexibleItem> list = new ArrayList<>();
+        List<Camera> cameras = Camera.listAll(Camera.class, "id");
+        if (cameras != null && cameras.size() > 0) {
+            for (int i = 0; i < cameras.size(); i++) {
+                Camera camera = cameras.get(i);
+                CameraGroupItem groupItem = new CameraGroupItem(i + "", camera);
+                CameraChildItem childItem = new CameraChildItem(i + "", camera);
+                childItem.setHeader(groupItem);
+                groupItem.addSubItem(childItem);
+                list.add(groupItem);
             }
         }
         return list;

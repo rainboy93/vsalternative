@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/security_child_camera_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <vn.com.vshome.view.customview.CameraView
+        android:id="@+id/security_child_camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <vn.com.vshome.view.customview.CameraControlView
+        android:id="@+id/security_child_camera_control_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/security_child_camera_view"
+        android:layout_alignTop="@+id/security_child_camera_view" />
+
+    <in.workarounds.typography.TextView
+        android:id="@+id/security_child_camera_warn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d20"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
+
+</RelativeLayout>

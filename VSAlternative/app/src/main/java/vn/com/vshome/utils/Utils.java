@@ -150,7 +150,7 @@ public class Utils {
         Logger.LogD("Floor size " + Floor.listAll(Floor.class).size());
         Logger.LogD("Room size " + Room.listAll(Room.class).size());
         Logger.LogD("Device size " + LightingDevice.listAll(LightingDevice.class).size());
-        Logger.LogD("Camera size " + Camera.listAll(Camera.class).size());
+        Logger.LogD("FoscamCamera size " + Camera.listAll(Camera.class).size());
         Logger.LogD("State size " + DeviceState.listAll(DeviceState.class).size());
 
         PreferenceUtils.getInstance(context).setValue(PreferenceDefine.UID, uid);

@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -17,154 +16,174 @@ import eu.davidea.flexibleadapter.items.IHeader;
 import eu.davidea.viewholders.ExpandableViewHolder;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
+import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.flexibleadapter.lightingcontrol.ControlRelayChildItem;
-import vn.com.vshome.utils.Define;
+import vn.com.vshome.foscamsdk.CameraManager;
+import vn.com.vshome.foscamsdk.CameraSession;
 
 public class CameraGroupItem
-		extends AbstractModelItem<CameraGroupItem.CameraGroupHolder>
-		implements IExpandable<CameraGroupItem.CameraGroupHolder, AbstractFlexibleItem>,
-		IHeader<CameraGroupItem.CameraGroupHolder> {
+        extends AbstractModelItem<CameraGroupItem.CameraGroupHolder>
+        implements IExpandable<CameraGroupItem.CameraGroupHolder, AbstractFlexibleItem>,
+        IHeader<CameraGroupItem.CameraGroupHolder> {
 
-	private static final long serialVersionUID = -1882711111814491060L;
+    private static final long serialVersionUID = -1882711111814491060L;
 
-	/* Flags for FlexibleAdapter */
-	private boolean mExpanded = false;
+    /* Flags for FlexibleAdapter */
+    private boolean mExpanded = false;
+    /* subItems list */
+    private List<AbstractFlexibleItem> mListChildItems;
 
-	/* subItems list */
-	private List<AbstractFlexibleItem> mListChildItems;
+    public Camera camera;
 
-	public Camera camera;
+    public CameraGroupItem(String id, Camera camera) {
+        super(id);
 
-	public CameraGroupItem(String id, Camera camera) {
-		super(id);
+        this.camera = camera;
 
-		this.camera = camera;
+        setDraggable(false);
+        setHidden(false);
+        setExpanded(false);
+        setSelectable(false);
+    }
 
-		setDraggable(false);
-		setHidden(false);
-		setExpanded(false);
-		setSelectable(false);
-	}
+    @Override
+    public boolean isExpanded() {
+        return mExpanded;
+    }
 
-	@Override
-	public boolean isExpanded() {
-		return mExpanded;
-	}
+    @Override
+    public void setExpanded(boolean expanded) {
+        mExpanded = expanded;
+    }
 
-	@Override
-	public void setExpanded(boolean expanded) {
-		mExpanded = expanded;
-	}
+    @Override
+    public int getExpansionLevel() {
+        return 0;
+    }
 
-	@Override
-	public int getExpansionLevel() {
-		return 0;
-	}
+    @Override
+    public List<AbstractFlexibleItem> getSubItems() {
+        return mListChildItems;
+    }
 
-	@Override
-	public List<AbstractFlexibleItem> getSubItems() {
-		return mListChildItems;
-	}
+    public final boolean hasSubItems() {
+        return mListChildItems != null && mListChildItems.size() > 0;
+    }
 
-	public final boolean hasSubItems() {
-		return mListChildItems != null && mListChildItems.size() > 0;
-	}
+    public boolean removeSubItem(ControlRelayChildItem item) {
+        return item != null && mListChildItems.remove(item);
+    }
 
-	public boolean removeSubItem(ControlRelayChildItem item) {
-		return item != null && mListChildItems.remove(item);
-	}
+    public boolean removeSubItem(int position) {
+        if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
+            mListChildItems.remove(position);
+            return true;
+        }
+        return false;
+    }
 
-	public boolean removeSubItem(int position) {
-		if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
-			mListChildItems.remove(position);
-			return true;
-		}
-		return false;
-	}
+    public void addSubItem(AbstractFlexibleItem childItem) {
+        if (mListChildItems == null)
+            mListChildItems = new ArrayList<>();
+        mListChildItems.add(childItem);
+    }
 
-	public void addSubItem(AbstractFlexibleItem childItem) {
-		if (mListChildItems == null)
-			mListChildItems = new ArrayList<>();
-		mListChildItems.add(childItem);
-	}
+    public void addSubItem(int position, AbstractFlexibleItem childItem) {
+        if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
+            mListChildItems.add(position, childItem);
+        } else
+            addSubItem(childItem);
+    }
 
-	public void addSubItem(int position, AbstractFlexibleItem childItem) {
-		if (mListChildItems != null && position >= 0 && position < mListChildItems.size()) {
-			mListChildItems.add(position, childItem);
-		} else
-			addSubItem(childItem);
-	}
+    @Override
+    public int getLayoutRes() {
+        return R.layout.security_camera_group;
+    }
 
-	@Override
-	public int getLayoutRes() {
-		return R.layout.lighting_control_device_group;
-	}
+    @Override
+    public CameraGroupHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new CameraGroupHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    }
 
-	@Override
-	public CameraGroupHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-		return new CameraGroupHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
-	}
+    @Override
+    public void bindViewHolder(final FlexibleAdapter adapter, CameraGroupHolder holder, final int position, List payloads) {
+        holder.mName.setText(camera.deviceName);
 
-	@Override
-	public void bindViewHolder(FlexibleAdapter adapter, CameraGroupHolder holder, int position, List payloads) {
-		holder.mGroupName.setText(camera.deviceName);
+        CameraSession session = CameraManager.getInstance().getCameraSession(camera);
 
-		if(isExpanded()){
-			holder.mGroupSelector.setSelected(true);
-			holder.mContainer.setBackgroundResource(R.color.device_background);
-			holder.mDivider.setVisibility(View.INVISIBLE);
-		} else {
-			holder.mGroupSelector.setSelected(false);
-			holder.mContainer.setBackgroundResource(R.color.white);
-			holder.mDivider.setVisibility(View.VISIBLE);
-		}
-	}
+        if (isExpanded()) {
+            holder.mSelector.animate().rotation(90).setDuration(500)
+                    .start();
+            holder.mContainer.setBackgroundResource(R.color.device_background);
+            holder.mDivider.setVisibility(View.GONE);
 
-	class CameraGroupHolder extends ExpandableViewHolder {
+            if (session == null || !session.isHasCore) {
+                CameraManager.getInstance().addSession(camera, new CameraCallback() {
+                    @Override
+                    public void onError(String msg) {
+                        ((CameraChildItem) mListChildItems.get(0)).isError = true;
+                        ((CameraChildItem) mListChildItems.get(0)).errorMsg = msg;
+                        adapter.notifyItemChanged(position + 1);
+                    }
 
-		public TextView mGroupName;
-		public ImageView mGroupIcon;
-		public ImageButton mGroupSelector;
-		public RelativeLayout mContainer;
-		public View mDivider;
+                    @Override
+                    public void onSuccess() {
+                        ((CameraChildItem) mListChildItems.get(0)).isError = false;
+                        adapter.notifyItemChanged(position + 1);
+                    }
+                });
+            }
+        } else {
+            holder.mSelector.setRotation(0);
+            holder.mSelector.setSelected(false);
+            holder.mContainer.setBackgroundResource(R.color.white);
+            holder.mDivider.setVisibility(View.VISIBLE);
+            ((CameraChildItem) mListChildItems.get(0)).isError = false;
+            if (session != null && session.isHasCore) {
+                CameraManager.getInstance().removeSession(camera, true);
+            }
+        }
+    }
 
-		public CameraGroupHolder(View view, FlexibleAdapter adapter) {
-			super(view, adapter, true);//True for sticky
-			mGroupName = (TextView) view.findViewById(R.id.lighting_control_device_group_name);
-			mGroupIcon = (ImageView) view.findViewById(R.id.lighting_control_device_group_icon);
-			mGroupIcon.setImageResource(R.drawable.capture_icon);
-			mGroupSelector = (ImageButton) view.findViewById(R.id.lighting_control_device_group_selector);
-			mGroupSelector.setEnabled(false);
-			mContainer = (RelativeLayout) view.findViewById(R.id.lighting_control_device_group_container);
-			mDivider = view.findViewById(R.id.lighting_control_device_group_divider);
-		}
+    class CameraGroupHolder extends ExpandableViewHolder {
 
-		@Override
-		protected boolean isViewExpandableOnClick() {
-			return true;//true by default
-		}
+        public TextView mName;
+        public ImageButton mSelector;
+        public RelativeLayout mContainer;
+        public View mDivider;
 
-		@Override
-		protected void expandView(int position) {
-			super.expandView(position);
-			//Let's notify the item has been expanded
-			if (mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
-		}
+        public CameraGroupHolder(View view, FlexibleAdapter adapter) {
+            super(view, adapter, false);//True for sticky
+            mName = (TextView) view.findViewById(R.id.security_group_camera_name);
+            mSelector = (ImageButton) view.findViewById(R.id.security_group_arrow);
+            mContainer = (RelativeLayout) view.findViewById(R.id.security_group_camera_container);
+            mDivider = view.findViewById(R.id.security_group_camera_divider);
+        }
 
-		@Override
-		protected void collapseView(int position) {
-			super.collapseView(position);
-			//Let's notify the item has been collapsed
-			if (!mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
-		}
+        @Override
+        protected boolean isViewExpandableOnClick() {
+            return true;//true by default
+        }
 
-	}
+        @Override
+        protected void expandView(int position) {
+            super.expandView(position);
+            if (mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
+        }
 
-	@Override
-	public String toString() {
-		return "ListFloorGroupItem[" + super.toString() + "//SubItems" + mListChildItems + "]";
-	}
+        @Override
+        protected void collapseView(int position) {
+            super.collapseView(position);
+            if (!mAdapter.isExpanded(position)) mAdapter.notifyItemChanged(position, true);
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "ListFloorGroupItem[" + super.toString() + "//SubItems" + mListChildItems + "]";
+    }
 
 }

@@ -9,18 +9,23 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 public class SecurityViewPagerAdapter extends FragmentStatePagerAdapter {
 
+    private SecurityFragment securityFragment;
 
     public SecurityViewPagerAdapter(FragmentManager fm) {
         super(fm);
+        securityFragment = SecurityFragment.newInstance(0);
     }
 
     @Override
     public Fragment getItem(int position) {
+        if (position == 0) {
+            return securityFragment;
+        }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return 1;
     }
 }

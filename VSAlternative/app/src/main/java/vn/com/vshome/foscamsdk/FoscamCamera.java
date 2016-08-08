@@ -6,7 +6,7 @@ package vn.com.vshome.foscamsdk;
  * @author FuS
  * @date 2014-4-15 ����7:31:02
  */
-public class Camera {
+public class FoscamCamera {
 	/** camera�����ͣ�MJ */
 	public static final int TYPE_CAMERA_MJ = 0x0;
 	/** camera�����ͣ�H264 */
@@ -26,7 +26,7 @@ public class Camera {
 	/** ����ģʽ���أ��ֶ��� */
 	public static final int TYPE_IR_OFF = 0x3;
 
-	/** ���ݿ���seqno�ֶ�ֵ */
+	/** ��ݿ���seqno�ֶ�ֵ */
 	private int dbid = -1;
 	/** name */
 	private String name = "";
@@ -52,7 +52,7 @@ public class Camera {
 	private String loginName = "";
 	/** ����ͷ��¼���� */
 	private String loginPwd = "";
-	/** ��Ʒ�ͺ����ƣ�FosBaby,FI9821P�� */
+	/** ��Ʒ�ͺ���ƣ�FosBaby,FI9821P�� */
 	private String productName = "";
 	/** ��Ʒ��һ����Ϣ */
 	private CameraProductAllInfo productAllInfo = null;
@@ -66,22 +66,22 @@ public class Camera {
 	 * */
 	private int hasUserTag   = 0;
 
-	// �ⲿ���ֶε���ʵֵ��Ҫʵʱ��ipc�˻�ȡ�����Բ��ش洢�����ݿ���
+	// �ⲿ���ֶε���ʵֵ��Ҫʵʱ��ipc�˻�ȡ�����Բ��ش洢����ݿ���
 	/** ����ģʽ��0�Զ���1�ֶ���2�����ֶ�ģʽ�£���3�أ��ֶ�ģʽ�£� */
 	private int irmode = TYPE_IR_AUTO;
 	/** �Ƿ��������ŵ� */
 	private boolean isConnected = false;
 
-	public Camera() {
+	public FoscamCamera() {
 	}
 
 	/**
-	 * ���캯������ʾcamera�Ǵ����ݿ��ж�ȡ�ģ�
+	 * ���캯���ʾcamera�Ǵ���ݿ��ж�ȡ�ģ�
 	 * 
 	 * @param seqno
-	 *            ���ݿ��е�seqno�ֶ�ֵ
+	 *            ��ݿ��е�seqno�ֶ�ֵ
 	 */
-	public Camera(int seqno) {
+	public FoscamCamera(int seqno) {
 		this.dbid = seqno;
 	}
 
@@ -89,7 +89,7 @@ public class Camera {
 	 * ���캯��
 	 * 
 	 * @param name
-	 *            �豸����
+	 *            �豸���
 	 * @param type
 	 *            �豸���ͣ�0��MJ��1��H264��2��P2P��
 	 * @param ip
@@ -102,7 +102,7 @@ public class Camera {
 	 * @param pwd
 	 * @param uid
 	 */
-	public Camera(String name, int type, String ip, int streamType, int httpPort, int mediaPort, String userName, String pwd, String uid) {
+	public FoscamCamera(String name, int type, String ip, int streamType, int httpPort, int mediaPort, String userName, String pwd, String uid) {
 		this.name = name;
 		this.type = type;
 		this.ip = ip;
@@ -216,12 +216,12 @@ public class Camera {
 		this.isConnected = connected;
 	}
 
-	/** �����豸�Ĳ�Ʒ���ƣ�����FosBaby,FI9821P�� */
+	/** �����豸�Ĳ�Ʒ��ƣ�����FosBaby,FI9821P�� */
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
 
-	/** �豸�İ汾��һ����Ϣ�������֧�֣���Ϊnull�� */
+	/** �豸�İ汾��һ����Ϣ�����֧�֣���Ϊnull�� */
 	public void setProductAllInfo(CameraProductAllInfo productAllInfo) {
 		this.productAllInfo = productAllInfo;
 	}
@@ -308,7 +308,7 @@ public class Camera {
 		return this.loginPwd;
 	}
 
-	/** ��ȡ���ݿ��е�seqno�ֶ�ֵ������-1��ʾ������ͷ���Ǵ����ݿ��л�ȡ�ģ� */
+	/** ��ȡ��ݿ��е�seqno�ֶ�ֵ������-1��ʾ������ͷ���Ǵ���ݿ��л�ȡ�ģ� */
 	public int getDBID() {
 		return this.dbid;
 	}
@@ -327,12 +327,12 @@ public class Camera {
 		return this.isConnected;
 	}
 
-	/** ��ȡ�豸�Ĳ�Ʒ���ƣ�����FosBaby,FI9821P�� */
+	/** ��ȡ�豸�Ĳ�Ʒ��ƣ�����FosBaby,FI9821P�� */
 	public String getProductName() {
 		return this.productName;
 	}
 
-	/** �豸�İ汾��һ����Ϣ�������֧�֣���Ϊnull�� */
+	/** �豸�İ汾��һ����Ϣ�����֧�֣���Ϊnull�� */
 	public CameraProductAllInfo getProductAllInfo() {
 		return this.productAllInfo;
 	}

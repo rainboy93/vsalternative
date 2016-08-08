@@ -24,11 +24,11 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".account.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <meta-data
@@ -43,7 +43,6 @@
 
         <activity
             android:name=".lightingcontrol.LightingControlActivity"
-            android:label="@string/title_activity_lighting_control"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- <intent-filter> -->
@@ -56,11 +55,9 @@
         <activity android:name=".lightingcontrol.LightingSceneActivity" />
         <activity
             android:name=".user.UserActivity"
-            android:label="@string/title_activity_user"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".roomselection.RoomSelectionActivity"
-            android:label="@string/title_activity_room_selection"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- <intent-filter> -->
@@ -75,8 +72,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".security.SecurityActivity"
-            android:label="@string/title_activity_security"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
         <activity android:name=".user.UserActionActivity"></activity>
     </application>
 

@@ -64,6 +64,9 @@ public class ControlRelayChildItem extends AbstractControlItem<ControlRelayChild
     public void bindViewHolder(final FlexibleAdapter adapter, ControlRelayChildViewHolder holder, final int position, List payloads) {
         device = LightingDevice.findById(LightingDevice.class, deviceId);
         deviceState = LightingDevice.findById(DeviceState.class, deviceId);
+        if(device == null){
+            return;
+        }
         holder.mName.setText(device.name);
 
         if(!isControl){

@@ -511,7 +511,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                     int mNumberOfCamera = mBufferData[index];
                     index++;
-                    Logger.LogD("Camera " + mNumberOfCamera);
+                    Logger.LogD("FoscamCamera " + mNumberOfCamera);
                     while (mNumberOfCamera > 0) {
                         Camera foscam = new Camera();
                         int mCameraId = mBufferData[index];

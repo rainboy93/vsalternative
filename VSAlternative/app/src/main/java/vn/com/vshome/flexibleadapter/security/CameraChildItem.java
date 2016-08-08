@@ -3,7 +3,6 @@ package vn.com.vshome.flexibleadapter.security;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import java.util.List;
 
@@ -14,28 +13,30 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
-import vn.com.vshome.database.DeviceState;
-import vn.com.vshome.database.LightingDevice;
-import vn.com.vshome.flexibleadapter.AbstractControlItem;
-import vn.com.vshome.flexibleadapter.AbstractModelItem;
-import vn.com.vshome.utils.Define;
+import vn.com.vshome.database.Camera;
+import vn.com.vshome.flexibleadapter.AbstractItem;
+import vn.com.vshome.utils.Utils;
+import vn.com.vshome.view.customview.CameraControlView;
+import vn.com.vshome.view.customview.CameraView;
 
-public class CameraChildItem extends AbstractModelItem<CameraChildItem.ControlRelayChildViewHolder>
-        implements ISectionable<CameraChildItem.ControlRelayChildViewHolder, IHeader>, IFilterable,View.OnClickListener {
+public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildViewHolder>
+        implements ISectionable<CameraChildItem.CameraChildViewHolder, IHeader>, IFilterable, View.OnClickListener {
 
-    private static final long serialVersionUID = 2519281529221244210L;
+    private static final long serialVersionUID = 2519284529221244210L;
 
     /**
      * The header of this item
      */
     IHeader header;
 
-    private long deviceId;
+    public Camera camera;
+    public boolean isError = false;
+    public String errorMsg = "";
 
-    public CameraChildItem(String id, long deviceId) {
+    public CameraChildItem(String id, Camera camera) {
         super(id);
 
-        this.deviceId = deviceId;
+        this.camera = camera;
 
 //		setDraggable(true);
     }
@@ -52,18 +53,28 @@ public class CameraChildItem extends AbstractModelItem<CameraChildItem.ControlRe
 
     @Override
     public int getLayoutRes() {
-        return R.layout.lighting_control_device_relay;
+        return R.layout.security_camera_child;
     }
 
     @Override
-    public ControlRelayChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new ControlRelayChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public CameraChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new CameraChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void bindViewHolder(final FlexibleAdapter adapter, ControlRelayChildViewHolder holder, final int position, List payloads) {
-
+    public void bindViewHolder(final FlexibleAdapter adapter, CameraChildViewHolder holder, final int position, List payloads) {
+        if (isError) {
+            holder.cameraControlView.setVisibility(View.GONE);
+            holder.mWarn.setVisibility(View.VISIBLE);
+            holder.mWarn.setText(errorMsg);
+        } else {
+            holder.cameraControlView.setVisibility(View.VISIBLE);
+            holder.cameraView.setCamera(camera);
+            holder.cameraView.startDraw();
+            holder.cameraControlView.setCamera(camera);
+            holder.mWarn.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -76,18 +87,18 @@ public class CameraChildItem extends AbstractModelItem<CameraChildItem.ControlRe
 
     }
 
-    class ControlRelayChildViewHolder extends FlexibleViewHolder {
+    class CameraChildViewHolder extends FlexibleViewHolder {
 
-        public TextView mName;
-        public ImageButton mButtonControl, mButtonSelect;
-        public View mCover;
+        public CameraView cameraView;
+        public CameraControlView cameraControlView;
+        public TextView mWarn;
 
-        public ControlRelayChildViewHolder(View view, FlexibleAdapter adapter) {
+        public CameraChildViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            this.mName = (TextView) view.findViewById(R.id.lighting_control_relay_name);
-            this.mButtonControl = (ImageButton) view.findViewById(R.id.lighting_control_relay_button_control);
-            this.mButtonSelect = (ImageButton) view.findViewById(R.id.lighting_control_relay_button_select);
-            this.mCover = view.findViewById(R.id.lighting_control_relay_cover);
+            cameraView = (CameraView) view.findViewById(R.id.security_child_camera_view);
+            cameraView.getLayoutParams().height = Utils.getScreenWidth() * 3 / 4;
+            cameraControlView = (CameraControlView) view.findViewById(R.id.security_child_camera_control_view);
+            mWarn = (TextView) view.findViewById(R.id.security_child_camera_warn);
         }
 
         @Override

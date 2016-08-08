@@ -4,9 +4,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/security_action_bar"
+        layout="@layout/action_bar_layout" />
+
+    <LinearLayout
+        android:id="@+id/security_option_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d60"
+        android:layout_below="@+id/security_action_bar"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <in.workarounds.typography.Button
+            android:id="@+id/security_button_camera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/tab_press"
+            android:padding="@dimen/d5"
+            android:text="CAMERA"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d14"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_bold" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/security_button_motion_sensor"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/tab"
+            android:padding="@dimen/d5"
+            android:text="Cảm biến chuyển động"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d14"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_bold" />
+
+        <in.workarounds.typography.Button
+            android:id="@+id/security_button_open_door_sensor"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/tab2"
+            android:padding="@dimen/d5"
+            android:text="Cảm biến cửa mở"
+            android:textColor="@color/white"
+            android:textSize="@dimen/d14"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_bold" />
+    </LinearLayout>
+
     <vn.com.vshome.view.NonSwipeViewPager
         android:id="@+id/room_selection_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/security_option_layout" />
 
 </RelativeLayout>

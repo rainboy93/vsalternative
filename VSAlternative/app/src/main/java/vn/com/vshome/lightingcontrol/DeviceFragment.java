@@ -34,8 +34,7 @@ import vn.com.vshome.view.ProgressHUD;
 /**
  * Created by anlab on 7/7/16.
  */
-public class DeviceFragment extends BaseControlFragment implements FlexibleAdapter.OnItemClickListener,
-        LightingControlCallback, TaskCallback {
+public class DeviceFragment extends BaseControlFragment implements LightingControlCallback, TaskCallback {
 
     private RecyclerView mRecyclerView;
     private BaseAdapter mDeviceAdapter;
@@ -92,23 +91,6 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
         getDeviceListTask.execute(true);
 
 //        mListItems = DatabaseService.getListDeviceItem((int) this.roomId, true);
-    }
-
-    @Override
-    public boolean onItemClick(int position) {
-        if (mDeviceAdapter.getItem(position) instanceof ControlGroupItem) {
-            updateData();
-        }
-        return false;
-    }
-
-    public void updateData() {
-        int count = mDeviceAdapter.getItemCount();
-        for (int i = 0; i < count; i++) {
-            if (mDeviceAdapter.getItem(i) instanceof ControlGroupItem) {
-                mDeviceAdapter.notifyItemChanged(i);
-            }
-        }
     }
 
     @Override
@@ -171,8 +153,6 @@ public class DeviceFragment extends BaseControlFragment implements FlexibleAdapt
                         mDeviceAdapter.updateDataSet(mListItems);
                     } else {
                         mDeviceAdapter = new BaseAdapter(mListItems);
-                        FlexibleAdapter.OnItemClickListener listener = DeviceFragment.this;
-                        mDeviceAdapter.initializeListeners(listener);
                         mDeviceAdapter.setDisplayHeadersAtStartUp(true)
                                 .setAutoCollapseOnExpand(true)
                                 .setAutoScrollOnExpand(true)

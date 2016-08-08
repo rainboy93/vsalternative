@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.fos.sdk.FosSdkJNI;
 import com.orm.SugarApp;
 import com.zplesac.connectionbuddy.ConnectionBuddy;
 import com.zplesac.connectionbuddy.ConnectionBuddyConfiguration;
@@ -32,6 +33,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
     public static boolean isTakePhoto = false;
     private final long BACKGROUND_DELAY = 500;
     private final long BACKGROUND_DELAY_WITH_TAKE_IMAGE = 120 * 1000;
+    public static boolean isLogIn = false;
 
     private boolean mInBackground = true;
     private final Handler mBackgroundDelayHandler = new Handler();
@@ -41,12 +43,14 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
     public void onCreate() {
         super.onCreate();
 
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                handleUncaughtException(thread, ex);
-            }
-        });
+        FosSdkJNI.Init();
+
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread thread, Throwable ex) {
+//                handleUncaughtException(thread, ex);
+//            }
+//        });
 
 
         ConnectionBuddyConfiguration configuration = new ConnectionBuddyConfiguration.Builder(this).build();
@@ -60,10 +64,11 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         registerActivityLifecycleCallbacks(this);
     }
 
-//    @Override
-//    public void onTerminate() {
-//        super.onTerminate();
-//    }
+    @Override
+    public void onTerminate() {
+        FosSdkJNI.DeInit();
+        super.onTerminate();
+    }
 //
 //    @Override
 //    public void onLowMemory() {

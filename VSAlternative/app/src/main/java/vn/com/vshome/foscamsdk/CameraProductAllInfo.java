@@ -272,7 +272,7 @@ public class CameraProductAllInfo {
 		return this._reserveFlag4;
 	}
 
-	/** Camera application version */
+	/** FoscamCamera application version */
 	public String getAppVer() {
 		return this._appVer;
 	}
