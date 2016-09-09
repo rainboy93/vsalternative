@@ -34,10 +34,9 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'cn.carbs.android:AvatarImageView:1.0.2'
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.zplesac:connectionbuddy:1.1.2@aar'
     compile 'com.alexvasilkov:gesture-views:2.1.1'
     compile project(':flexible-adapter')
-    compile files('src/main/libs/FosSdkJNI.jar')
+    compile files('src/main/libs/FosIPCJNI.jar')
 }
 11

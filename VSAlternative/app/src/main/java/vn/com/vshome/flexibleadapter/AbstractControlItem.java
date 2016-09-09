@@ -5,6 +5,7 @@ import java.io.Serializable;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.database.DeviceState;
@@ -12,6 +13,7 @@ import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Toaster;
+import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
 /**
@@ -89,7 +91,7 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
             @Override
             public void onTimeOut() {
                 ProgressHUD.hideLoading(VSHome.activity);
-                Toaster.showMessage(VSHome.activity, "asdfasdf");
+                Toaster.showMessage(VSHome.activity, Utils.getString(R.string.txt_no_response));
             }
         }, 5);
         CommandMessage message = new CommandMessage();

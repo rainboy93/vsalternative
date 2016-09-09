@@ -94,73 +94,71 @@ public class ReceiveThread extends Thread {
     }
 
     private void handleMessage() {
-        synchronized (data) {
-            Logger.LogD(Arrays.toString(data));
-            ReturnMessage ret = new ReturnMessage(data);
-            switch (ret.cmd) {
-                case CommandMessage.CMD_ADD_NEW_USER:
-                    handleAddNewUser(ret);
-                    break;
-                case CommandMessage.CMD_UPDATE_USER_PASSWORD:
-                    handleUpdatePassword(ret);
-                    break;
-                case CommandMessage.CMD_UPDATE_USER_PRIORITY:
-                    handleUpdatePriority(ret);
-                    break;
-                case CommandMessage.CMD_UPDATE_USER_STATUS:
-                    handleUpdateUserStatus(ret);
-                    break;
-                case CommandMessage.CMD_ERROR_MESSAGE:
+        Logger.LogD(Arrays.toString(data));
+        ReturnMessage ret = new ReturnMessage(data);
+        switch (ret.cmd) {
+            case CommandMessage.CMD_ADD_NEW_USER:
+                handleAddNewUser(ret);
+                break;
+            case CommandMessage.CMD_UPDATE_USER_PASSWORD:
+                handleUpdatePassword(ret);
+                break;
+            case CommandMessage.CMD_UPDATE_USER_PRIORITY:
+                handleUpdatePriority(ret);
+                break;
+            case CommandMessage.CMD_UPDATE_USER_STATUS:
+                handleUpdateUserStatus(ret);
+                break;
+            case CommandMessage.CMD_ERROR_MESSAGE:
 
-                    break;
-                case CommandMessage.CMD_DELETE_USER:
-                    handleDeleteUser(ret);
-                    break;
-                case CommandMessage.CMD_GET_USER_LIST:
-                    handleGetUserList(ret);
-                    break;
-                case CommandMessage.CMD_DISCONNECT_ALL_USER:
-                    handleDisconnect(ret);
-                    break;
-                case CommandMessage.CMD_LIGHTING_CONTROL:
-                    handleLightingControl(ret);
-                    break;
-                case CommandMessage.CMD_LIGHTING_CONFIG:
-                    handleLightingConfig(ret);
-                    break;
-                case CommandMessage.CMD_LIGHTING_UPDATE:
-                    handleLightingUpdate(ret);
-                    break;
-                case CommandMessage.CMD_SCENE_CREATE:
-                    handleSceneCreate(ret);
-                    break;
-                case CommandMessage.CMD_SCENE_EDIT:
-                    handleSceneEdit(ret);
-                    break;
-                case CommandMessage.CMD_SCENE_DELETE:
-                    handleSceneDelete(ret);
-                    break;
-                case CommandMessage.CMD_SCENE_CONFIG:
-                    handleSceneConfig(ret);
-                    break;
-                case CommandMessage.CMD_SCHEDULE_UPDATE:
-                    handleSceneScheduleUpdate(ret);
-                    break;
-                case CommandMessage.CMD_UPDATE_USER_ROOM:
-                    handleUpdateUserRoom(ret);
-                    break;
-                case CommandMessage.CMD_HEART_BEAT:
-                    handleHeartBeat(ret);
-                    break;
-                case CommandMessage.CMD_SCENE_UPDATE:
-                    handleSceneUpdate(ret);
-                    break;
-                case CommandMessage.CMD_COMPLETE_CONFIG:
-                    handleCompleteConfig(ret);
-                    break;
-                default:
-                    break;
-            }
+                break;
+            case CommandMessage.CMD_DELETE_USER:
+                handleDeleteUser(ret);
+                break;
+            case CommandMessage.CMD_GET_USER_LIST:
+                handleGetUserList(ret);
+                break;
+            case CommandMessage.CMD_DISCONNECT_ALL_USER:
+                handleDisconnect(ret);
+                break;
+            case CommandMessage.CMD_LIGHTING_CONTROL:
+                handleLightingControl(ret);
+                break;
+            case CommandMessage.CMD_LIGHTING_CONFIG:
+                handleLightingConfig(ret);
+                break;
+            case CommandMessage.CMD_LIGHTING_UPDATE:
+                handleLightingUpdate(ret);
+                break;
+            case CommandMessage.CMD_SCENE_CREATE:
+                handleSceneCreate(ret);
+                break;
+            case CommandMessage.CMD_SCENE_EDIT:
+                handleSceneEdit(ret);
+                break;
+            case CommandMessage.CMD_SCENE_DELETE:
+                handleSceneDelete(ret);
+                break;
+            case CommandMessage.CMD_SCENE_CONFIG:
+                handleSceneConfig(ret);
+                break;
+            case CommandMessage.CMD_SCHEDULE_UPDATE:
+                handleSceneScheduleUpdate(ret);
+                break;
+            case CommandMessage.CMD_UPDATE_USER_ROOM:
+                handleUpdateUserRoom(ret);
+                break;
+            case CommandMessage.CMD_HEART_BEAT:
+                handleHeartBeat(ret);
+                break;
+            case CommandMessage.CMD_SCENE_UPDATE:
+                handleSceneUpdate(ret);
+                break;
+            case CommandMessage.CMD_COMPLETE_CONFIG:
+                handleCompleteConfig(ret);
+                break;
+            default:
+                break;
         }
     }
 

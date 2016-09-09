@@ -63,18 +63,19 @@ public class ControlRgbChildItem extends AbstractControlItem<ControlRgbChildItem
 
     @Override
     public ControlRgbChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        try {
-            ControlLayoutManager layoutManager = (ControlLayoutManager) adapter.getRecyclerView().getLayoutManager();
-            this.layoutManager = layoutManager;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return new ControlRgbChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, final ControlRgbChildViewHolder holder, final int position, List payloads) {
+        try {
+            ControlLayoutManager layoutManager = (ControlLayoutManager) adapter.getRecyclerView().getLayoutManager();
+            this.layoutManager = layoutManager;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         device = LightingDevice.findById(LightingDevice.class, deviceId);
         holder.mName.setText(device.name);
 
@@ -153,7 +154,11 @@ public class ControlRgbChildItem extends AbstractControlItem<ControlRgbChildItem
         } else {
             deviceState = DeviceState.findById(DeviceState.class, deviceId);
             int color = Color.rgb(deviceState.param1, deviceState.param2, deviceState.param3);
-            setPreviewColor(color, holder);
+            if (deviceState.state == Define.STATE_OFF) {
+                setPreviewColor(Color.BLACK, holder);
+            } else {
+                setPreviewColor(color, holder);
+            }
             holder.mColorPicker.setColor(color);
             holder.mColorPicker.setCanDraw(true);
             holder.mColorPicker.setOnColorPickerListener(new ColorPickerView.OnColorPickerListener() {

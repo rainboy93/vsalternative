@@ -21,6 +21,7 @@ import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
 import vn.com.vshome.flexibleadapter.ControlLayoutManager;
+import vn.com.vshome.flexibleadapter.lightingcontrol.ControlEmptyItem;
 import vn.com.vshome.flexibleadapter.lightingcontrol.ControlGroupItem;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.task.GetDeviceListTask;
@@ -94,7 +95,7 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
     }
 
     @Override
-    public void onControl(int id, boolean isControlDevice) {
+    public void onControl(final int id, boolean isControlDevice) {
         if (mListItems == null) {
             return;
         }
@@ -103,20 +104,28 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
             ProgressHUD.hideLoading(getActivity());
         }
 
-        for (AbstractFlexibleItem item : mListItems) {
-            ControlGroupItem groupItem = (ControlGroupItem) item;
-            for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
-                AbstractControlItem modelItem = (AbstractControlItem) subItem;
-                if (id == modelItem.deviceId) {
-                    mDeviceAdapter.updateItem(subItem, null);
-                    return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (AbstractFlexibleItem item : mListItems) {
+                    ControlGroupItem groupItem = (ControlGroupItem) item;
+                    for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
+                        if (subItem instanceof ControlEmptyItem) {
+                            continue;
+                        }
+                        AbstractControlItem modelItem = (AbstractControlItem) subItem;
+                        if (id == modelItem.deviceId) {
+                            mDeviceAdapter.updateItem(subItem, null);
+                            return;
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     @Override
-    public void onResponse(int id, int status) {
+    public void onResponse(final int id, int status) {
         if (!((LightingControlActivity) getActivity()).isDevice()) {
             return;
         }
@@ -124,21 +133,26 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
             Toaster.showMessage(getActivity(), Utils.getString(R.string.txt_no_response));
-            for (AbstractFlexibleItem item : mListItems) {
-                ControlGroupItem groupItem = (ControlGroupItem) item;
-                for (final AbstractFlexibleItem subItem : groupItem.getSubItems()) {
-                    AbstractControlItem modelItem = (AbstractControlItem) subItem;
-                    if (id == modelItem.deviceId) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDeviceAdapter.updateItem(subItem, null);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (AbstractFlexibleItem item : mListItems) {
+                        ControlGroupItem groupItem = (ControlGroupItem) item;
+                        for (final AbstractFlexibleItem subItem : groupItem.getSubItems()) {
+                            AbstractControlItem modelItem = (AbstractControlItem) subItem;
+                            if (id == modelItem.deviceId) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDeviceAdapter.updateItem(subItem, null);
+                                    }
+                                });
+                                return;
                             }
-                        });
-                        return;
+                        }
                     }
                 }
-            }
+            });
         }
     }
 

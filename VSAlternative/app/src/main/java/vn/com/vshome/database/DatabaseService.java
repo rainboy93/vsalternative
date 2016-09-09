@@ -76,7 +76,7 @@ public class DatabaseService {
         if (relays.size() > 0) {
             for (int i = 0; i < relays.size(); i++) {
                 LightingDevice device = relays.get(i);
-                ControlRelayChildItem relayItem = new ControlRelayChildItem("1-" + i, device.getId());
+                ControlRelayChildItem relayItem = new ControlRelayChildItem("0-" + i, device.getId());
                 relayItem.callback = callback;
                 relayItem.isControl = isControl;
                 relayItem.setHeader((ControlGroupItem) list.get(0));
@@ -114,7 +114,7 @@ public class DatabaseService {
         if (shutterRelays.size() > 0) {
             for (int i = 0; i < shutterRelays.size(); i++) {
                 LightingDevice device = shutterRelays.get(i);
-                ControlShutterRelayChildItem shutterRelayChildItem = new ControlShutterRelayChildItem("1-" + i, device.getId());
+                ControlShutterRelayChildItem shutterRelayChildItem = new ControlShutterRelayChildItem("2-" + i, device.getId());
                 shutterRelayChildItem.callback = callback;
                 shutterRelayChildItem.isControl = isControl;
                 shutterRelayChildItem.setHeader((ControlGroupItem) list.get(2));
@@ -122,7 +122,7 @@ public class DatabaseService {
                 ((ControlGroupItem) list.get(2)).addSubItem(shutterRelayChildItem);
             }
         } else {
-            ControlEmptyItem emptyItem = new ControlEmptyItem("1-2");
+            ControlEmptyItem emptyItem = new ControlEmptyItem("2-2");
             emptyItem.setHeader((ControlGroupItem) list.get(2));
             ((ControlGroupItem) list.get(2)).addSubItem(emptyItem);
         }
@@ -133,7 +133,7 @@ public class DatabaseService {
         if (rgb.size() > 0) {
             for (int i = 0; i < rgb.size(); i++) {
                 LightingDevice device = rgb.get(i);
-                ControlRgbChildItem rgbChildItem = new ControlRgbChildItem("1-" + i, device.getId());
+                ControlRgbChildItem rgbChildItem = new ControlRgbChildItem("3-" + i, device.getId());
                 rgbChildItem.callback = callback;
                 rgbChildItem.isControl = isControl;
                 rgbChildItem.setHeader((ControlGroupItem) list.get(3));
@@ -141,7 +141,7 @@ public class DatabaseService {
                 ((ControlGroupItem) list.get(3)).addSubItem(rgbChildItem);
             }
         } else {
-            ControlEmptyItem emptyItem = new ControlEmptyItem("1-3");
+            ControlEmptyItem emptyItem = new ControlEmptyItem("3-3");
             emptyItem.setHeader((ControlGroupItem) list.get(3));
             ((ControlGroupItem) list.get(3)).addSubItem(emptyItem);
         }
@@ -153,7 +153,7 @@ public class DatabaseService {
         if (pir.size() > 0) {
             for (int i = 0; i < pir.size(); i++) {
                 LightingDevice device = pir.get(i);
-                ControlPirChildItem pirChildItem = new ControlPirChildItem("1-" + i, device.getId());
+                ControlPirChildItem pirChildItem = new ControlPirChildItem("4-" + i, device.getId());
                 pirChildItem.callback = callback;
                 pirChildItem.isControl = isControl;
                 pirChildItem.tempState.state = Define.STATE_DISBALE;
@@ -162,12 +162,12 @@ public class DatabaseService {
                 ((ControlGroupItem) list.get(4)).addSubItem(pirChildItem);
             }
         } else {
-            ControlEmptyItem emptyItem = new ControlEmptyItem("1-4");
+            ControlEmptyItem emptyItem = new ControlEmptyItem("4-4");
             emptyItem.setHeader((ControlGroupItem) list.get(4));
             ((ControlGroupItem) list.get(4)).addSubItem(emptyItem);
         }
 
-        ControlEmptyItem emptyItem = new ControlEmptyItem("1-0");
+        ControlEmptyItem emptyItem = new ControlEmptyItem("5-0");
         emptyItem.setHeader((ControlGroupItem) list.get(5));
         ((ControlGroupItem) list.get(5)).addSubItem(emptyItem);
 

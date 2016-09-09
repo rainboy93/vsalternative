@@ -17,18 +17,18 @@ public class LightingDevice extends SugarRecord {
     public int stateId;
     public DeviceState deviceState;
 
-    public LightingDevice(){
+    public LightingDevice() {
 
     }
 
-    public LightingDevice(LightingDevice device){
+    public LightingDevice(LightingDevice device) {
         setId(device.getId());
         this.typeId = device.typeId;
         this.roomId = device.roomId;
         this.name = device.name;
         this.lcId = device.lcId;
         this.devId = device.devId;
-        this.channel = device.stateId;
+        this.channel = device.channel;
         this.deviceState = device.deviceState;
     }
 }

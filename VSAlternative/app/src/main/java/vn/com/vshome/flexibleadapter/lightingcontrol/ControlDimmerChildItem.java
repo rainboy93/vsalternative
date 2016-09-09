@@ -55,6 +55,12 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
 
     @Override
     public ControlDimmerChildViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new ControlDimmerChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void bindViewHolder(final FlexibleAdapter adapter, ControlDimmerChildViewHolder holder, final int position, List payloads) {
         try {
             ControlLayoutManager layoutManager = (ControlLayoutManager) adapter.getRecyclerView().getLayoutManager();
             this.layoutManager = layoutManager;
@@ -62,12 +68,6 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
             e.printStackTrace();
         }
 
-        return new ControlDimmerChildViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void bindViewHolder(final FlexibleAdapter adapter, ControlDimmerChildViewHolder holder, final int position, List payloads) {
         device = LightingDevice.findById(LightingDevice.class, deviceId);
         deviceState = DeviceState.findById(DeviceState.class, deviceId);
         holder.mName.setText(device.name);
@@ -205,7 +205,7 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
             if (d.deviceState == null) {
                 d.deviceState = new DeviceState();
             }
-            if (deviceState.param == 0) {
+            if (deviceState.state == Define.STATE_OFF) {
                 d.deviceState.state = Define.STATE_ON;
             } else {
                 d.deviceState.state = Define.STATE_OFF;
