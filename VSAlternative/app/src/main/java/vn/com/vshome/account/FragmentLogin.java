@@ -185,9 +185,21 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 @Override
                 public void onTimeOut() {
                     ProgressHUD.hideLoading(getActivity());
+                    Define.NETWORK_TYPE = Define.NetworkType.NotDetermine;
+                    if(loginTask != null){
+                        loginTask.cancel(true);
+                        loginTask = null;
+                    }
+                    VSHome.socketManager.destroySocket();
                 }
             }, 15);
             ProgressHUD.showLoading(getActivity());
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Logger.LogD("Cancel login");
         }
 
         @Override

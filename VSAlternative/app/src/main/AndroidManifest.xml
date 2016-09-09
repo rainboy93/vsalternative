@@ -16,19 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tool:replace="android:theme">
-        <activity android:name=".MainActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".account.LoginActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -43,43 +37,30 @@
 
         <activity
             android:name=".lightingcontrol.LightingControlActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".lightingcontrol.LightingSceneActivity" />
         <activity
             android:name=".user.UserActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".roomselection.RoomSelectionActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CropActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".security.SecurityActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".user.UserActionActivity" />
+        <activity
+            android:name=".security.FullPreviewActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen"></activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            </activity>
-        <activity android:name=".user.UserActionActivity"></activity>
+        <service
+            android:name=".security.PreviewService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

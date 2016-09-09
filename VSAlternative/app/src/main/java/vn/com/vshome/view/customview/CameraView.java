@@ -10,6 +10,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -17,15 +19,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import vn.com.vshome.R;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
+import vn.com.vshome.utils.Logger;
 
-/**
- * Created by hung on 12/2/15.
- */
-public class CameraView extends View {
+
+public class CameraView extends View implements Runnable{
 
     private static final int WIDTH = 640;
     private static final int HEIGHT = 480;
@@ -37,20 +43,28 @@ public class CameraView extends View {
     private RectF rectF = new RectF();
 
     private CameraSession cameraSession;
+    private Handler handler;
+
+    private boolean isFullScreen = false;
 
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
     public void startDraw() {
+        cameraSession = null;
         isDrawing = true;
         invalidate();
+        if(handler == null){
+            handler = new Handler();
+        }
+        handler.postDelayed(this, 10);
     }
 
     private void setRect() {
         int bitW = cameraSession.cameraThread.mBit.getWidth();
         int bitH = cameraSession.cameraThread.mBit.getHeight();
-        if (bitW / (fScale * WIDTH) > bitH / (fScale * HEIGHT)) {
+        if (bitW / (fScale * WIDTH) < bitH / (fScale * HEIGHT)) {
             int h = (int) (fScale * HEIGHT);
             int w = bitW * h / bitH;
             rectF.set(fScale * WIDTH / 2 - w / 2, fScale * HEIGHT / 2 - h / 2,
@@ -88,11 +102,7 @@ public class CameraView extends View {
                             int bottom) {
         int width = right - left;
         int height = bottom - top;
-        if (height * 1.0f / HEIGHT <= width * 1.0f / WIDTH) {
-            fScale = height * 1.0f / HEIGHT;
-        } else {
-            fScale = width * 1.0f / WIDTH;
-        }
+        fScale = width * 1.0f / WIDTH;
         super.onLayout(changed, left, top, right, bottom);
     }
 
@@ -101,15 +111,15 @@ public class CameraView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        if (height * 1.0f / HEIGHT <= width * 1.0f / WIDTH) {
-            float fScale = height * 1.0f / HEIGHT;
-            setMeasuredDimension((int) (WIDTH * fScale),
-                    (int) (HEIGHT * fScale));
-        } else {
+//        if (height * 1.0f / HEIGHT <= width * 1.0f / WIDTH) {
+//            float fScale = height * 1.0f / HEIGHT;
+//            setMeasuredDimension((int) (WIDTH * fScale),
+//                    (int) (HEIGHT * fScale));
+//        } else {
             float fScale = width * 1.0f / WIDTH;
             setMeasuredDimension((int) (WIDTH * fScale),
                     (int) (HEIGHT * fScale));
-        }
+//        }
     }
 
     @Override
@@ -117,7 +127,6 @@ public class CameraView extends View {
         super.onDraw(canvas);
 
         canvas.drawColor(Color.BLACK);
-
         if (isDrawing) {
             if (cameraSession == null) {
                 cameraSession = CameraManager.getInstance().getCameraSession(camera);
@@ -128,8 +137,12 @@ public class CameraView extends View {
                     canvas.drawBitmap(cameraSession.cameraThread.mBit, null, rectF, null);
                 }
             }
-            SystemClock.sleep(20);
-            invalidate();
         }
+    }
+
+    @Override
+    public void run() {
+        postInvalidate();
+        handler.postDelayed(this, 10);
     }
 }

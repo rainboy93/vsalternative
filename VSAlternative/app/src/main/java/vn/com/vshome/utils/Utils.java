@@ -1,5 +1,6 @@
 package vn.com.vshome.utils;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -169,6 +170,10 @@ public class Utils {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
     public static String getTimeString(int c) {
         if (c >= 10)
             return String.valueOf(c);
@@ -212,5 +217,15 @@ public class Utils {
             i++;
         } while (bm.getWidth() < 400 && i < sampleSizes.length);
         return bm;
+    }
+
+    public static boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) VSHome.activity.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

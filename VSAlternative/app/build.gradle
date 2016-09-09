@@ -38,5 +38,6 @@ dependencies {
     compile 'com.zplesac:connectionbuddy:1.1.2@aar'
     compile 'com.alexvasilkov:gesture-views:2.1.1'
     compile project(':flexible-adapter')
+    compile files('src/main/libs/FosSdkJNI.jar')
 }
 11

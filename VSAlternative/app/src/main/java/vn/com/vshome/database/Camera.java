@@ -2,11 +2,13 @@ package vn.com.vshome.database;
 
 import com.orm.SugarRecord;
 
+import java.io.Serializable;
+
 
 /**
  * Created by rAinmAker on 06/07/2016.
  */
-public class Camera extends SugarRecord {
+public class Camera extends SugarRecord implements Serializable{
     public int roomId;
     public int deviceType;
     public String deviceName;

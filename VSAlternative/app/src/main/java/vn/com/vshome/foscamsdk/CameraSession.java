@@ -9,6 +9,5 @@ public class CameraSession {
     public Camera camera;
     public int amount = 0;
     public CameraThread cameraThread;
-    public int handler = -1;
     public boolean isHasCore = false;
 }

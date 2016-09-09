@@ -1,6 +1,7 @@
 package vn.com.vshome.view.customview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayout;
 import android.util.AttributeSet;
@@ -13,9 +14,15 @@ import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.PtzCmd;
 
 import vn.com.vshome.R;
+import vn.com.vshome.VSHome;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
+import vn.com.vshome.security.PreviewService;
+import vn.com.vshome.security.FullPreviewActivity;
+import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 7/27/16.
@@ -47,7 +54,7 @@ public class CameraControlView extends GridLayout {
     }
 
     public void setFullScreen() {
-        mMinimize.setVisibility(View.VISIBLE);
+        mMinimize.setVisibility(View.INVISIBLE);
         isFullScreen = true;
     }
 
@@ -91,7 +98,12 @@ public class CameraControlView extends GridLayout {
             @Override
             public void onUpOrCancel(@NonNull MotionEvent e) {
                 if (gestureImageView != mMinimize) {
-
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
+                        }
+                    }).start();
                 }
             }
 
@@ -102,28 +114,37 @@ public class CameraControlView extends GridLayout {
 
             @Override
             public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+                Logger.LogD("minimize");
                 if (gestureImageView == mMinimize && !isFullScreen) {
-
+                    if(!Utils.isMyServiceRunning(PreviewService.class)){
+                        Intent intent = new Intent(VSHome.activity, PreviewService.class);
+                        intent.putExtra(Define.INTENT_CAMERA, camera);
+                        VSHome.activity.startService(intent);
+                    }
                 }
                 return true;
             }
 
             @Override
             public void onLongPress(@NonNull MotionEvent e) {
+                Logger.LogD("Control handler: " + handler);
                 handleLongPress(gestureImageView);
             }
 
             @Override
             public boolean onDoubleTap(@NonNull MotionEvent e) {
-                return false;
+                Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
+                intent.putExtra(Define.INTENT_CAMERA, camera);
+                VSHome.activity.startActivity(intent);
+                return true;
             }
         });
     }
 
     private void handleLongPress(GestureImageView gestureImageView) {
         CameraSession session = CameraManager.getInstance().getCameraSession(camera);
-        if (handler != session.handler) {
-            handler = session.handler;
+        if (handler != session.cameraThread.handler) {
+            handler = session.cameraThread.handler;
         }
 
         if (handler < 0) {

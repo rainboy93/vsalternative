@@ -62,21 +62,6 @@ public class SecurityFragment extends Fragment implements View.OnKeyListener {
     }
 
     private void initView(View view) {
-
-//        for (int i = 0; i < 3; i++) {
-//            Camera camera = new Camera();
-//            camera.username = "test";
-//            camera.password = "test";
-//            camera.ipAddress = "asdfasdf";
-//            camera.dnsAddress = "asdfasdfasdf";
-//            camera.localPort = 1324;
-//            camera.webPort = 1241;
-//            camera.deviceType = 2;
-//            camera.streamType = 1;
-//            camera.deviceName = "dddd";
-//            camera.roomId = 1;
-//            camera.save();
-//        }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.security_list_camera);
         listCamera = DatabaseService.getListCamera();
         mAdapter = new BaseAdapter(listCamera);
@@ -117,4 +102,13 @@ public class SecurityFragment extends Fragment implements View.OnKeyListener {
             return false;
         }
     }
+
+//    @Override
+//    public void onPause() {
+//        if(mAdapter != null){
+//            mAdapter.collapseAll();
+//            mAdapter.notifyDataSetChanged();
+//        }
+//        super.onPause();
+//    }
 }

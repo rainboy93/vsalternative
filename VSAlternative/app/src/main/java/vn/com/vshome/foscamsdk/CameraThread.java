@@ -10,6 +10,7 @@ import com.fos.sdk.FosResult;
 import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.FrameData;
 import com.fos.sdk.IPCType;
+import com.fos.sdk.StrData;
 import com.fos.sdk.StreamType;
 
 import java.nio.ByteBuffer;
@@ -17,6 +18,7 @@ import java.nio.ByteBuffer;
 import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
 
 /**
  * Created by anlab on 8/3/16.
@@ -30,7 +32,7 @@ public class CameraThread extends Thread {
     private CameraCallback cameraCallback;
 
     private Camera camera;
-    private int handler = -1;
+    public int handler = -1;
     private int state = -1;
     private int permissionFlag = -1;
 
@@ -45,6 +47,12 @@ public class CameraThread extends Thread {
     @Override
     public void run() {
         logIn();
+        if (state == 0) {
+            videoData = new FrameData();
+            while(isRunning){
+                startGetData();
+            }
+        }
     }
 
     private void logIn() {
@@ -67,18 +75,13 @@ public class CameraThread extends Thread {
             switch (state) {
                 case 0:
                     state = FosSdkJNI.OpenVideo(
-                            handler, StreamType.FOSSTREAM_MAIN,
-                            2000);
+                            handler, StreamType.FOSSTREAM_SUB,
+                            1000);
 //                    if (isRetryLogin) {
 //                        Intent intent = new Intent("Error");
 //                        intent.putExtra("Content", "");
 //                        VSHome.mActivity.sendBroadcast(intent);
 //                    }
-                    if (state == 0 && isRunning) {
-                        startGetData();
-                    }
-                    break;
-                case FosResult.FOSCMDRET_EXCEEDMAXUSR:
                     break;
                 default:
                     break;
@@ -118,10 +121,11 @@ public class CameraThread extends Thread {
                 if (mBit != null) {
                     mBit.copyPixelsFromBuffer(buffer);
                     buffer.rewind();
+//                    Logger.LogD("Getdata");
                 }
             }
 
-            SystemClock.sleep(20);
+            SystemClock.sleep(10);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,6 +134,9 @@ public class CameraThread extends Thread {
     public void stopGetData() {
         logOut();
         isRunning = false;
+        if(videoData != null){
+            videoData = null;
+        }
         interrupt();
     }
 }

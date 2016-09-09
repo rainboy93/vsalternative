@@ -15,6 +15,7 @@ import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.flexibleadapter.AbstractItem;
+import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.customview.CameraControlView;
 import vn.com.vshome.view.customview.CameraView;
@@ -32,6 +33,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
     public Camera camera;
     public boolean isError = false;
     public String errorMsg = "";
+    public CameraView cameraView;
 
     public CameraChildItem(String id, Camera camera) {
         super(id);
@@ -64,11 +66,13 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
     @SuppressWarnings("deprecation")
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, CameraChildViewHolder holder, final int position, List payloads) {
+        cameraView = holder.cameraView;
         if (isError) {
             holder.cameraControlView.setVisibility(View.GONE);
             holder.mWarn.setVisibility(View.VISIBLE);
             holder.mWarn.setText(errorMsg);
         } else {
+            Logger.LogD("Start");
             holder.cameraControlView.setVisibility(View.VISIBLE);
             holder.cameraView.setCamera(camera);
             holder.cameraView.startDraw();
@@ -96,6 +100,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
         public CameraChildViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             cameraView = (CameraView) view.findViewById(R.id.security_child_camera_view);
+            cameraView.getLayoutParams().width = Utils.getScreenWidth();
             cameraView.getLayoutParams().height = Utils.getScreenWidth() * 3 / 4;
             cameraControlView = (CameraControlView) view.findViewById(R.id.security_child_camera_control_view);
             mWarn = (TextView) view.findViewById(R.id.security_child_camera_warn);

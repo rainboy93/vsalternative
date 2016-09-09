@@ -77,7 +77,11 @@ public class CameraManager {
         if(camera == null){
             return null;
         }
-        long id = camera.getId();
-        return mListSession.get(id);
+        try {
+            Long id = camera.getId();
+            return mListSession.get(id);
+        } catch (Exception e){
+            return null;
+        }
     }
 }

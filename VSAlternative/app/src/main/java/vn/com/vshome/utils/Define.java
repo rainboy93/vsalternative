@@ -32,6 +32,8 @@ public class Define {
     public static final String INTENT_USER = "UserID";
     public static final String INTENT_SCENE_NAME = "SceneName";
 
+    public static final String INTENT_CAMERA = "Camera";
+
     public static final int CODE_SELECT_PICTURE = 1000;
     public static final int CODE_TAKE_PICTURE = 1001;
     public static final int CODE_CROP_PICTURE = 1002;
