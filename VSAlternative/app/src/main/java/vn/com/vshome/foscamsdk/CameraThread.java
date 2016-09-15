@@ -1,7 +1,5 @@
 package vn.com.vshome.foscamsdk;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.SystemClock;
 
 import com.fos.sdk.ConnectType;
@@ -10,15 +8,12 @@ import com.fos.sdk.FosResult;
 import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.FrameData;
 import com.fos.sdk.IPCType;
-import com.fos.sdk.StrData;
 import com.fos.sdk.StreamType;
 
-import java.nio.ByteBuffer;
 
 import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.utils.Define;
-import vn.com.vshome.utils.Logger;
 
 /**
  * Created by anlab on 8/3/16.
@@ -26,9 +21,7 @@ import vn.com.vshome.utils.Logger;
 public class CameraThread extends Thread {
 
     public boolean isRunning = true;
-    private FrameData videoData = null;
-    private ByteBuffer buffer = null;
-    public Bitmap mBit = null;
+    public FrameData videoData = null;
     private CameraCallback cameraCallback;
 
     private Camera camera;
@@ -102,29 +95,13 @@ public class CameraThread extends Thread {
     }
 
     private void logOut() {
-        FosSdkJNI.Logout(handler, 2000);
-        FosSdkJNI.Release(handler);
+
     }
 
     private void startGetData() {
         try {
             FosSdkJNI.GetVideoData(handler,
                     videoData, FosDecFmt.FOSDECTYPE_RGBA32);
-            if (videoData != null && videoData.len > 0 && videoData.data != null) {
-                buffer = ByteBuffer.wrap(videoData.data);
-                if (mBit == null || videoData.picWidth != mBit.getWidth() || videoData.picHeight != mBit.getHeight()) {
-                    if (videoData.picWidth > 0 && videoData.picHeight > 0) {
-                        mBit = Bitmap.createBitmap(videoData.picWidth,
-                                videoData.picHeight, Bitmap.Config.ARGB_8888);
-                    }
-                }
-                if (mBit != null) {
-                    mBit.copyPixelsFromBuffer(buffer);
-                    buffer.rewind();
-//                    Logger.LogD("Getdata");
-                }
-            }
-
             SystemClock.sleep(10);
         } catch (Exception e) {
             e.printStackTrace();

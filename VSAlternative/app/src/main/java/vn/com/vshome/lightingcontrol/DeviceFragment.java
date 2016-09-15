@@ -102,12 +102,24 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
         if (isControlDevice) {
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
+        } else if(VSHome.socketManager.receiveThread.isSceneControl){
+            VSHome.socketManager.receiveThread.isSceneControl = false;
+            TimeOutManager.getInstance().cancelCountDown();
+            TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
+                @Override
+                public void onTimeOut() {
+                    ProgressHUD.hideLoading(getActivity());
+                }
+            }, 1);
         }
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (AbstractFlexibleItem item : mListItems) {
+                    if(!(item instanceof ControlGroupItem)){
+                        continue;
+                    }
                     ControlGroupItem groupItem = (ControlGroupItem) item;
                     for (AbstractFlexibleItem subItem : groupItem.getSubItems()) {
                         if (subItem instanceof ControlEmptyItem) {

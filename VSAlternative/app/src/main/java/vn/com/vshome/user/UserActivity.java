@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -64,7 +65,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     protected void onPause() {
         try {
             VSHome.socketManager.receiveThread.setUserCallback(null);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -101,7 +102,12 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
 
         mShutDown = (ImageButton) findViewById(R.id.user_button_shut_down);
         mShutDown.setOnClickListener(this);
-
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator() {
+            @Override
+            public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+                return true;
+            }
+        });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -183,7 +189,12 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         }
         switch (cmd) {
             case CommandMessage.CMD_UPDATE_USER_STATUS:
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+                    }
+                });
                 break;
             case CommandMessage.CMD_DELETE_USER:
                 runOnUiThread(new Runnable() {
@@ -193,6 +204,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
                         mCurrentUser.delete();
                         mCurrentUser = null;
                         mAdapter.notifyItemRemoved(currentPosition);
+                        mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
                         currentPosition = -1;
                     }
                 });
@@ -226,6 +238,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         mAdapter.closeAllItems();
         Intent intent = new Intent(this, UserActionActivity.class);
         intent.putExtra(Define.INTENT_USER, user);
+        currentPosition = position;
         startActivityForResult(intent, Define.CODE_USER_EDIT);
     }
 
@@ -245,28 +258,25 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
+            currentPosition = -1;
             return;
         }
 
         int id = data.getIntExtra("UserId", 0);
         User user = User.findById(User.class, id);
         if (requestCode == Define.CODE_USER_EDIT) {
-            int size = mListUser.size();
-            for (int i = 0; i < size; i++) {
-                if (mListUser.get(i).getId().intValue() == id) {
-                    mListUser.set(i, user);
-                    if (mAdapter != null) {
-                        mAdapter.updateData(mListUser);
-                        mAdapter.notifyItemChanged(i);
-                        break;
-                    }
-                }
+            mListUser.set(currentPosition, user);
+            if (mAdapter != null) {
+                mAdapter.updateData(mListUser);
+                mAdapter.notifyItemChanged(currentPosition);
+                currentPosition = -1;
             }
         } else if (requestCode == Define.CODE_USER_CREATE) {
             mListUser.add(user);
             if (mAdapter != null) {
                 mAdapter.updateData(mListUser);
                 mAdapter.notifyItemInserted(mListUser.size() - 1);
+                mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
             }
         }
     }

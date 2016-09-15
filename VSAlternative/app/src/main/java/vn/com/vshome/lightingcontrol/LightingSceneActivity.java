@@ -230,8 +230,19 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
     private int countDevice() {
         int count = 0;
         for (AbstractFlexibleItem item : mListItems) {
-            if (item instanceof AbstractControlItem && !(item instanceof ControlEmptyItem)) {
-                count++;
+            if (item instanceof ControlGroupItem && !(item instanceof ControlEmptyItem)) {
+                List<AbstractFlexibleItem> subItems = ((ControlGroupItem) item).getSubItems();
+                if(subItems != null){
+                    for(AbstractFlexibleItem subItem : subItems){
+                        if(subItem instanceof AbstractControlItem && !(subItem instanceof ControlEmptyItem)){
+                            if(((AbstractControlItem) subItem).isSelected){
+                                count++;
+                            }
+                        }
+                    }
+                } else {
+                    Logger.LogD("SubItems null");
+                }
             }
         }
         return count;

@@ -1,5 +1,6 @@
 package vn.com.vshome.view;
 
+import in.workarounds.typography.Button;
 import vn.com.vshome.R;
 import vn.com.vshome.utils.Utils;
 
@@ -14,7 +15,7 @@ import android.widget.RelativeLayout;
 
 public class ButtonSceneControl extends RelativeLayout implements OnTouchListener {
 
-	private View mOn, mOff;
+	private Button mOn, mOff;
 	private ImageView mButtonOnOff;
 
 	private OnControlOnOffListener mListener;
@@ -43,12 +44,14 @@ public class ButtonSceneControl extends RelativeLayout implements OnTouchListene
 		inflate(getContext(), R.layout.view_button_on_off, this);
 
 		mButtonOnOff = (ImageView) findViewById(R.id.button_on_off);
-		mOn = findViewById(R.id.button_on);
-		mOff = findViewById(R.id.button_off);
+		mOn = (Button) findViewById(R.id.button_on);
+		mOff = (Button) findViewById(R.id.button_off);
+
+//		Utils.createRipple(getContext(), mOn);
+//		Utils.createRipple(getContext(), mOff);
+
 		mOn.setOnTouchListener(this);
 		mOff.setOnTouchListener(this);
-		Utils.createRipple(getContext(), mOn);
-		Utils.createRipple(getContext(), mOff);
 	}
 
 	public void setOnControlOnOffListener(
@@ -57,14 +60,13 @@ public class ButtonSceneControl extends RelativeLayout implements OnTouchListene
 	}
 
 	public interface OnControlOnOffListener {
-		public void OnControlOn();
+		void OnControlOn();
 
-		public void OnControlOff();
+		void OnControlOff();
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			switch (v.getId()) {

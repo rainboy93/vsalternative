@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -30,7 +31,10 @@ import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.SceneActionCallback;
 import vn.com.vshome.callback.SceneControlCallback;
+import vn.com.vshome.database.DeviceState;
+import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Scene;
+import vn.com.vshome.database.SceneDevice;
 import vn.com.vshome.flexibleadapter.lightingscene.SceneAdapter;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
@@ -102,6 +106,12 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
         mAdapter = new SceneAdapter(getActivity(), mListScene, this);
         mAdapter.setMode(Attributes.Mode.Single);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator() {
+            @Override
+            public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+                return true;
+            }
+        });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -130,6 +140,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
         }
 
         if (mAdapter != null) {
+            mAdapter.updateData(mListScene);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -152,13 +163,65 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
 
     @Override
     public void onActive(int position, boolean turnOn) {
-
+        if (position < mListScene.size()) {
+            Scene scene = mListScene.get(position);
+            List<SceneDevice> sceneDevices = SceneDevice.find(SceneDevice.class, "scene_id = ?",
+                    new String[]{scene.getId().intValue() + ""});
+            if (sceneDevices != null && sceneDevices.size() > 0) {
+                ArrayList<LightingDevice> devices = new ArrayList<>();
+                for (SceneDevice sceneDevice : sceneDevices) {
+                    LightingDevice device = LightingDevice.findById(LightingDevice.class, sceneDevice.deviceId);
+                    if (device != null) {
+                        device.deviceState = new DeviceState();
+                        if (turnOn) {
+                            device.deviceState.state = sceneDevice.state;
+                            device.deviceState.param = sceneDevice.param;
+                            device.deviceState.param1 = sceneDevice.param1;
+                            device.deviceState.param2 = sceneDevice.param2;
+                            device.deviceState.param3 = sceneDevice.param3;
+                        } else {
+                            if (device.typeId == Define.DEVICE_TYPE_PIR
+                                    || device.typeId == Define.DEVICE_TYPE_WIR) {
+                                device.deviceState.state = Define.STATE_DISBALE;
+                            } else {
+                                device.deviceState.state = Define.STATE_OFF;
+                            }
+                            device.deviceState.param = 0;
+                        }
+                        devices.add(device);
+                    }
+                }
+                CommandMessage activeScene = new CommandMessage();
+                activeScene.setControlMessage(devices, true);
+                ProgressHUD.showLoading(getActivity());
+                TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
+                    @Override
+                    public void onTimeOut() {
+                        VSHome.socketManager.receiveThread.isSceneControl = false;
+                        ProgressHUD.hideLoading(getActivity());
+                    }
+                }, 3);
+                VSHome.socketManager.receiveThread.isSceneControl = true;
+                VSHome.socketManager.sendMessage(activeScene);
+            } else {
+                Logger.LogD("Device scene null or size = 0");
+            }
+        }
     }
 
     @Override
     public void onScheduleChange(int position) {
         CommandMessage sceneScheduleUpdate = new CommandMessage();
         sceneScheduleUpdate.setSceneSchedule(mListScene.get(position));
+        ProgressHUD.showLoading(getActivity());
+        TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
+            @Override
+            public void onTimeOut() {
+                ProgressHUD.hideLoading(getActivity());
+                Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
+            }
+        }, 5);
+        VSHome.socketManager.sendMessage(sceneScheduleUpdate);
     }
 
     @Override
@@ -188,8 +251,8 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.updateData(mListScene);
                             mAdapter.notifyItemInserted(mListScene.size() - 1);
+                            mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
                             if (mEmptyLayout.getVisibility() == View.VISIBLE) {
                                 mEmptyLayout.setVisibility(View.GONE);
                             }
@@ -208,6 +271,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                             @Override
                             public void run() {
                                 mAdapter.notifyItemRemoved(finalI);
+                                mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
                                 if (mListScene.size() == 0 && mEmptyLayout.getVisibility() == View.GONE) {
                                     mEmptyLayout.setVisibility(View.VISIBLE);
                                 }
@@ -252,6 +316,13 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     Utils.showErrorDialog(R.string.txt_error, R.string.txt_delete_scene_fail, getActivity());
                 }
                 break;
+            case CommandMessage.CMD_SCHEDULE_UPDATE:
+                ProgressHUD.hideLoading(getActivity());
+                TimeOutManager.getInstance().cancelCountDown();
+                if (status == CommandMessage.STATUS_ERROR) {
+                    Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
+                }
+                break;
             default:
                 break;
         }
@@ -289,7 +360,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                         ProgressHUD.hideLoading(getActivity());
                         Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
                     }
-                }, 3);
+                }, 5);
                 VSHome.socketManager.sendMessage(deleteScene);
             }
         });
@@ -316,10 +387,10 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
             @Override
             public void onClick(View v) {
                 String str = name.getText().toString();
-                if(str.length() == 0){
+                if (str.length() == 0) {
                     Toaster.showMessage(getActivity(), "Chưa đặt tên cảnh!");
                     return;
-                } else if(str.getBytes().length > 49){
+                } else if (str.getBytes().length > 49) {
                     Toaster.showMessage(getActivity(), "Tên cảnh quá dài!");
                     return;
                 }

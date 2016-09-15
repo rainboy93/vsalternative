@@ -19,6 +19,8 @@ public class CameraManager {
     private static CameraManager cameraManager;
     private Map<Long, CameraSession> mListSession;
 
+    public boolean isPreviewing = false;
+
     public static CameraManager getInstance() {
         if (cameraManager == null) {
             cameraManager = new CameraManager();

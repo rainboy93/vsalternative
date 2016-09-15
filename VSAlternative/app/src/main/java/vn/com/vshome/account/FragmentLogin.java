@@ -54,6 +54,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
     private TextView mForgotPassword;
     private PasswordFlowerMask mPasswordMask;
     private LoginTask loginTask;
+    private boolean isRunning = false;
 
     public FragmentLogin() {
     }
@@ -121,7 +122,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         R.string.txt_network_not_config, getActivity());
                 return;
             }
-
+            isRunning = true;
             loginTask = new LoginTask(username, password);
             loginTask.execute("");
         } else if (v == mForgotPassword) {
@@ -187,6 +188,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                     ProgressHUD.hideLoading(getActivity());
                     Define.NETWORK_TYPE = Define.NetworkType.NotDetermine;
                     if(loginTask != null){
+                        isRunning = false;
                         loginTask.cancel(true);
                         loginTask = null;
                     }

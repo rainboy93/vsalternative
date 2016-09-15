@@ -43,6 +43,7 @@ public class ReceiveThread extends Thread {
     private SceneSetUpCallback sceneSetUpCallback;
     public int currentControlDeviceId = -1;
     public int currentUserId = -1;
+    public boolean isSceneControl = false;
 
     public void setOnLoginSuccessCallback(LoginCallback callback) {
         this.loginCallback = callback;

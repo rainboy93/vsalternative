@@ -1,27 +1,26 @@
 package vn.com.vshome.roomselection;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
-import java.io.File;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import in.workarounds.typography.TextView;
+import gun0912.tedbottompicker.TedBottomPicker;
 import vn.com.vshome.CropActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
@@ -42,6 +41,9 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     private ArrayList<AbstractFlexibleItem> mListRoom;
     private RecyclerView mRecyclerView;
     private BaseAdapter mAdapter;
+    private PermissionListener permissionListener;
+    private TedPermission tedPermission;
+    private TedBottomPicker imagePicker;
 
     public RoomSelectionFragment() {
     }
@@ -62,6 +64,12 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        VSHome.isTakePhoto = false;
+    }
+
     private void initView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.room_recycler_view);
 
@@ -79,6 +87,31 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
         mRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
         ((SimpleItemAnimator) mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         mRecyclerView.setAdapter(mAdapter);
+
+        permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                VSHome.isTakePhoto = false;
+                if (imagePicker != null) {
+                    imagePicker.show(getActivity().getSupportFragmentManager());
+                }
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                VSHome.isTakePhoto = false;
+            }
+        };
+        imagePicker = new TedBottomPicker.Builder(getActivity())
+                .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
+                    @Override
+                    public void onImageSelected(Uri uri) {
+                        selectedUri = uri;
+                        goToCrop();
+                    }
+                })
+                .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
+                .create();
     }
 
     @Override
@@ -100,7 +133,23 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     public void onCapture(int position, Room room) {
         editPosition = position;
         currentRoom = room;
-        showChooseActionDialog(room);
+        VSHome.isTakePhoto = true;
+        tedPermission = new TedPermission(getActivity())
+                .setPermissionListener(permissionListener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        tedPermission.check();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Define.CODE_CROP_PICTURE && resultCode == Activity.RESULT_OK) {
+            if (editPosition >= 0 && editPosition < mAdapter.getItemCount()) {
+                mAdapter.notifyItemChanged(editPosition);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private int editPosition;
@@ -108,71 +157,13 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
 
     private Uri selectedUri;
 
-    private void showChooseActionDialog(final Room room) {
-        final Dialog dialog = new Dialog(getActivity());
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        dialog.setContentView(R.layout.view_dialog_choose_intent);
-
-        TextView camera = (TextView) dialog
-                .findViewById(R.id.dialog_choose_camera);
-        TextView gallery = (TextView) dialog
-                .findViewById(R.id.dialog_choose_gallery);
-        camera.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                selectedUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory()
-                        + File.separator + "Temp.png"));
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedUri);
-                VSHome.isTakePhoto = true;
-                startActivityForResult(cameraIntent, Define.CODE_TAKE_PICTURE);
-            }
-        });
-        gallery.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                VSHome.isTakePhoto = true;
-                startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), Define.CODE_SELECT_PICTURE);
-            }
-        });
-        dialog.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_CANCELED) {
-            return;
-        }
-
-        if (requestCode == Define.CODE_CROP_PICTURE && resultCode == Activity.RESULT_OK) {
-            if (mAdapter != null) {
-                mAdapter.notifyItemChanged(editPosition);
-            }
-        } else {
-            if (requestCode == Define.CODE_SELECT_PICTURE && resultCode == Activity.RESULT_OK) {
-                selectedUri = data.getData();
-            } else if (requestCode == Define.CODE_TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
-
-            }
-            if (selectedUri != null) {
-                Intent intent = new Intent(getActivity(), CropActivity.class);
-                intent.putExtra("URI", selectedUri.toString());
-                intent.putExtra(Define.INTENT_FLOOR_ID, currentRoom.floorID);
-                intent.putExtra(Define.INTENT_ROOM_ID, currentRoom.getId().intValue());
-                startActivityForResult(intent, Define.CODE_CROP_PICTURE);
-            }
+    private void goToCrop() {
+        if (selectedUri != null) {
+            Intent intent = new Intent(getActivity(), CropActivity.class);
+            intent.putExtra("URI", selectedUri.toString());
+            intent.putExtra(Define.INTENT_FLOOR_ID, currentRoom.floorID);
+            intent.putExtra(Define.INTENT_ROOM_ID, currentRoom.getId().intValue());
+            startActivityForResult(intent, Define.CODE_CROP_PICTURE);
         }
     }
 }

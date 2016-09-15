@@ -121,7 +121,6 @@ public class ControlRgbChildItem extends AbstractControlItem<ControlRgbChildItem
             int color = Color.rgb(tempState.param1, tempState.param2, tempState.param3);
             setPreviewColor(color, holder);
             holder.mColorPicker.setColor(color);
-            holder.mColorPicker.setCanDraw(true);
             holder.mColorPicker.setOnColorPickerListener(new ColorPickerView.OnColorPickerListener() {
                 @Override
                 public void onColorPicker(float[] currentHSV) {

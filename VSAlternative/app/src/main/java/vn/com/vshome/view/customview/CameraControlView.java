@@ -8,8 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.alexvasilkov.gestures.GestureController;
-import com.alexvasilkov.gestures.views.GestureImageView;
 import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.PtzCmd;
 
@@ -23,6 +21,7 @@ import vn.com.vshome.security.FullPreviewActivity;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.Utils;
+import vn.com.vshome.view.GestureImageView;
 
 /**
  * Created by anlab on 7/27/16.
@@ -83,20 +82,34 @@ public class CameraControlView extends GridLayout {
     }
 
     private void setting(final GestureImageView gestureImageView) {
-        gestureImageView.getController().getSettings()
-                .setPanEnabled(false)
-                .setZoomEnabled(false)
-                .setFillViewport(false);
-        gestureImageView.getController().setLongPressEnabled(true);
 
-        gestureImageView.getController().setOnGesturesListener(new GestureController.OnGestureListener() {
+        gestureImageView.setOnControlListener(new GestureImageView.OnControlListener() {
             @Override
-            public void onDown(@NonNull MotionEvent e) {
+            public void onDoubleTouch() {
+                if(isFullScreen && VSHome.activity instanceof FullPreviewActivity){
 
+                } else {
+                    Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
+                    intent.putExtra(Define.INTENT_CAMERA, camera);
+                    VSHome.activity.startActivity(intent);
+                }
             }
 
             @Override
-            public void onUpOrCancel(@NonNull MotionEvent e) {
+            public void onControl() {
+                if (gestureImageView == mMinimize && !isFullScreen) {
+                    if(!Utils.isMyServiceRunning(PreviewService.class)){
+                        Intent intent = new Intent(VSHome.activity, PreviewService.class);
+                        intent.putExtra(Define.INTENT_CAMERA, camera);
+                        VSHome.activity.startService(intent);
+                    }
+                } else if(gestureImageView != mMinimize){
+                    handleLongPress(gestureImageView);
+                }
+            }
+
+            @Override
+            public void onStop() {
                 if (gestureImageView != mMinimize) {
                     new Thread(new Runnable() {
                         @Override
@@ -105,38 +118,6 @@ public class CameraControlView extends GridLayout {
                         }
                     }).start();
                 }
-            }
-
-            @Override
-            public boolean onSingleTapUp(@NonNull MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
-                Logger.LogD("minimize");
-                if (gestureImageView == mMinimize && !isFullScreen) {
-                    if(!Utils.isMyServiceRunning(PreviewService.class)){
-                        Intent intent = new Intent(VSHome.activity, PreviewService.class);
-                        intent.putExtra(Define.INTENT_CAMERA, camera);
-                        VSHome.activity.startService(intent);
-                    }
-                }
-                return true;
-            }
-
-            @Override
-            public void onLongPress(@NonNull MotionEvent e) {
-                Logger.LogD("Control handler: " + handler);
-                handleLongPress(gestureImageView);
-            }
-
-            @Override
-            public boolean onDoubleTap(@NonNull MotionEvent e) {
-                Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
-                intent.putExtra(Define.INTENT_CAMERA, camera);
-                VSHome.activity.startActivity(intent);
-                return true;
             }
         });
     }

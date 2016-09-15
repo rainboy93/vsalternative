@@ -139,8 +139,10 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
                 public void onClick(View v) {
                     if (tempState.param == 0) {
                         tempState.state = Define.STATE_ON;
+                        tempState.param = 100;
                     } else {
                         tempState.state = Define.STATE_OFF;
+                        tempState.param = 0;
                     }
                     adapter.notifyItemChanged(position);
                 }

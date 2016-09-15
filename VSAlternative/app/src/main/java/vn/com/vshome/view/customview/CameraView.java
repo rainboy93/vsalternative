@@ -18,20 +18,23 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import vn.com.vshome.R;
 import vn.com.vshome.database.Camera;
+import vn.com.vshome.foscamsdk.CameraData;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
 import vn.com.vshome.utils.Logger;
 
 
-public class CameraView extends View implements Runnable{
+public class CameraView extends View implements Runnable {
 
     private static final int WIDTH = 640;
     private static final int HEIGHT = 480;
@@ -45,6 +48,10 @@ public class CameraView extends View implements Runnable{
     private CameraSession cameraSession;
     private Handler handler;
 
+    private ByteBuffer buffer = null;
+    private CameraData cameraData = null;
+    private Bitmap mBit;
+
     private boolean isFullScreen = false;
 
     public void setCamera(Camera camera) {
@@ -52,18 +59,17 @@ public class CameraView extends View implements Runnable{
     }
 
     public void startDraw() {
-        cameraSession = null;
         isDrawing = true;
         invalidate();
-        if(handler == null){
+        if (handler == null) {
             handler = new Handler();
         }
         handler.postDelayed(this, 10);
     }
 
     private void setRect() {
-        int bitW = cameraSession.cameraThread.mBit.getWidth();
-        int bitH = cameraSession.cameraThread.mBit.getHeight();
+        int bitW = mBit.getWidth();
+        int bitH = mBit.getHeight();
         if (bitW / (fScale * WIDTH) < bitH / (fScale * HEIGHT)) {
             int h = (int) (fScale * HEIGHT);
             int w = bitW * h / bitH;
@@ -116,32 +122,48 @@ public class CameraView extends View implements Runnable{
 //            setMeasuredDimension((int) (WIDTH * fScale),
 //                    (int) (HEIGHT * fScale));
 //        } else {
-            float fScale = width * 1.0f / WIDTH;
-            setMeasuredDimension((int) (WIDTH * fScale),
-                    (int) (HEIGHT * fScale));
+        float fScale = width * 1.0f / WIDTH;
+        setMeasuredDimension((int) (WIDTH * fScale),
+                (int) (HEIGHT * fScale));
 //        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.drawColor(Color.BLACK);
         if (isDrawing) {
-            if (cameraSession == null) {
-                cameraSession = CameraManager.getInstance().getCameraSession(camera);
-            } else {
-                if (cameraSession.cameraThread != null
-                        && cameraSession.cameraThread.mBit != null) {
-                    setRect();
-                    canvas.drawBitmap(cameraSession.cameraThread.mBit, null, rectF, null);
-                }
+            if (mBit != null) {
+                canvas.drawBitmap(mBit, null, rectF, null);
             }
         }
     }
 
     @Override
     public void run() {
+        long startTime = System.currentTimeMillis();
+        cameraSession = CameraManager.getInstance().getCameraSession(camera);
+        if (cameraSession != null &&
+                cameraSession.cameraThread != null
+                && cameraSession.cameraThread.videoData != null
+                && cameraSession.cameraThread.videoData.data != null) {
+            if(cameraData == null){
+                cameraData = new CameraData(cameraSession.cameraThread.videoData);
+            } else {
+                cameraData.data = cameraSession.cameraThread.videoData.data.clone();
+            }
+        }
+        if (cameraData != null) {
+            buffer = ByteBuffer.wrap(cameraData.data);
+            if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
+                mBit = Bitmap.createBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
+                setRect();
+            }
+            mBit.copyPixelsFromBuffer(buffer);
+            buffer.rewind();
+        }
+        long endTime = System.currentTimeMillis();
+        Logger.LogD("Time decode " + (endTime - startTime));
         postInvalidate();
         handler.postDelayed(this, 10);
     }

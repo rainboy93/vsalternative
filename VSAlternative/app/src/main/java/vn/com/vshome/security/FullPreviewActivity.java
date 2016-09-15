@@ -1,12 +1,15 @@
 package vn.com.vshome.security;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
+import vn.com.vshome.VSHome;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.customview.CameraControlView;
 import vn.com.vshome.view.customview.CameraView;
 
@@ -42,7 +45,14 @@ public class FullPreviewActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         CameraManager.getInstance().removeSession(camera);
+        if(CameraManager.getInstance().isPreviewing){
+            if(!Utils.isMyServiceRunning(PreviewService.class)){
+                Intent intent = new Intent(VSHome.activity, PreviewService.class);
+                intent.putExtra(Define.INTENT_CAMERA, camera);
+                VSHome.activity.startService(intent);
+            }
+        }
+        super.onDestroy();
     }
 }
