@@ -33,9 +33,10 @@
         android:background="@drawable/base_selector_background"
         android:src="@drawable/take_photo_icon" />
 
-    <in.workarounds.typography.TextView
+    <vn.com.vshome.view.AutoFitTextView
         android:id="@+id/room_selection_name"
         android:layout_width="wrap_content"
+        android:layout_marginRight="@dimen/d10"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/room_selection_name_image"
         android:layout_alignLeft="@+id/room_selection_name_image"

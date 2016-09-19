@@ -19,6 +19,7 @@
         android:layout_margin="@dimen/d20"
         android:cropToPadding="true"
         android:src="@drawable/icon_add"
+        app:backgroundTint="@color/floating_action_button_color"
         app:layout_anchor="@+id/lighting_control_device_recycler_view" />
 
     <LinearLayout

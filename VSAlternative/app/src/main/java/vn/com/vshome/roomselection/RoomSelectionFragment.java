@@ -67,7 +67,6 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     @Override
     public void onResume() {
         super.onResume();
-        VSHome.isTakePhoto = false;
     }
 
     private void initView(View view) {
@@ -92,6 +91,16 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
             @Override
             public void onPermissionGranted() {
                 VSHome.isTakePhoto = false;
+                imagePicker = new TedBottomPicker.Builder(getActivity())
+                        .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
+                            @Override
+                            public void onImageSelected(Uri uri) {
+                                selectedUri = uri;
+                                goToCrop();
+                            }
+                        })
+                        .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
+                        .create();
                 if (imagePicker != null) {
                     imagePicker.show(getActivity().getSupportFragmentManager());
                 }
@@ -102,16 +111,6 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                 VSHome.isTakePhoto = false;
             }
         };
-        imagePicker = new TedBottomPicker.Builder(getActivity())
-                .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
-                    @Override
-                    public void onImageSelected(Uri uri) {
-                        selectedUri = uri;
-                        goToCrop();
-                    }
-                })
-                .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
-                .create();
     }
 
     @Override

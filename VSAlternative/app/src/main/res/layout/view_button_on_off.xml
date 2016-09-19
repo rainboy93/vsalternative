@@ -23,15 +23,17 @@
         android:layout_alignTop="@+id/button_on_off"
         android:orientation="horizontal">
 
-        <View
+        <in.workarounds.typography.Button
             android:id="@+id/button_off"
             android:layout_width="0dp"
+            android:background="@null"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <View
+        <in.workarounds.typography.Button
             android:id="@+id/button_on"
             android:layout_width="0dp"
+            android:background="@null"
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
