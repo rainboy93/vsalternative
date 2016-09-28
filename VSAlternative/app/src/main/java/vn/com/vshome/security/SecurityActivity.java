@@ -9,6 +9,8 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
+import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.view.NonSwipeViewPager;
 
 public class SecurityActivity extends BaseActivity implements View.OnClickListener,
@@ -52,6 +54,7 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
         mBack = (ImageButton) findViewById(R.id.action_bar_menu);
         mHome = (ImageButton) findViewById(R.id.action_bar_home);
         mTitle = (TextView) findViewById(R.id.action_bar_title);
+        mTitle.setText("An ninh");
 
         mBack.setOnClickListener(this);
         mBack.setImageResource(R.drawable.icon_back);
@@ -63,9 +66,9 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
         if (v == mButtonCamera) {
             mViewPager.setCurrentItem(0);
         } else if (v == mButtonMotionSensor) {
-
+            Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
         } else if (v == mButtonOpenDoorSensor) {
-
+            Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
         } else if (v == mBack) {
             if (mViewPager.getCurrentItem() == 0) {
                 ((SecurityFragment) mAdapter.getItem(0)).destroyView();

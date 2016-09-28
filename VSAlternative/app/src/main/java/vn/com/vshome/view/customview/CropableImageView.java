@@ -17,6 +17,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import com.glidebitmappool.GlideBitmapPool;
+
 public class CropableImageView extends View {
 
 	private static int WIDTH = 1080;
@@ -241,7 +243,7 @@ public class CropableImageView extends View {
 	}
 
 	public Bitmap getBitmapFromView() {
-		Bitmap returnedBitmap = Bitmap.createBitmap(getWidth(), getHeight(),
+		Bitmap returnedBitmap = GlideBitmapPool.getBitmap(getWidth(), getHeight(),
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(returnedBitmap);
 		Drawable bgDrawable = getBackground();

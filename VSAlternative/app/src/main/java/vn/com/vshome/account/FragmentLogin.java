@@ -309,7 +309,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
 
                     if (Define.DEBUG ||
                             uid != lastUID || configureID != lastConfigID
-                            || net.the4thdimension.android.Utils.getApplicationVersionCode(getActivity())
+                            || Utils.getApplicationVersionCode(getActivity())
                             != PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.VERSION_CODE, 0)) {
                         SocketManager.getInstance().outputStream.write(1);
 

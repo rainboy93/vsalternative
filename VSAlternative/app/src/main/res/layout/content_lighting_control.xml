@@ -43,6 +43,7 @@
         android:id="@+id/lighting_control_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/lighting_control_button_layout" />
+        android:layout_below="@+id/lighting_control_button_layout"
+        android:paddingBottom="@dimen/d10" />
 
 </RelativeLayout>

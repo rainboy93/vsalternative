@@ -30,9 +30,10 @@
         android:id="@+id/dialog_select_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/dialog_select_color_button_confirm"
+        android:layout_below="@+id/dialog_select_color_text"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/d100"
-        android:layout_marginRight="@dimen/d100"
+        android:layout_margin="@dimen/d20"
         android:adjustViewBounds="true"
         android:src="@drawable/color_box" />
 

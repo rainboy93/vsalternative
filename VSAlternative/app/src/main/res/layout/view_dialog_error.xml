@@ -13,8 +13,8 @@
         android:gravity="center"
         android:textColor="@color/blueActionbar"
         android:textSize="@dimen/d16"
-        app:font_name="OpenSans"
-        app:font_variant="Semibold" />
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
 
     <View
         android:layout_width="match_parent"
@@ -30,8 +30,8 @@
         android:text="adsfasdfadf"
         android:textColor="@color/blueActionbar"
         android:textSize="@dimen/d14"
-        app:font_name="OpenSans"
-        app:font_variant="Regular" />
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
 
     <View
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
         android:textColor="@color/blueActionbar"
         android:textSize="@dimen/d15"
         android:text="Quay lại"
-        app:font_name="OpenSans"
-        app:font_variant="Semibold" />
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_bold" />
 
 </LinearLayout>

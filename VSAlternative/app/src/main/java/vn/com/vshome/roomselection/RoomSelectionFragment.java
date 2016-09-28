@@ -91,12 +91,22 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
             @Override
             public void onPermissionGranted() {
                 imagePicker = new TedBottomPicker.Builder(getActivity())
-                        .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
+                        .setPickerCallBack(new TedBottomPicker.PickerCallBack() {
                             @Override
                             public void onImageSelected(Uri uri) {
                                 VSHome.isTakePhoto = false;
                                 selectedUri = uri;
                                 goToCrop();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                VSHome.isTakePhoto = false;
+                            }
+
+                            @Override
+                            public void onStart() {
+                                VSHome.isTakePhoto = true;
                             }
                         })
                         .setOnErrorListener(new TedBottomPicker.OnErrorListener() {
@@ -138,7 +148,6 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     public void onCapture(int position, Room room) {
         editPosition = position;
         currentRoom = room;
-        VSHome.isTakePhoto = true;
         tedPermission = new TedPermission(getActivity())
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")

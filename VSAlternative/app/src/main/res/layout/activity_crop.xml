@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -15,8 +14,7 @@
             android:layout_width="@dimen/d40"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:background="@null"
+            android:background="@drawable/base_selector_background"
             android:padding="@dimen/d5"
             android:scaleType="fitXY"
             android:src="@drawable/cross" />
@@ -27,8 +25,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:background="@null"
+            android:background="@drawable/base_selector_background"
             android:padding="5dp"
             android:scaleType="fitXY"
             android:src="@drawable/tick" />

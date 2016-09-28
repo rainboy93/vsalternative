@@ -3,6 +3,7 @@ package vn.com.vshome.utils;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,8 +11,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
 import android.view.Window;
-
-import com.balysv.materialripple.MaterialRippleLayout;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.database.Scene;
 import vn.com.vshome.database.SceneDevice;
+import vn.com.vshome.view.MaterialRippleLayout;
 
 /**
  * Created by anlab on 7/5/16.
@@ -156,7 +156,7 @@ public class Utils {
 
         PreferenceUtils.getInstance(context).setValue(PreferenceDefine.UID, uid);
         PreferenceUtils.getInstance(context).setValue(PreferenceDefine.VERSION_CODE,
-                net.the4thdimension.android.Utils.getApplicationVersionCode(context));
+                getApplicationVersionCode(context));
     }
 
     public static void createRipple(Context context, View v) {
@@ -227,5 +227,15 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static int getApplicationVersionCode(Context ctx) {
+        int versionCode = 0;
+        try {
+            versionCode = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
 }

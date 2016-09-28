@@ -14,6 +14,7 @@ public class GestureImageView extends ImageView implements
     private GestureDetectorCompat mDetector;
     private OnControlListener mListener;
     private boolean control = false;
+    private boolean doubleTap = false;
 
     public GestureImageView(Context context, AttributeSet attrs,
                             int defStyleAttr) {
@@ -45,7 +46,8 @@ public class GestureImageView extends ImageView implements
             public boolean onTouch(View v, MotionEvent event) {
                 boolean detectedUp = event.getAction() == MotionEvent.ACTION_UP
                         || event.getAction() == MotionEvent.ACTION_CANCEL;
-                if (!mDetector.onTouchEvent(event) && detectedUp) {
+                mDetector.onTouchEvent(event);
+                if (detectedUp) {
                     if(mListener != null){
                         mListener.onStop();
                         control = false;
@@ -61,8 +63,9 @@ public class GestureImageView extends ImageView implements
     public boolean onDoubleTap(MotionEvent e) {
         if(mListener != null){
             mListener.onDoubleTouch();
+            doubleTap = true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -91,7 +94,7 @@ public class GestureImageView extends ImageView implements
 
     @Override
     public void onLongPress(MotionEvent e) {
-        if(mListener != null && control == false){
+        if(mListener != null && !control && !doubleTap){
             mListener.onControl();
             control = true;
         }
@@ -105,7 +108,7 @@ public class GestureImageView extends ImageView implements
 
     @Override
     public void onShowPress(MotionEvent e) {
-        if(mListener != null && control == false){
+        if(mListener != null && !control && !doubleTap){
             mListener.onControl();
             control = true;
         }

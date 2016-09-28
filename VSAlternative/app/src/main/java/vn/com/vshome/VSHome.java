@@ -73,6 +73,36 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         super.onTerminate();
     }
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Logger.LogD("Trim memory level " + level);
+        if (level == TRIM_MEMORY_COMPLETE || level == TRIM_MEMORY_UI_HIDDEN) {
+            trimMemory();
+        }
+    }
+
+    private void trimMemory(){
+        if (isTakePhoto) {
+            mBackgroundTransition = new Runnable() {
+                @Override
+                public void run() {
+                    mInBackground = true;
+                    mBackgroundTransition = null;
+                    SocketManager.getInstance().destroySocket();
+                    SocketManager.getInstance().isDestroy = true;
+                }
+            };
+            mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
+                    BACKGROUND_DELAY_WITH_TAKE_IMAGE);
+        } else {
+            mInBackground = true;
+            mBackgroundTransition = null;
+            SocketManager.getInstance().destroySocket();
+            SocketManager.getInstance().isDestroy = true;
+        }
+    }
+
     public static void restart() {
         if (activity != null) {
             Intent intent = new Intent(activity, LoginActivity.class);
@@ -135,27 +165,24 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
 
     @Override
     public void onActivityPaused(Activity activity) {
-        if (!mInBackground && mBackgroundTransition == null) {
-            mBackgroundTransition = new Runnable() {
-                @Override
-                public void run() {
-                    mInBackground = true;
-                    mBackgroundTransition = null;
-//                    if (!isTakePhoto) {
-                    SocketManager.getInstance().destroySocket();
-                    SocketManager.getInstance().isDestroy = true;
-//                    finish();
-//                    }
-                }
-            };
-            if (isTakePhoto) {
-                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
-                        BACKGROUND_DELAY_WITH_TAKE_IMAGE);
-            } else {
-                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
-                        BACKGROUND_DELAY);
-            }
-        }
+//        if (!mInBackground && mBackgroundTransition == null) {
+//            mBackgroundTransition = new Runnable() {
+//                @Override
+//                public void run() {
+//                    mInBackground = true;
+//                    mBackgroundTransition = null;
+//                    SocketManager.getInstance().destroySocket();
+//                    SocketManager.getInstance().isDestroy = true;
+//                }
+//            };
+//            if (isTakePhoto) {
+//                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
+//                        BACKGROUND_DELAY_WITH_TAKE_IMAGE);
+//            } else {
+//                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
+//                        BACKGROUND_DELAY);
+//            }
+//        }
     }
 
     @Override

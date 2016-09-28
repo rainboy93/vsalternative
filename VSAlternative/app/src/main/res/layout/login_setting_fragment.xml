@@ -14,8 +14,8 @@
         android:text="Cài đặt"
         android:textColor="@color/white"
         android:textSize="@dimen/d18"
-        app:font_name="OpenSans"
-        app:font_variant="Regular" />
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,8 +40,8 @@
             android:text="Địa chỉ IP nội mạng"
             android:textColor="@color/blueActionbar"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.EditText
             android:id="@+id/login_setting_ip"
@@ -59,8 +59,8 @@
             android:textColorHint="@color/hint"
             android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular">
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular">
 
             <requestFocus />
         </in.workarounds.typography.EditText>
@@ -76,8 +76,8 @@
             android:text="Cổng nội mạng"
             android:textColor="@color/blueActionbar"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.EditText
             android:id="@+id/login_setting_ip_port"
@@ -95,8 +95,8 @@
             android:textColorHint="@color/hint"
             android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.TextView
             android:layout_width="wrap_content"
@@ -109,8 +109,8 @@
             android:text="Địa chỉ ngoại mạng"
             android:textColor="@color/blueActionbar"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.EditText
             android:id="@+id/login_setting_dns"
@@ -128,8 +128,8 @@
             android:textColorHint="@color/hint"
             android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.TextView
             android:layout_width="wrap_content"
@@ -142,8 +142,8 @@
             android:text="Cổng ngoại mạng"
             android:textColor="@color/blueActionbar"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.EditText
             android:id="@+id/login_setting_dns_port"
@@ -161,8 +161,8 @@
             android:textColorHint="@color/hint"
             android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/d15"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
     </LinearLayout>
 
@@ -185,8 +185,8 @@
             android:text="LƯU"
             android:textColor="@color/white"
             android:textSize="@dimen/d16"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
         <in.workarounds.typography.Button
             android:id="@+id/login_setting_button_cancel"
@@ -198,8 +198,8 @@
             android:text="THOÁT"
             android:textColor="@color/white"
             android:textSize="@dimen/d16"
-            app:font_name="OpenSans"
-            app:font_variant="Regular" />
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_regular" />
 
     </LinearLayout>
 

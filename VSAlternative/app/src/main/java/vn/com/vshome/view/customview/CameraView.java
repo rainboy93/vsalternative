@@ -149,7 +149,7 @@ public class CameraView extends View implements Runnable {
     public void run() {
         try {
             cameraSession = CameraManager.getInstance().getCameraSession(camera);
-            cameraData = cameraSession.cameraThread.listData.remove(0);
+            cameraData = cameraSession.cameraThread.listData.get(0);
             buffer = ByteBuffer.wrap(cameraData.data);
             if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
                 mBit = GlideBitmapPool.getBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
@@ -157,13 +157,11 @@ public class CameraView extends View implements Runnable {
            }
             mBit.copyPixelsFromBuffer(buffer);
             buffer.rewind();
-        } catch (NullPointerException ex) {
-
-        } catch (IndexOutOfBoundsException ax) {
+        } catch (Exception ex) {
 
         }
         invalidate();
-        SystemClock.sleep(10);
+        SystemClock.sleep(5);
         handler.post(this);
     }
 }

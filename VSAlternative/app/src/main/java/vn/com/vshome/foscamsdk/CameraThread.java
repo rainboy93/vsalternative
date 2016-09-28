@@ -110,7 +110,7 @@ public class CameraThread extends Thread {
             if(videoData != null){
                 publicData = videoData.clone();
                 listData.add(publicData);
-                if(listData.size() > 10){
+                if(listData.size() > 3){
                     listData.remove(0);
                 }
             }
@@ -130,6 +130,10 @@ public class CameraThread extends Thread {
         if(videoData != null){
             videoData = null;
         }
-        interrupt();
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

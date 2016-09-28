@@ -9,8 +9,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 
-import net.the4thdimension.android.Utils;
-
 import java.io.File;
 import java.util.List;
 
@@ -26,6 +24,7 @@ import vn.com.vshome.callback.RoomSelectionCallback;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.view.AutoFitTextView;
 
 public class RoomSelectionItem extends AbstractModelItem<RoomSelectionItem.RoomSelectionViewHolder>
         implements ISectionable<RoomSelectionItem.RoomSelectionViewHolder, IHeader>, IFilterable {
@@ -108,13 +107,13 @@ public class RoomSelectionItem extends AbstractModelItem<RoomSelectionItem.RoomS
     class RoomSelectionViewHolder extends FlexibleViewHolder {
 
         public PorterShapeImageView mRoomImage;
-        public TextView mRoomName;
+        public AutoFitTextView mRoomName;
         public ImageButton mCapture;
 
         public RoomSelectionViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             mRoomImage = (PorterShapeImageView) view.findViewById(R.id.room_selection_image);
-            mRoomName = (TextView) view.findViewById(R.id.room_selection_name);
+            mRoomName = (AutoFitTextView) view.findViewById(R.id.room_selection_name);
             mCapture = (ImageButton) view.findViewById(R.id.room_selection_capture);
         }
 

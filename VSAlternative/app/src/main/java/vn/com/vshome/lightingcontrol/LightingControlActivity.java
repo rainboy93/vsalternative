@@ -130,6 +130,11 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
         mTitle = (TextView) findViewById(R.id.action_bar_title);
         mContainer = (LinearLayout) findViewById(R.id.lighting_control_container);
 
+        Room room = Room.findById(Room.class, roomId);
+        if (room != null) {
+            mTitle.setText(room.name);
+        }
+
         mMenu.setOnClickListener(this);
         mHome.setOnClickListener(this);
 

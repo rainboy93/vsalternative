@@ -11,7 +11,8 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/user_button_save">
+        android:layout_above="@+id/user_button_save"
+        android:layout_below="@+id/user_action_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,12 +23,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <cn.carbs.android.avatarimageview.library.AvatarImageView
+                <vn.com.vshome.view.CircleImageView
                     android:layout_width="@dimen/d120"
                     android:layout_height="@dimen/d120"
                     android:layout_centerInParent="true"
                     android:layout_margin="@dimen/d20"
-                    android:src="@drawable/default_user_avatar" />
+                    android:src="@drawable/default_user_avatar"
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="1px" />
 
                 <ImageButton
                     android:layout_width="wrap_content"

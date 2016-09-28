@@ -252,8 +252,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.notifyItemInserted(mListScene.size() - 1);
-                            mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+                            mAdapter.notifyDataSetChanged();
                             if (mEmptyLayout.getVisibility() == View.VISIBLE) {
                                 mEmptyLayout.setVisibility(View.GONE);
                             }
