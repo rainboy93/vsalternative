@@ -15,8 +15,10 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
+import vn.com.vshome.VSHome;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
+import vn.com.vshome.utils.Define;
 
 public class RoomItem extends AbstractModelItem<RoomItem.RoomViewHolder>
         implements ISectionable<RoomItem.RoomViewHolder, IHeader>, IFilterable {
@@ -67,7 +69,7 @@ public class RoomItem extends AbstractModelItem<RoomItem.RoomViewHolder>
             holder.mButtonControl.setSelected(false);
         }
 
-        if(isAdmin){
+        if (isAdmin || (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN)) {
             holder.mButtonControl.setOnClickListener(null);
             holder.mButtonControl.setAlpha(0.5f);
         } else {

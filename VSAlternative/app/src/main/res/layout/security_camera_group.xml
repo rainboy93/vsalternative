@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/security_group_camera_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/d50">
 
     <ImageView
         android:id="@+id/security_group_camera_icon"
@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:adjustViewBounds="true"
-        android:padding="10dp"
+        android:padding="@dimen/d10"
         android:src="@drawable/camera_icon" />
 
     <in.workarounds.typography.TextView
@@ -36,9 +36,10 @@
         android:src="@drawable/selector_group_expand" />
 
     <View
+        android:id="@+id/security_group_camera_divider"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:id="@+id/security_group_camera_divider"
+        android:layout_alignParentBottom="true"
         android:background="@color/gray" />
 
 </RelativeLayout>

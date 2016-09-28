@@ -80,10 +80,10 @@ public class ReceiveThread extends Thread {
     public void run() {
         while (isRunning) {
             try {
-                int len = VSHome.socketManager.inputStream.read(data);
+                int len = SocketManager.getInstance().inputStream.read(data);
                 if (len == -1) {
                     isRunning = false;
-                    VSHome.socketManager.destroySocket();
+                    SocketManager.getInstance().destroySocket();
                     VSHome.restart();
                     break;
                 }

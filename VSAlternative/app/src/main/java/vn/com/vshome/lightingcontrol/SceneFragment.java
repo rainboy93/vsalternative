@@ -31,6 +31,7 @@ import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.SceneActionCallback;
 import vn.com.vshome.callback.SceneControlCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Scene;
@@ -62,7 +63,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
     public void onResume() {
         super.onResume();
         try {
-            VSHome.socketManager.receiveThread.setSceneCallback(this);
+            SocketManager.getInstance().receiveThread.setSceneCallback(this);
         } catch (Exception e) {
 
         }
@@ -197,12 +198,12 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
                     @Override
                     public void onTimeOut() {
-                        VSHome.socketManager.receiveThread.isSceneControl = false;
+                        SocketManager.getInstance().receiveThread.isSceneControl = false;
                         ProgressHUD.hideLoading(getActivity());
                     }
                 }, 3);
-                VSHome.socketManager.receiveThread.isSceneControl = true;
-                VSHome.socketManager.sendMessage(activeScene);
+                SocketManager.getInstance().receiveThread.isSceneControl = true;
+                SocketManager.getInstance().sendMessage(activeScene);
             } else {
                 Logger.LogD("Device scene null or size = 0");
             }
@@ -221,7 +222,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
             }
         }, 5);
-        VSHome.socketManager.sendMessage(sceneScheduleUpdate);
+        SocketManager.getInstance().sendMessage(sceneScheduleUpdate);
     }
 
     @Override
@@ -361,7 +362,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                         Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
                     }
                 }, 5);
-                VSHome.socketManager.sendMessage(deleteScene);
+                SocketManager.getInstance().sendMessage(deleteScene);
             }
         });
 

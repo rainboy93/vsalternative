@@ -90,13 +90,19 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
         permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                VSHome.isTakePhoto = false;
                 imagePicker = new TedBottomPicker.Builder(getActivity())
                         .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                             @Override
                             public void onImageSelected(Uri uri) {
+                                VSHome.isTakePhoto = false;
                                 selectedUri = uri;
                                 goToCrop();
+                            }
+                        })
+                        .setOnErrorListener(new TedBottomPicker.OnErrorListener() {
+                            @Override
+                            public void onError(String message) {
+                                VSHome.isTakePhoto = false;
                             }
                         })
                         .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)

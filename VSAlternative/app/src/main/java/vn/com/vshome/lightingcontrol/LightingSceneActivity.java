@@ -23,6 +23,7 @@ import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.callback.SceneSetUpCallback;
 import vn.com.vshome.callback.TaskCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Scene;
@@ -338,11 +339,11 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
             saveScene.setEditScene(scene, devices);
         }
 
-        VSHome.socketManager.receiveThread.setSceneSetUpCallback(this);
+        SocketManager.getInstance().receiveThread.setSceneSetUpCallback(this);
         ProgressHUD.showLoading(LightingSceneActivity.this);
         TimeOutManager.getInstance().startCountDown(this, 5);
         Logger.LogD(Arrays.toString(saveScene.getByteArray()));
-        VSHome.socketManager.sendMessage(saveScene);
+        SocketManager.getInstance().sendMessage(saveScene);
     }
 
     @Override

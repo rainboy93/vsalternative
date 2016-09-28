@@ -192,7 +192,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         loginTask.cancel(true);
                         loginTask = null;
                     }
-                    VSHome.socketManager.destroySocket();
+                    SocketManager.getInstance().destroySocket();
                 }
             }, 15);
             ProgressHUD.showLoading(getActivity());
@@ -207,11 +207,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
         @Override
         protected Integer doInBackground(String... params) {
             int login = 0;
-            if (VSHome.socketManager == null) {
-                VSHome.socketManager = new SocketManager();
-            }
-            if (VSHome.socketManager.canConnect(getActivity(), 0)
-                    || VSHome.socketManager.canConnect(getActivity(), 1)) {
+            if (SocketManager.getInstance().canConnect(getActivity(), 0)
+                    || SocketManager.getInstance().canConnect(getActivity(), 1)) {
                 login = login();
             }
             return login;
@@ -224,7 +221,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
             } else {
                 TimeOutManager.getInstance().cancelCountDown();
                 ProgressHUD.hideLoading(getActivity());
-                VSHome.socketManager.destroySocket();
+                SocketManager.getInstance().destroySocket();
                 switch (integer) {
                     case 0:
                         Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_connect_problem, getActivity());
@@ -268,11 +265,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
             byte[] buffer_conf = new byte[10];
 
             try {
-                VSHome.socketManager.outputStream.write(b);
+                SocketManager.getInstance().outputStream.write(b);
 
                 while (true) {
-                    if (VSHome.socketManager.inputStream.available() >= 402) {
-                        VSHome.socketManager.inputStream.read(buffer_login, 0, 402);
+                    if (SocketManager.getInstance().inputStream.available() >= 402) {
+                        SocketManager.getInstance().inputStream.read(buffer_login, 0, 402);
                         Logger.LogD(Arrays.toString(buffer_login));
                         break;
                     }
@@ -292,8 +289,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                     getRoomCode(ret);
 
                     while (true) {
-                        if (VSHome.socketManager.inputStream.available() > 0) {
-                            VSHome.socketManager.inputStream.read(buffer_conf, 0, 9);
+                        if (SocketManager.getInstance().inputStream.available() > 0) {
+                            SocketManager.getInstance().inputStream.read(buffer_conf, 0, 9);
                             break;
                         }
                     }
@@ -314,7 +311,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                             uid != lastUID || configureID != lastConfigID
                             || net.the4thdimension.android.Utils.getApplicationVersionCode(getActivity())
                             != PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.VERSION_CODE, 0)) {
-                        VSHome.socketManager.outputStream.write(1);
+                        SocketManager.getInstance().outputStream.write(1);
 
                         int mDataLength = (Utils.Byte2Unsigned(buffer_conf[4]) << 24)
                                 + (Utils.Byte2Unsigned(buffer_conf[5]) << 16)
@@ -323,8 +320,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         byte[] mBufferData = new byte[mDataLength];
                         int offset = 0;
                         while (mDataLength > 0) {
-                            int available = VSHome.socketManager.inputStream.available();
-                            VSHome.socketManager.inputStream.read(mBufferData, offset, available);
+                            int available = SocketManager.getInstance().inputStream.available();
+                            SocketManager.getInstance().inputStream.read(mBufferData, offset, available);
                             offset += available;
                             mDataLength -= available;
                         }
@@ -335,22 +332,22 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         Utils.putDatabase(getActivity(), mListFloor, uid);
 
                     } else {
-                        VSHome.socketManager.outputStream.write(0);
+                        SocketManager.getInstance().outputStream.write(0);
                     }
 
-                    VSHome.socketManager.outputStream.write(1);
+                    SocketManager.getInstance().outputStream.write(1);
                     int count = 1;
                     while (count != 0) {
-                        int available = VSHome.socketManager.inputStream.available();
+                        int available = SocketManager.getInstance().inputStream.available();
                         if (available > 0) {
-                            VSHome.socketManager.inputStream.read(buffer_conf, 0, 10);
+                            SocketManager.getInstance().inputStream.read(buffer_conf, 0, 10);
                             count--;
                         }
                     }
 
                     int lastSceneDBVersion = PreferenceUtils.getInstance(getActivity()).getIntValue(PreferenceDefine.SCENE_DB_VERSION, 0);
                     int sceneDBVersion = Utils.Byte2Unsigned(buffer_conf[0]);
-                    VSHome.socketManager.startCommunication(new LoginCallback() {
+                    SocketManager.getInstance().startCommunication(new LoginCallback() {
                         @Override
                         public void onLoginSuccess() {
                             Logger.LogD("Login success");
@@ -360,14 +357,14 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                             startActivity(intent);
                             Toaster.showMessage(getActivity(), getResources().getString(R.string.foscam_login_promote_success));
                             getActivity().finishAffinity();
-                            VSHome.socketManager.removeLoginCallback();
+                            SocketManager.getInstance().removeLoginCallback();
                         }
                     });
                     if (sceneDBVersion != lastSceneDBVersion) {
                         Scene.deleteAll(Scene.class);
-                        VSHome.socketManager.outputStream.write(1);
+                        SocketManager.getInstance().outputStream.write(1);
                     } else {
-                        VSHome.socketManager.outputStream.write(0);
+                        SocketManager.getInstance().outputStream.write(0);
                     }
                     return CommandMessage.STATUS_OK;
                 } else if (ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_ERROR) {

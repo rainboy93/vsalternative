@@ -1,34 +1,19 @@
 package vn.com.vshome.view;
 
-import vn.com.vshome.VSHome;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.fos.sdk.FosSdkJNI;
-import com.fos.sdk.PtzCmd;
-
 public class GestureImageView extends ImageView implements
         GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     private GestureDetectorCompat mDetector;
     private OnControlListener mListener;
-    private int id;
-    private boolean isFullScreen = false;
-
-    public void setFullScreen() {
-        isFullScreen = true;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private boolean control = false;
 
     public GestureImageView(Context context, AttributeSet attrs,
                             int defStyleAttr) {
@@ -63,11 +48,13 @@ public class GestureImageView extends ImageView implements
                 if (!mDetector.onTouchEvent(event) && detectedUp) {
                     if(mListener != null){
                         mListener.onStop();
+                        control = false;
                     }
                 }
                 return true;
             }
         });
+        setAlpha(0.5f);
     }
 
     @Override
@@ -86,14 +73,14 @@ public class GestureImageView extends ImageView implements
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         if(mListener != null){
-            mListener.onControl();
+            mListener.onMinimize();
         }
         return true;
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return true;
+        return false;
     }
 
     @Override
@@ -104,6 +91,10 @@ public class GestureImageView extends ImageView implements
 
     @Override
     public void onLongPress(MotionEvent e) {
+        if(mListener != null && control == false){
+            mListener.onControl();
+            control = true;
+        }
     }
 
     @Override
@@ -114,8 +105,9 @@ public class GestureImageView extends ImageView implements
 
     @Override
     public void onShowPress(MotionEvent e) {
-        if(mListener != null){
+        if(mListener != null && control == false){
             mListener.onControl();
+            control = true;
         }
     }
 
@@ -128,6 +120,8 @@ public class GestureImageView extends ImageView implements
         void onDoubleTouch();
 
         void onControl();
+
+        void onMinimize();
 
         void onStop();
     }

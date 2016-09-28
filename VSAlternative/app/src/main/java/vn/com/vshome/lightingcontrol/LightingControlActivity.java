@@ -208,7 +208,7 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
         if (v == mMenu) {
             toggleMenu();
         } else if (v == mHome) {
-            finishAffinity();
+            finish();
         } else if (v == mButtonDevice) {
             setToDevice();
         } else if (v == mButtonScene) {

@@ -56,16 +56,15 @@ public class PreviewService extends Service implements
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (intent.getExtras() != null) {
-            camera = (Camera) intent.getExtras().getSerializable(Define.INTENT_CAMERA);
+            Long id = intent.getExtras().getLong(Define.INTENT_CAMERA, 0);
+            camera = Camera.findById(Camera.class, id);
         }
         CameraManager.getInstance().addSession(camera, null);
         if (mVideoView != null) {
             mVideoView.setCamera(camera);
             mVideoView.startDraw();
         }
-        CameraManager.getInstance().isPreviewing = true;
         return Service.START_NOT_STICKY;
     }
 
@@ -86,6 +85,14 @@ public class PreviewService extends Service implements
         super.onCreate();
 
         Log.d("dungnt", "start preview");
+
+        fullScreenReceiver = new StartFullScreenReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("StartFullScreen");
+        filter.addAction("StartPreviewing");
+        getApplication().registerReceiver(fullScreenReceiver, filter);
+
+        CameraManager.getInstance().isPreviewing = true;
 
         mDetector = new GestureDetectorCompat(getApplicationContext(), this);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -140,6 +147,7 @@ public class PreviewService extends Service implements
 
             @Override
             public void onClick(View arg0) {
+                CameraManager.getInstance().isPreviewing = false;
                 stopSelf();
             }
         });
@@ -213,8 +221,12 @@ public class PreviewService extends Service implements
             }
         }
         Log.d("dungnt", "Stop perview");
+        try {
+            getApplication().unregisterReceiver(fullScreenReceiver);
+        } catch (Exception e){
+
+        }
         CameraManager.getInstance().removeSession(camera);
-        CameraManager.getInstance().isPreviewing = false;
         super.onDestroy();
     }
 
@@ -230,10 +242,10 @@ public class PreviewService extends Service implements
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
+        hidePreview();
         Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
-        intent.putExtra(Define.INTENT_CAMERA, camera);
+        intent.putExtra(Define.INTENT_CAMERA, camera.getId());
         VSHome.activity.startActivity(intent);
-        stopSelf();
         return true;
     }
 
@@ -279,6 +291,8 @@ public class PreviewService extends Service implements
         paramF.height = 1;
         windowManager.updateViewLayout(mParentLayout, paramF);
     }
+
+    private StartFullScreenReceiver fullScreenReceiver;
 
     public class StartFullScreenReceiver extends BroadcastReceiver {
 

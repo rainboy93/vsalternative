@@ -16,6 +16,7 @@ import vn.com.vshome.VSHome;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
+import vn.com.vshome.security.CameraControlThread;
 import vn.com.vshome.security.PreviewService;
 import vn.com.vshome.security.FullPreviewActivity;
 import vn.com.vshome.utils.Define;
@@ -32,6 +33,11 @@ public class CameraControlView extends GridLayout {
     private boolean isFullScreen = false;
     private int handler = -1;
     private Camera camera;
+    private boolean isActive = false;
+
+    public void setActive(boolean isActive){
+        this.isActive = isActive;
+    }
 
     public CameraControlView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -86,37 +92,50 @@ public class CameraControlView extends GridLayout {
         gestureImageView.setOnControlListener(new GestureImageView.OnControlListener() {
             @Override
             public void onDoubleTouch() {
-                if(isFullScreen && VSHome.activity instanceof FullPreviewActivity){
-
+                if(!isActive){
+                    return;
+                }
+                if (isFullScreen && VSHome.activity instanceof FullPreviewActivity) {
+                    VSHome.activity.onBackPressed();
                 } else {
                     Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
-                    intent.putExtra(Define.INTENT_CAMERA, camera);
+                    intent.putExtra(Define.INTENT_CAMERA, camera.getId());
                     VSHome.activity.startActivity(intent);
                 }
+                CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_STOP);
             }
 
             @Override
             public void onControl() {
-                if (gestureImageView == mMinimize && !isFullScreen) {
-                    if(!Utils.isMyServiceRunning(PreviewService.class)){
-                        Intent intent = new Intent(VSHome.activity, PreviewService.class);
-                        intent.putExtra(Define.INTENT_CAMERA, camera);
-                        VSHome.activity.startService(intent);
-                    }
-                } else if(gestureImageView != mMinimize){
+                if(!isActive){
+                    return;
+                }
+                if (gestureImageView != mMinimize) {
                     handleLongPress(gestureImageView);
                 }
             }
 
             @Override
+            public void onMinimize() {
+                if(!isActive){
+                    return;
+                }
+                if (gestureImageView == mMinimize && !isFullScreen) {
+                    if (!Utils.isMyServiceRunning(PreviewService.class)) {
+                        Intent intent = new Intent(VSHome.activity, PreviewService.class);
+                        intent.putExtra(Define.INTENT_CAMERA, camera.getId());
+                        VSHome.activity.startService(intent);
+                    }
+                }
+            }
+
+            @Override
             public void onStop() {
+                if(!isActive){
+                    return;
+                }
                 if (gestureImageView != mMinimize) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
-                        }
-                    }).start();
+                    CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_STOP);
                 }
             }
         });
@@ -133,61 +152,21 @@ public class CameraControlView extends GridLayout {
         }
 
         if (gestureImageView == mLeftUp) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_UP, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_LEFT_UP);
         } else if (gestureImageView == mUp) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_UP, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_UP);
         } else if (gestureImageView == mRightUp) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_UP, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_RIGHT_UP);
         } else if (gestureImageView == mLeft) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_LEFT);
         } else if (gestureImageView == mRight) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_RIGHT);
         } else if (gestureImageView == mLeftDown) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_DOWN, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_LEFT_DOWN);
         } else if (gestureImageView == mDown) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_DOWN, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_DOWN);
         } else if (gestureImageView == mRightDown) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_DOWN, 1000);
-                }
-            }).start();
+            CameraControlThread.getInstance().sendControl(handler, PtzCmd.FOSPTZ_RIGHT_DOWN);
         }
     }
 }

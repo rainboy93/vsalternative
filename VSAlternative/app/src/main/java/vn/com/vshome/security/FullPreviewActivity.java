@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.utils.Define;
@@ -25,34 +24,40 @@ public class FullPreviewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_preview);
 
-        if(getIntent().getExtras() != null){
-            camera = (Camera) getIntent().getExtras().getSerializable(Define.INTENT_CAMERA);
+        if (getIntent().getExtras() != null) {
+            Long id = getIntent().getExtras().getLong(Define.INTENT_CAMERA, 0);
+            camera = Camera.findById(Camera.class, id);
+        }
+
+        if (Utils.isMyServiceRunning(PreviewService.class)) {
+            sendBroadcast(new Intent("StartFullScreen"));
         }
 
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         cameraView = (CameraView) findViewById(R.id.full_screen_camera_view);
+
         cameraControlView = (CameraControlView) findViewById(R.id.full_screen_camera_control_view);
+        cameraControlView.setActive(true);
 
         CameraManager.getInstance().addSession(camera, null);
         cameraView.setCamera(camera);
+        cameraView.setFullScreen();
         cameraView.startDraw();
         cameraControlView.setCamera(camera);
         cameraControlView.setFullScreen();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         CameraManager.getInstance().removeSession(camera);
-        if(CameraManager.getInstance().isPreviewing){
-            if(!Utils.isMyServiceRunning(PreviewService.class)){
-                Intent intent = new Intent(VSHome.activity, PreviewService.class);
-                intent.putExtra(Define.INTENT_CAMERA, camera);
-                VSHome.activity.startService(intent);
-            }
-        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
     }
 }

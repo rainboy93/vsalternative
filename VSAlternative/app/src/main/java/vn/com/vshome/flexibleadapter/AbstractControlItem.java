@@ -8,9 +8,11 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.DeviceSelectCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.networks.CommandMessage;
+import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
@@ -86,7 +88,9 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
     }
 
     public void startSendControlMessage(LightingDevice device) {
-        ProgressHUD.showLoading(VSHome.activity);
+        if(device.typeId != Define.DEVICE_TYPE_SHUTTER_RELAY){
+            ProgressHUD.showLoading(VSHome.activity);
+        }
         TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
             @Override
             public void onTimeOut() {
@@ -96,8 +100,8 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
         }, 5);
         CommandMessage message = new CommandMessage();
         message.setControlMessage(device);
-        VSHome.socketManager.receiveThread.currentControlDeviceId = device.getId().intValue();
-        VSHome.socketManager.sendMessage(message);
+        SocketManager.getInstance().receiveThread.currentControlDeviceId = device.getId().intValue();
+        SocketManager.getInstance().sendMessage(message);
     }
 
     public DeviceSelectCallback callback;

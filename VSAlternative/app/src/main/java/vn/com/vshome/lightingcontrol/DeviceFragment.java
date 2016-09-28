@@ -17,6 +17,7 @@ import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LightingControlCallback;
 import vn.com.vshome.callback.TaskCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
@@ -45,15 +46,15 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
     @Override
     public void onResume() {
         super.onResume();
-        if (VSHome.socketManager != null && VSHome.socketManager.receiveThread != null) {
-            VSHome.socketManager.receiveThread.setLightingCallback(this);
+        if (SocketManager.getInstance() != null && SocketManager.getInstance().receiveThread != null) {
+            SocketManager.getInstance().receiveThread.setLightingCallback(this);
         }
     }
 
     @Override
     public void onPause() {
-        if (VSHome.socketManager != null && VSHome.socketManager.receiveThread != null) {
-            VSHome.socketManager.receiveThread.setLightingCallback(null);
+        if (SocketManager.getInstance() != null && SocketManager.getInstance().receiveThread != null) {
+            SocketManager.getInstance().receiveThread.setLightingCallback(null);
         }
         super.onPause();
     }
@@ -102,8 +103,8 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
         if (isControlDevice) {
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
-        } else if(VSHome.socketManager.receiveThread.isSceneControl){
-            VSHome.socketManager.receiveThread.isSceneControl = false;
+        } else if(SocketManager.getInstance().receiveThread.isSceneControl){
+            SocketManager.getInstance().receiveThread.isSceneControl = false;
             TimeOutManager.getInstance().cancelCountDown();
             TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
                 @Override

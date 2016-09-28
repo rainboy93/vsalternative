@@ -16,10 +16,13 @@ import java.net.SocketAddress;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LoginCallback;
 import vn.com.vshome.networks.CommandMessage;
+import vn.com.vshome.security.CameraControlThread;
+import vn.com.vshome.security.PreviewService;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.PreferenceDefine;
 import vn.com.vshome.utils.PreferenceUtils;
+import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 7/4/16.
@@ -32,6 +35,16 @@ public class SocketManager {
     public OutputStream outputStream;
     public ReceiveThread receiveThread;
     public SendThread sendThread;
+    public boolean isDestroy = false;
+
+    private static SocketManager socketManager;
+
+    public static SocketManager getInstance() {
+        if (socketManager == null) {
+            socketManager = new SocketManager();
+        }
+        return socketManager;
+    }
 
     private CommandMessage heartBeatMessage;
 
@@ -135,6 +148,16 @@ public class SocketManager {
         if (receiveThread != null) {
             receiveThread.stopRunning();
             receiveThread = null;
+        }
+
+        CameraControlThread.getInstance().stopRunning();
+
+        try {
+            if (Utils.isMyServiceRunning(PreviewService.class)) {
+                VSHome.activity.stopService(new Intent(VSHome.activity, PreviewService.class));
+            }
+        } catch (Exception e) {
+
         }
 
         if (inputStream != null) {

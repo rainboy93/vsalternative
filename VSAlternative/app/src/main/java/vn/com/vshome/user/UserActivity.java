@@ -24,7 +24,9 @@ import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.callback.DialogCallback;
 import vn.com.vshome.callback.UserControlCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
 import vn.com.vshome.flexibleadapter.user.UserAdapter;
 import vn.com.vshome.networks.CommandMessage;
@@ -52,19 +54,19 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     @Override
     protected void onStart() {
         super.onStart();
-        VSHome.socketManager.receiveThread.setUserCallback(this);
+        SocketManager.getInstance().receiveThread.setUserCallback(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        VSHome.socketManager.receiveThread.setUserCallback(this);
+        SocketManager.getInstance().receiveThread.setUserCallback(this);
     }
 
     @Override
     protected void onPause() {
         try {
-            VSHome.socketManager.receiveThread.setUserCallback(null);
+            SocketManager.getInstance().receiveThread.setUserCallback(null);
         } catch (Exception e) {
 
         }
@@ -137,7 +139,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         ProgressHUD.showLoading(this);
         TimeOutManager.getInstance().startCountDown(this, 10);
 
-        VSHome.socketManager.sendMessage(getUserList);
+        SocketManager.getInstance().sendMessage(getUserList);
     }
 
     private void loadUserList() {
@@ -148,7 +150,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         }
         mAdapter = new UserAdapter(this, mListUser);
         mAdapter.setUserControlCallback(this);
-        VSHome.socketManager.receiveThread.setUserCallback(this);
+        SocketManager.getInstance().receiveThread.setUserCallback(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -164,12 +166,17 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
             startActivityForResult(intent, Define.CODE_USER_CREATE);
         } else if (v == mShutDown) {
             if (VSHome.currentUser.priority == Define.PRIORITY_ADMIN) {
-                CommandMessage shutDown = new CommandMessage(CommandMessage.CMD_DISCONNECT_ALL_USER);
-                ProgressHUD.showLoading(this);
-                TimeOutManager.getInstance().startCountDown(this, 5);
-                VSHome.socketManager.sendMessage(shutDown);
+                Utils.showConfirmDialog("", "", this, new DialogCallback() {
+                    @Override
+                    public void onConfirm() {
+                        CommandMessage shutDown = new CommandMessage(CommandMessage.CMD_DISCONNECT_ALL_USER);
+                        ProgressHUD.showLoading(UserActivity.this);
+                        TimeOutManager.getInstance().startCountDown(UserActivity.this, 5);
+                        SocketManager.getInstance().sendMessage(shutDown);
+                    }
+                });
             } else {
-                VSHome.socketManager.destroySocket();
+                SocketManager.getInstance().destroySocket();
                 VSHome.restart();
             }
         }
@@ -185,6 +192,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         ProgressHUD.hideLoading(this);
         TimeOutManager.getInstance().cancelCountDown();
         if (status == CommandMessage.STATUS_ERROR) {
+            Toaster.showMessage(UserActivity.this, "Có lỗi xảy ra. Hãy thử lại.");
             return;
         }
         switch (cmd) {
@@ -314,7 +322,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
                         Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", UserActivity.this);
                     }
                 }, 5);
-                VSHome.socketManager.sendMessage(deleteUser);
+                SocketManager.getInstance().sendMessage(deleteUser);
             }
         });
 

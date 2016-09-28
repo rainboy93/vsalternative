@@ -11,9 +11,14 @@ import com.fos.sdk.IPCType;
 import com.fos.sdk.StreamType;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
 
 /**
  * Created by anlab on 8/3/16.
@@ -21,13 +26,17 @@ import vn.com.vshome.utils.Define;
 public class CameraThread extends Thread {
 
     public boolean isRunning = true;
-    public FrameData videoData = null;
+    private CameraData videoData = null;
+    public CameraData publicData = null;
     private CameraCallback cameraCallback;
 
     private Camera camera;
     public int handler = -1;
     private int state = -1;
     private int permissionFlag = -1;
+
+//    public List<FrameData> listData;
+    public Vector<FrameData> listData;
 
     public CameraThread(Camera camera) {
         this.camera = camera;
@@ -40,8 +49,9 @@ public class CameraThread extends Thread {
     @Override
     public void run() {
         logIn();
+        listData = new Vector<>();
         if (state == 0) {
-            videoData = new FrameData();
+            videoData = new CameraData();
             while(isRunning){
                 startGetData();
             }
@@ -70,11 +80,6 @@ public class CameraThread extends Thread {
                     state = FosSdkJNI.OpenVideo(
                             handler, StreamType.FOSSTREAM_SUB,
                             1000);
-//                    if (isRetryLogin) {
-//                        Intent intent = new Intent("Error");
-//                        intent.putExtra("Content", "");
-//                        VSHome.mActivity.sendBroadcast(intent);
-//                    }
                     break;
                 default:
                     break;
@@ -95,14 +100,21 @@ public class CameraThread extends Thread {
     }
 
     private void logOut() {
-
+        FosSdkJNI.Logout(handler, 1000);
     }
 
     private void startGetData() {
         try {
             FosSdkJNI.GetVideoData(handler,
                     videoData, FosDecFmt.FOSDECTYPE_RGBA32);
-            SystemClock.sleep(10);
+            if(videoData != null){
+                publicData = videoData.clone();
+                listData.add(publicData);
+                if(listData.size() > 10){
+                    listData.remove(0);
+                }
+            }
+            SystemClock.sleep(5);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,6 +122,10 @@ public class CameraThread extends Thread {
 
     public void stopGetData() {
         logOut();
+        if(listData != null){
+            listData.clear();
+            listData = null;
+        }
         isRunning = false;
         if(videoData != null){
             videoData = null;

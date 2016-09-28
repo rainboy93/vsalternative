@@ -33,7 +33,6 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
     public Camera camera;
     public boolean isError = false;
     public String errorMsg = "";
-    public CameraView cameraView;
 
     public CameraChildItem(String id, Camera camera) {
         super(id);
@@ -66,13 +65,13 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
     @SuppressWarnings("deprecation")
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, CameraChildViewHolder holder, final int position, List payloads) {
-        cameraView = holder.cameraView;
         if (isError) {
+            holder.cameraControlView.setActive(false);
             holder.cameraControlView.setVisibility(View.GONE);
             holder.mWarn.setVisibility(View.VISIBLE);
             holder.mWarn.setText(errorMsg);
         } else {
-            Logger.LogD("Start");
+            holder.cameraControlView.setActive(true);
             holder.cameraControlView.setVisibility(View.VISIBLE);
             holder.cameraView.setCamera(camera);
             holder.cameraView.startDraw();

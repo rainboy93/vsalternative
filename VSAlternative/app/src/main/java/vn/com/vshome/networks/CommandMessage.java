@@ -130,8 +130,10 @@ public class CommandMessage {
                 case Define.DEVICE_TYPE_SHUTTER_RELAY:
                     if (state == Define.STATE_ON) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_OPEN;
+                        data[10 * (i + 1) + 7] = (byte) 100;
                     } else if (state == Define.STATE_OFF) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_CLOSE;
+                        data[10 * (i + 1) + 7] = (byte) 0;
                     } else if (state == Define.STATE_PARAM) {
                         data[10 * (i + 1) + 6] = (byte) Define.COMMAND_SET_PARAM;
                         data[10 * (i + 1) + 7] = (byte) param;
@@ -260,8 +262,8 @@ public class CommandMessage {
     public void setUpdateRoomUser(User user, int[] roomInt) {
         this.cmd = CMD_UPDATE_USER_ROOM;
         this.str1 = new String(user.username);
-        for (int i = 2; i <= 11; i++) {
-            this.data[i] = roomInt[i - 2];
+        for (int i = 0; i <= 9; i++) {
+            this.data[i] = roomInt[i];
         }
     }
 

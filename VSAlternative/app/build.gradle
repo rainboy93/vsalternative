@@ -37,6 +37,7 @@ dependencies {
     compile 'com.zplesac:connectionbuddy:1.1.2@aar'
     compile 'gun0912.ted:tedbottompicker:1.0.3'
     compile 'gun0912.ted:tedpermission:1.0.0'
+    compile 'com.amitshekhar.android:glide-bitmap-pool:0.0.1'
     compile project(':flexible-adapter')
     compile files('src/main/libs/FosIPCJNI.jar')
 }

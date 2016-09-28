@@ -22,6 +22,7 @@ import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.UserControlCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.database.User;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
@@ -48,18 +49,28 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_action);
+
+        initActionBar();
         initView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        VSHome.socketManager.receiveThread.setUserCallback(this);
+        try {
+            SocketManager.getInstance().receiveThread.setUserCallback(this);
+        } catch (NullPointerException ex) {
+
+        }
     }
 
     @Override
     protected void onPause() {
-        VSHome.socketManager.receiveThread.setUserCallback(null);
+        try {
+            SocketManager.getInstance().receiveThread.setUserCallback(null);
+        } catch (NullPointerException ex) {
+
+        }
         super.onPause();
     }
 
@@ -101,6 +112,21 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
         }
     }
 
+    private ImageButton mMenu;
+    private ImageButton mHome;
+    private TextView mTitle;
+
+    private void initActionBar() {
+        mMenu = (ImageButton) findViewById(R.id.action_bar_menu);
+        mMenu.setImageResource(R.drawable.icon_back);
+        mHome = (ImageButton) findViewById(R.id.action_bar_home);
+        mTitle = (TextView) findViewById(R.id.action_bar_title);
+        mTitle.setText("Xin chào " + VSHome.currentUser.username);
+
+        mMenu.setOnClickListener(this);
+        mHome.setOnClickListener(this);
+    }
+
     @Override
     public void onClick(View v) {
         if (v == mSave) {
@@ -133,7 +159,7 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 mUser.roomControl = roomString.toString();
                 ProgressHUD.showLoading(this);
                 TimeOutManager.getInstance().startCountDown(this, 5);
-                VSHome.socketManager.sendMessage(newUser);
+                SocketManager.getInstance().sendMessage(newUser);
             } else {
                 if (VSHome.currentUser != null && VSHome.currentUser.priority == Define.PRIORITY_USER) {
                     setResult(Activity.RESULT_CANCELED);
@@ -146,10 +172,14 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 mUser.roomControl = roomString.toString();
                 ProgressHUD.showLoading(this);
                 TimeOutManager.getInstance().startCountDown(this, 5);
-                VSHome.socketManager.sendMessage(editUser);
+                SocketManager.getInstance().sendMessage(editUser);
             }
         } else if (v == mEditPassword) {
             showChangePasswordDialog();
+        } else if (v == mMenu) {
+            onBackPressed();
+        } else if (v == mHome) {
+            onBackPressed();
         }
     }
 
@@ -230,8 +260,6 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
 
         ImageButton buttonCancel = (ImageButton) dialog.findViewById(R.id.dialog_change_password_button_cancel);
         Button buttonSave = (Button) dialog.findViewById(R.id.dialog_change_password_button_confirm);
-        EditText oldPassword = (EditText) dialog.findViewById(R.id.dialog_change_password_old_password);
-        oldPassword.setTransformationMethod(new PasswordFlowerMask());
         final EditText newPassword = (EditText) dialog.findViewById(R.id.dialog_change_password_new_password);
         newPassword.setTransformationMethod(new PasswordFlowerMask());
 
@@ -259,7 +287,7 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 changePassword.setUpdatePassword(mUser.username, newPassword.getText().toString());
                 ProgressHUD.showLoading(UserActionActivity.this);
                 TimeOutManager.getInstance().startCountDown(UserActionActivity.this, 5);
-                VSHome.socketManager.sendMessage(changePassword);
+                SocketManager.getInstance().sendMessage(changePassword);
             }
         });
         dialog.show();

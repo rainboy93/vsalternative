@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
@@ -97,13 +98,13 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
         viewHolder.buttonControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VSHome.socketManager.receiveThread.currentUserId = user.getId().intValue();
+                SocketManager.getInstance().receiveThread.currentUserId = user.getId().intValue();
                 currentUserControl = position;
                 CommandMessage changeStatus = new CommandMessage();
                 changeStatus.setChangeUserStatus(user);
                 ProgressHUD.showLoading((Activity) mContext);
                 TimeOutManager.getInstance().startCountDown(UserAdapter.this, 5);
-                VSHome.socketManager.sendMessage(changeStatus);
+                SocketManager.getInstance().sendMessage(changeStatus);
             }
         });
 

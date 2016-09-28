@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import vn.com.vshome.callback.DialogCallback;
+import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.lightingcontrol.LightingControlActivity;
 import vn.com.vshome.roomselection.RoomSelectionActivity;
 import vn.com.vshome.security.SecurityActivity;
@@ -71,7 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onConfirm() {
-        VSHome.socketManager.destroySocket();
+        SocketManager.getInstance().destroySocket();
         finishAffinity();
     }
 }

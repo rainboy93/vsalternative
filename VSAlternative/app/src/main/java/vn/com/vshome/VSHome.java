@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.fos.sdk.FosSdkJNI;
+import com.glidebitmappool.GlideBitmapPool;
 import com.orm.SugarApp;
 import com.zplesac.connectionbuddy.ConnectionBuddy;
 import com.zplesac.connectionbuddy.ConnectionBuddyConfiguration;
@@ -20,14 +21,17 @@ import com.zplesac.connectionbuddy.models.ConnectivityState;
 import vn.com.vshome.account.LoginActivity;
 import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
+import vn.com.vshome.foscamsdk.CameraManager;
+import vn.com.vshome.security.FullPreviewActivity;
+import vn.com.vshome.security.PreviewService;
 import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 7/4/16.
  */
 public class VSHome extends SugarApp implements ConnectivityChangeListener,
         Application.ActivityLifecycleCallbacks {
-    public static SocketManager socketManager;
     public static Activity activity;
     public static User currentUser;
     public static boolean isTakePhoto = false;
@@ -44,6 +48,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         super.onCreate();
 
         FosSdkJNI.Init();
+        GlideBitmapPool.initialize(10 * 1024 * 1024);
 
 //        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 //            @Override
@@ -52,14 +57,12 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
 //            }
 //        });
 
+        SocketManager.getInstance();
+
 
         ConnectionBuddyConfiguration configuration = new ConnectionBuddyConfiguration.Builder(this).build();
         ConnectionBuddy.getInstance().init(configuration);
         ConnectionBuddy.getInstance().registerForConnectivityEvents(this, true, this);
-
-        if (socketManager == null) {
-            socketManager = new SocketManager();
-        }
 
         registerActivityLifecycleCallbacks(this);
     }
@@ -69,24 +72,9 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         FosSdkJNI.DeInit();
         super.onTerminate();
     }
-//
-//    @Override
-//    public void onLowMemory() {
-//        super.onLowMemory();
-//    }
-
-    public static void finish() {
-        Intent intent = new Intent(activity, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("EXIT", true);
-        activity.startActivity(intent);
-    }
 
     public static void restart() {
-        if(activity != null){
+        if (activity != null) {
             Intent intent = new Intent(activity, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -97,10 +85,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
 
     private void handleUncaughtException(Thread thread, Throwable e) {
         Logger.LogD("Exception caught: " + e.getMessage());
-        if (socketManager != null) {
-            socketManager.destroySocket();
-            socketManager = null;
-        }
+        SocketManager.getInstance().destroySocket();
         restart();
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);
@@ -111,10 +96,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         if (event.getState() == ConnectivityState.CONNECTED) {
 
         } else {
-            if (socketManager != null) {
-                socketManager.destroySocket();
-                socketManager = null;
-            }
+            SocketManager.getInstance().destroySocket();
             restart();
         }
     }
@@ -126,11 +108,21 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
 
     @Override
     public void onActivityStarted(Activity activity) {
-        this.activity = activity;
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
+        if (SocketManager.getInstance().isDestroy) {
+            SocketManager.getInstance().isDestroy = false;
+            restart();
+            return;
+        }
+        this.activity = activity;
+        if (!(activity instanceof FullPreviewActivity)) {
+            if (CameraManager.getInstance().isPreviewing && Utils.isMyServiceRunning(PreviewService.class)) {
+                sendBroadcast(new Intent("StartPreviewing"));
+            }
+        }
         if (mBackgroundTransition != null) {
             mBackgroundDelayHandler.removeCallbacks(mBackgroundTransition);
             mBackgroundTransition = null;
@@ -138,9 +130,6 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
 
         if (mInBackground) {
             mInBackground = false;
-            if (isTakePhoto) {
-                isTakePhoto = false;
-            }
         }
     }
 
@@ -153,11 +142,9 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
                     mInBackground = true;
                     mBackgroundTransition = null;
 //                    if (!isTakePhoto) {
-                    if (socketManager != null) {
-                        socketManager.destroySocket();
-                        socketManager = null;
-                    }
-                    finish();
+                    SocketManager.getInstance().destroySocket();
+                    SocketManager.getInstance().isDestroy = true;
+//                    finish();
 //                    }
                 }
             };

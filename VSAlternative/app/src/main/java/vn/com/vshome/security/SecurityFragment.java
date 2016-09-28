@@ -94,13 +94,17 @@ public class SecurityFragment extends Fragment implements View.OnKeyListener {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            mAdapter.collapseAll();
-            mAdapter.notifyDataSetChanged();
-            getActivity().onBackPressed();
+            destroyView();
             return true;
         } else {
             return false;
         }
+    }
+
+    public void destroyView() {
+        mAdapter.collapseAll();
+        mAdapter.notifyDataSetChanged();
+        getActivity().onBackPressed();
     }
 
 //    @Override

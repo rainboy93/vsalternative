@@ -1,18 +1,18 @@
 package vn.com.vshome.security;
 
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import in.workarounds.typography.Button;
+import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
-import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.NonSwipeViewPager;
 
 public class SecurityActivity extends BaseActivity implements View.OnClickListener,
-        ViewPager.OnPageChangeListener{
+        ViewPager.OnPageChangeListener {
 
     private SecurityViewPagerAdapter mAdapter;
 
@@ -25,6 +25,7 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_security);
 
+        initActionBar();
         initView();
     }
 
@@ -44,6 +45,19 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
         mViewPager.setAdapter(mAdapter);
     }
 
+    private ImageButton mBack, mHome;
+    private TextView mTitle;
+
+    private void initActionBar() {
+        mBack = (ImageButton) findViewById(R.id.action_bar_menu);
+        mHome = (ImageButton) findViewById(R.id.action_bar_home);
+        mTitle = (TextView) findViewById(R.id.action_bar_title);
+
+        mBack.setOnClickListener(this);
+        mBack.setImageResource(R.drawable.icon_back);
+        mHome.setOnClickListener(this);
+    }
+
     @Override
     public void onClick(View v) {
         if (v == mButtonCamera) {
@@ -52,6 +66,14 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
 
         } else if (v == mButtonOpenDoorSensor) {
 
+        } else if (v == mBack) {
+            if (mViewPager.getCurrentItem() == 0) {
+                ((SecurityFragment) mAdapter.getItem(0)).destroyView();
+            }
+        } else if (v == mHome) {
+            if (mViewPager.getCurrentItem() == 0) {
+                ((SecurityFragment) mAdapter.getItem(0)).destroyView();
+            }
         }
     }
 
@@ -62,7 +84,7 @@ public class SecurityActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onPageSelected(int position) {
-        switch (position){
+        switch (position) {
             case 0:
 //                mButtonCamera.setBackgroundColor(Utils.getColor(R.color.tab_press));
                 break;

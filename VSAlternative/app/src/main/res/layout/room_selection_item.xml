@@ -18,8 +18,8 @@
         android:id="@+id/room_selection_name_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/room_selection_image"
+        android:layout_alignParentBottom="true"
         android:src="@drawable/name_room_tag" />
 
     <ImageButton
@@ -28,20 +28,19 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/room_selection_image"
         android:layout_alignRight="@+id/room_selection_image"
-        android:layout_marginBottom="@dimen/d5"
-        android:layout_marginRight="@dimen/d5"
         android:background="@drawable/base_selector_background"
+        android:padding="@dimen/d10"
         android:src="@drawable/take_photo_icon" />
 
     <vn.com.vshome.view.AutoFitTextView
         android:id="@+id/room_selection_name"
         android:layout_width="wrap_content"
-        android:layout_marginRight="@dimen/d10"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/room_selection_name_image"
         android:layout_alignLeft="@+id/room_selection_name_image"
         android:layout_alignRight="@+id/room_selection_name_image"
         android:layout_alignTop="@+id/room_selection_name_image"
+        android:layout_marginRight="@dimen/d15"
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/white"

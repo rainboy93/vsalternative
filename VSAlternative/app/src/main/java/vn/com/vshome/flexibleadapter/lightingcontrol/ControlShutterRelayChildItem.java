@@ -80,16 +80,20 @@ public class ControlShutterRelayChildItem extends AbstractControlItem<ControlShu
             holder.mButtonSelect.setVisibility(View.VISIBLE);
             if (tempState.param == 0) {
                 holder.mButtonControl.setSelected(false);
+                holder.mSlider.setType("ĐÓNG RÈM");
             } else {
                 holder.mButtonControl.setSelected(true);
+                holder.mSlider.setType("MỞ RÈM");
             }
 
             if (isSelected) {
                 holder.mCover.setVisibility(View.GONE);
                 holder.mButtonControl.setEnabled(true);
+                holder.mSlider.setCanDraw(true);
             } else {
                 holder.mCover.setVisibility(View.VISIBLE);
                 holder.mButtonControl.setEnabled(false);
+                holder.mSlider.setCanDraw(false);
             }
             holder.mSlider.setProgress(tempState.param);
             holder.mSlider.setOnControlListener(new BlindView.OnBlindControlListener() {
@@ -131,10 +135,10 @@ public class ControlShutterRelayChildItem extends AbstractControlItem<ControlShu
                 @Override
                 public void onClick(View v) {
                     if (tempState.param == 0) {
-                        tempState.state = Define.STATE_ON;
+                        tempState.state = Define.STATE_PARAM;
                         tempState.param = 100;
                     } else {
-                        tempState.state = Define.STATE_OFF;
+                        tempState.state = Define.STATE_PARAM;
                         tempState.param = 0;
                     }
                     adapter.notifyItemChanged(position);
@@ -150,7 +154,7 @@ public class ControlShutterRelayChildItem extends AbstractControlItem<ControlShu
             } else if (deviceState.state == Define.STATE_CLOSING) {
                 holder.mButtonControl.setSelected(false);
                 holder.mSlider.setType("ĐÓNG RÈM");
-                holder.mSlider.play(false);
+                holder.mSlider.play(true);
             } else if (deviceState.state == Define.STATE_STOP) {
                 holder.mSlider.play(false);
             }
@@ -169,20 +173,27 @@ public class ControlShutterRelayChildItem extends AbstractControlItem<ControlShu
             return;
         }
 
-        int progress = seekBar.getCurrentProgress();
-
-        if (Math.abs(progress - deviceState.param) <= 2) {
-            return;
-        }
-
-        if (isControl) {
+        if(seekBar.isPlay()){
             LightingDevice d = new LightingDevice(this.device);
             if (d.deviceState == null) {
                 d.deviceState = new DeviceState();
             }
-            d.deviceState.state = Define.STATE_PARAM;
-            d.deviceState.param = progress;
+            d.deviceState.state = Define.STATE_STOP;
             startSendControlMessage(d);
+        } else {
+            int progress = seekBar.getCurrentProgress();
+            if (Math.abs(progress - deviceState.param) <= 2) {
+                return;
+            }
+            if (isControl) {
+                LightingDevice d = new LightingDevice(this.device);
+                if (d.deviceState == null) {
+                    d.deviceState = new DeviceState();
+                }
+                d.deviceState.state = Define.STATE_PARAM;
+                d.deviceState.param = progress;
+                startSendControlMessage(d);
+            }
         }
     }
 
