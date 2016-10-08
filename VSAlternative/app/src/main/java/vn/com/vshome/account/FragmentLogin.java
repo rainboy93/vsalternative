@@ -112,14 +112,14 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
             if (!isValidUsername(username)
                     || !isValidPassword(password)) {
                 Utils.showErrorDialog(R.string.txt_error,
-                        R.string.txt_Invalid_User, getActivity());
+                        R.string.txt_Invalid_User);
                 return;
             }
 
             boolean isNetConfigured = PreferenceUtils.getInstance(getActivity()).getValue(PreferenceDefine.NET_CONFIGURED, false);
             if (!isNetConfigured) {
                 Utils.showErrorDialog(R.string.txt_error,
-                        R.string.txt_network_not_config, getActivity());
+                        R.string.txt_network_not_config);
                 return;
             }
             isRunning = true;
@@ -128,7 +128,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
         } else if (v == mForgotPassword) {
             Utils.showErrorDialog("Quên mật khẩu",
                     "Hãy liên hệ với admin để lấy lại mật khẩu.\n"
-                            + "Hoặc liên hệ với đội HTKH của VSHome theo hotline: 0432252206.", getActivity());
+                            + "Hoặc liên hệ với đội HTKH của VSHome theo hotline: 0432252206.");
         } else if (v == mSettingButton) {
             ((LoginActivity) getActivity()).changeToSetting();
         }
@@ -224,25 +224,25 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 SocketManager.getInstance().destroySocket();
                 switch (integer) {
                     case 0:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_connect_problem, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_connect_problem);
                         break;
                     case 1:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_disable_user, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_disable_user);
                         break;
                     case 2:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_not_accept_connection, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_not_accept_connection);
                         break;
                     case 3:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_auth_fail, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_auth_fail);
                         break;
                     case 4:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_max_connection, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_max_connection);
                         break;
                     case 5:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_admin_connecting, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_admin_connecting);
                         break;
                     default:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_system_error, getActivity());
+                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_system_error);
                         break;
                 }
             }
@@ -273,7 +273,6 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         Logger.LogD(Arrays.toString(buffer_login));
                         break;
                     }
-                    SystemClock.sleep(5);
                 }
 
                 ReturnMessage ret = new ReturnMessage(buffer_login);
@@ -370,7 +369,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 } else if (ret.cmd == CommandMessage.CMD_LOGIN && ret.status == CommandMessage.STATUS_ERROR) {
                     return ret.data[0];
                 } else if (ret.cmd == CommandMessage.CMD_ERROR_MESSAGE) {
-                    return 4;
+                    return ret.data[0];
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -653,7 +652,6 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 }
                 mListFloor.add(floor);
                 mNumberFloor--;
-                // Preference.setUID(getActivity(), UID);
             }
         }
     }

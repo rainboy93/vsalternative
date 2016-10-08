@@ -3,6 +3,7 @@ package vn.com.vshome.user;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.UserControlCallback;
 import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DatabaseService;
@@ -32,6 +34,7 @@ import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.PasswordFlowerMask;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Toaster;
+import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
 public class UserActionActivity extends BaseActivity implements View.OnClickListener,
@@ -290,6 +293,14 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 SocketManager.getInstance().sendMessage(changePassword);
             }
         });
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Utils.hideKeyboard(TheActivityManager.getInstance().getCurrentActivity());
+            }
+        });
+
         dialog.show();
     }
 }

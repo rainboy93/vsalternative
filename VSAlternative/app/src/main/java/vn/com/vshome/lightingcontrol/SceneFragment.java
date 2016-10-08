@@ -40,6 +40,7 @@ import vn.com.vshome.flexibleadapter.lightingscene.SceneAdapter;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
@@ -219,7 +220,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
             @Override
             public void onTimeOut() {
                 ProgressHUD.hideLoading(getActivity());
-                Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
+                Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
             }
         }, 5);
         SocketManager.getInstance().sendMessage(sceneScheduleUpdate);
@@ -249,7 +250,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 Scene sceneAdd = Scene.findById(Scene.class, id);
                 if (sceneAdd != null) {
                     mListScene.add(sceneAdd);
-                    getActivity().runOnUiThread(new Runnable() {
+                    MiscUtils.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mAdapter.notifyDataSetChanged();
@@ -267,7 +268,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     if (sceneDelete.getId().intValue() == id) {
                         mListScene.remove(sceneDelete);
                         mAdapter.updateData(mListScene);
-                        getActivity().runOnUiThread(new Runnable() {
+                        MiscUtils.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 mAdapter.notifyItemRemoved(finalI);
@@ -289,7 +290,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                         if (mListScene.get(i).getId().intValue() == id) {
                             mListScene.set(i, sceneEdit);
                             mAdapter.updateData(mListScene);
-                            getActivity().runOnUiThread(new Runnable() {
+                            MiscUtils.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     mAdapter.notifyItemChanged(finalI);
@@ -313,14 +314,14 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 ProgressHUD.hideLoading(getActivity());
                 TimeOutManager.getInstance().cancelCountDown();
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_delete_scene_fail, getActivity());
+                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_delete_scene_fail);
                 }
                 break;
             case CommandMessage.CMD_SCHEDULE_UPDATE:
                 ProgressHUD.hideLoading(getActivity());
                 TimeOutManager.getInstance().cancelCountDown();
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
+                    Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
                 }
                 break;
             default:
@@ -358,7 +359,7 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     @Override
                     public void onTimeOut() {
                         ProgressHUD.hideLoading(getActivity());
-                        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", getActivity());
+                        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
                     }
                 }, 5);
                 SocketManager.getInstance().sendMessage(deleteScene);

@@ -7,6 +7,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.DeviceState;
@@ -89,13 +90,13 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
 
     public void startSendControlMessage(LightingDevice device) {
         if(device.typeId != Define.DEVICE_TYPE_SHUTTER_RELAY){
-            ProgressHUD.showLoading(VSHome.activity);
+            ProgressHUD.showLoading(TheActivityManager.getInstance().getCurrentActivity());
         }
         TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
             @Override
             public void onTimeOut() {
-                ProgressHUD.hideLoading(VSHome.activity);
-                Toaster.showMessage(VSHome.activity, Utils.getString(R.string.txt_no_response));
+                ProgressHUD.hideLoading(TheActivityManager.getInstance().getCurrentActivity());
+                Toaster.showMessage(TheActivityManager.getInstance().getCurrentActivity(), Utils.getString(R.string.txt_no_response));
             }
         }, 5);
         CommandMessage message = new CommandMessage();

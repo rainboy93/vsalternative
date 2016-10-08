@@ -28,6 +28,7 @@ import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.task.GetDeviceListTask;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
@@ -114,7 +115,7 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
             }, 1);
         }
 
-        getActivity().runOnUiThread(new Runnable() {
+        MiscUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (AbstractFlexibleItem item : mListItems) {
@@ -145,8 +146,8 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
         if (status == CommandMessage.STATUS_ERROR) {
             TimeOutManager.getInstance().cancelCountDown();
             ProgressHUD.hideLoading(getActivity());
-            Toaster.showMessage(getActivity(), Utils.getString(R.string.txt_no_response));
-            getActivity().runOnUiThread(new Runnable() {
+            Utils.showErrorDialog(R.string.txt_error, R.string.txt_no_response);
+            MiscUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     for (AbstractFlexibleItem item : mListItems) {
@@ -154,7 +155,7 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
                         for (final AbstractFlexibleItem subItem : groupItem.getSubItems()) {
                             AbstractControlItem modelItem = (AbstractControlItem) subItem;
                             if (id == modelItem.deviceId) {
-                                getActivity().runOnUiThread(new Runnable() {
+                                MiscUtils.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         mDeviceAdapter.updateItem(subItem, null);
@@ -173,7 +174,7 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
     public void onTaskComplete() {
         if (getDeviceListTask != null) {
             mListItems = getDeviceListTask.getListDevice();
-            getActivity().runOnUiThread(new Runnable() {
+            MiscUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (mDeviceAdapter != null) {

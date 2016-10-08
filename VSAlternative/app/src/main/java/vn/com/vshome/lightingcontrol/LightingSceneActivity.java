@@ -350,10 +350,10 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
     public void onClick(View v) {
         if (v == mSave) {
             if (countDevice() == 0) {
-                Utils.showErrorDialog(R.string.txt_error, R.string.txt_empty_scene, LightingSceneActivity.this);
+                Utils.showErrorDialog(R.string.txt_error, R.string.txt_empty_scene);
                 return;
             } else if (countDay() == 0) {
-                Utils.showErrorDialog(R.string.txt_error, R.string.txt_null_date_scene, LightingSceneActivity.this);
+                Utils.showErrorDialog(R.string.txt_error, R.string.txt_null_date_scene);
                 return;
             }
             saveScene();
@@ -387,7 +387,7 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
     @Override
     public void onTimeOut() {
         ProgressHUD.hideLoading(LightingSceneActivity.this);
-        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", LightingSceneActivity.this);
+        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
     }
 
     @Override
@@ -400,7 +400,7 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
         if (status == CommandMessage.STATUS_ERROR) {
             ProgressHUD.hideLoading(LightingSceneActivity.this);
             TimeOutManager.getInstance().cancelCountDown();
-            Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.", LightingSceneActivity.this);
+            Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
             return;
         } else {
             ProgressHUD.hideLoading(LightingSceneActivity.this);

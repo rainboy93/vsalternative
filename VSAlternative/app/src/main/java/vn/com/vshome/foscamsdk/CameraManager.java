@@ -86,4 +86,16 @@ public class CameraManager {
             return null;
         }
     }
+
+    public void releaseCamera(){
+        if(mListSession != null){
+            for(CameraSession session : mListSession.values()){
+                if(session != null && session.cameraThread != null){
+                    session.cameraThread.stopGetData();
+                    session.cameraThread = null;
+                }
+            }
+            mListSession.clear();
+        }
+    }
 }

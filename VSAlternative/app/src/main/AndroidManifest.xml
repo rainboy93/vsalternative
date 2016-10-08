@@ -51,7 +51,9 @@
         <activity
             android:name=".security.SecurityActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".user.UserActionActivity" />
+        <activity
+            android:name=".user.UserActionActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".security.FullPreviewActivity"
             android:screenOrientation="landscape"

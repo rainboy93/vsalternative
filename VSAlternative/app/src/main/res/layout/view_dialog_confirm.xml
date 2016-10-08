@@ -44,6 +44,24 @@
         android:orientation="horizontal">
 
         <in.workarounds.typography.Button
+            android:id="@+id/dialog_confirm_cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/base_selector_background"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/blueActionbar"
+            android:textSize="@dimen/d15"
+            app:font_name="@string/font_name"
+            app:font_variant="@string/font_bold" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
+
+        <in.workarounds.typography.Button
             android:id="@+id/dialog_confirm_confirm_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,22 +74,6 @@
             app:font_name="@string/font_name"
             app:font_variant="@string/font_bold" />
 
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent" />
-
-        <in.workarounds.typography.Button
-            android:id="@+id/dialog_confirm_cancel_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/base_selector_background"
-            android:gravity="center"
-            android:text="Cancel"
-            android:textColor="@color/blueActionbar"
-            android:textSize="@dimen/d15"
-            app:font_name="@string/font_name"
-            app:font_variant="@string/font_bold" />
     </LinearLayout>
 
 </LinearLayout>

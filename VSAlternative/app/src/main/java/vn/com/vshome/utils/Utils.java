@@ -1,24 +1,31 @@
 package vn.com.vshome.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.DialogCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.database.DeviceState;
@@ -27,6 +34,8 @@ import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.database.Scene;
 import vn.com.vshome.database.SceneDevice;
+import vn.com.vshome.dialog.ConfirmDialog;
+import vn.com.vshome.dialog.ErrorDialog;
 import vn.com.vshome.view.MaterialRippleLayout;
 
 /**
@@ -34,82 +43,24 @@ import vn.com.vshome.view.MaterialRippleLayout;
  */
 public class Utils {
 
-    public static void showErrorDialog(String title, String message,
-                                       Context context) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.view_dialog_error);
-
-        TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_error_title);
-        mTitle.setText(title);
-        TextView mContent = (TextView) dialog.findViewById(R.id.dialog_error_content);
-        mContent.setText(message);
-        Button mCancel = (Button) dialog.findViewById(R.id.dialog_error_cancel_button);
-        mCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        dialog.show();
+    public static void showErrorDialog(Object title, Object message) {
+        ErrorDialog errorDialog = new ErrorDialog();
+        errorDialog.setTitle(title instanceof String ? (String) title : getString((int)title));
+        errorDialog.setContent(message instanceof String ? (String) message : getString((int)message));
+        errorDialog.show(TheActivityManager.getInstance().getCurrentActivity().getFragmentManager(), ErrorDialog.class.getSimpleName());
     }
 
-    public static void showErrorDialog(int title, int message,
-                                       Context context) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.view_dialog_error);
-
-        TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_error_title);
-        mTitle.setText(context.getResources().getString(title));
-        TextView mContent = (TextView) dialog.findViewById(R.id.dialog_error_content);
-        mContent.setText(context.getResources().getString(message));
-        Button mCancel = (Button) dialog.findViewById(R.id.dialog_error_cancel_button);
-        mCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        dialog.show();
-    }
-
-    public static void showConfirmDialog(String title, String message,
-                                         Context context, final DialogCallback callback) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.view_dialog_confirm);
-
-        TextView mTitle = (TextView) dialog.findViewById(R.id.dialog_confirm_title);
-        mTitle.setText(title);
-        TextView mContent = (TextView) dialog.findViewById(R.id.dialog_confirm_content);
-        mContent.setText(message);
-        Button mCancel = (Button) dialog.findViewById(R.id.dialog_confirm_cancel_button);
-        mCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        Button mOk = (Button) dialog.findViewById(R.id.dialog_confirm_confirm_button);
-        mOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                if (callback != null) {
-                    callback.onConfirm();
-                }
-            }
-        });
-        dialog.show();
+    public static void showConfirmDialog(String title, String message, final DialogCallback callback) {
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        confirmDialog.setTitle(title);
+        confirmDialog.setContent(message);
+        confirmDialog.setCallback(callback);
+        confirmDialog.show(TheActivityManager.getInstance().getCurrentActivity().getFragmentManager()
+                , ConfirmDialog.class.getSimpleName());
     }
 
     public final static int Byte2Unsigned(byte a) {
         return (a & 0xFF);
-    }
-
-    public final static int Int2Unsigned(int a) {
-        return a & 0xFF;
     }
 
     public static void putDatabase(Context context, ArrayList<Floor> floors, int uid) {
@@ -182,11 +133,11 @@ public class Utils {
     }
 
     public static int getColor(int id) {
-        return VSHome.activity.getResources().getColor(id);
+        return TheActivityManager.getInstance().getCurrentActivity().getResources().getColor(id);
     }
 
     public static String getString(int id) {
-        return VSHome.activity.getResources().getString(id);
+        return TheActivityManager.getInstance().getCurrentActivity().getResources().getString(id);
     }
 
     private static Bitmap decodeBitmap(Context context, Uri theUri,
@@ -220,7 +171,7 @@ public class Utils {
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) VSHome.activity.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) TheActivityManager.getInstance().getCurrentActivity().getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
@@ -237,5 +188,62 @@ public class Utils {
             e.printStackTrace();
         }
         return versionCode;
+    }
+
+    public static void hideKeyboard(Context context) {
+        try {
+            InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(((Activity) context).getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            inputManager.hideSoftInputFromWindow(((Activity) context).getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            Logger.LogD("Can't hide keyboard");
+        }
+    }
+
+    public static boolean isAppInBackground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null)
+            return true;
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(context.getPackageName())) {
+                return appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
+            }
+        }
+        return false;
+    }
+
+    public static void restart() {
+        Intent launchIntent = TheActivityManager.getInstance().getCurrentActivity()
+                .getPackageManager()
+                .getLaunchIntentForPackage(TheActivityManager.getInstance().getCurrentActivity().getPackageName());
+        if (launchIntent != null) {
+            launchIntent.putExtra(Define.INTENT_RESTART, true);
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            TheActivityManager.getInstance().getCurrentActivity().startActivity(launchIntent);
+        }
+    }
+
+    public static void trimCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            if (dir != null && dir.isDirectory()) {
+                deleteDir(dir);
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 }

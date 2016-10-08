@@ -20,6 +20,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.RoomSelectionCallback;
 import vn.com.vshome.database.Room;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
@@ -72,7 +73,7 @@ public class RoomSelectionItem extends AbstractModelItem<RoomSelectionItem.RoomS
         holder.mRoomName.setText(mRoom.name);
         String path = Define.BASE_IMAGE_PATH + File.separator + mRoom.getId().intValue()
                 + File.separator + "Image.png";
-        Glide.with(VSHome.activity)
+        Glide.with(TheActivityManager.getInstance().getCurrentActivity())
                 .load(path)
                 .fitCenter()
                 .placeholder(R.drawable.no_image_place_holder)

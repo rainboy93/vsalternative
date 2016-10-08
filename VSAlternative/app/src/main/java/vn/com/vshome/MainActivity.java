@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.DialogCallback;
 import vn.com.vshome.communication.SocketManager;
-import vn.com.vshome.lightingcontrol.LightingControlActivity;
 import vn.com.vshome.roomselection.RoomSelectionActivity;
 import vn.com.vshome.security.SecurityActivity;
 import vn.com.vshome.user.UserActivity;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
 
@@ -67,12 +68,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onBackPressed() {
         Utils.showConfirmDialog("Thông báo",
-                "Bạn có chắc chắn muốn thoát khỏi ứng dụng?", this, this);
+                "Bạn có chắc chắn muốn thoát khỏi ứng dụng?", this);
     }
 
     @Override
     public void onConfirm() {
-        SocketManager.getInstance().destroySocket();
-        finishAffinity();
+        MiscUtils.runOnBackgroundThread(new Runnable() {
+            @Override
+            public void run() {
+                SocketManager.getInstance().destroySocket();
+                TheActivityManager.getInstance().finishAll();
+            }
+        });
     }
 }

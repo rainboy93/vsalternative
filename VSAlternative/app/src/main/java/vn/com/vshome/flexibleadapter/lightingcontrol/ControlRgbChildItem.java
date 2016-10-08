@@ -21,6 +21,7 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
@@ -261,7 +262,7 @@ public class ControlRgbChildItem extends AbstractControlItem<ControlRgbChildItem
     }
 
     private void showSelectColorDialog(final int color) {
-        final Dialog dialog = new Dialog(VSHome.activity);
+        final Dialog dialog = new Dialog(TheActivityManager.getInstance().getCurrentActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.view_dialog_select_color);
 

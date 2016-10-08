@@ -20,6 +20,7 @@ import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.TimeOutManager;
 import vn.com.vshome.view.ProgressHUD;
 
@@ -139,7 +140,7 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
 
     public void updateUserRow() {
         if (currentUserControl >= 0 && currentUserControl < mDataset.size()) {
-            VSHome.activity.runOnUiThread(new Runnable() {
+            MiscUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     notifyItemChanged(currentUserControl);
@@ -147,7 +148,6 @@ public class UserAdapter extends RecyclerSwipeAdapter<UserAdapter.UserViewHolder
                 }
             });
         }
-        ;
     }
 
     public void setUserControlCallback(UserControlCallback callback) {

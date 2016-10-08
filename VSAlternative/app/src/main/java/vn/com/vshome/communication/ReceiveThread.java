@@ -67,7 +67,11 @@ public class ReceiveThread extends Thread {
 
     public void stopRunning() {
         isRunning = false;
-        interrupt();
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private Context mContext;
@@ -84,7 +88,7 @@ public class ReceiveThread extends Thread {
                 if (len == -1) {
                     isRunning = false;
                     SocketManager.getInstance().destroySocket();
-                    VSHome.restart();
+                    Utils.restart();
                     break;
                 }
                 handleMessage();

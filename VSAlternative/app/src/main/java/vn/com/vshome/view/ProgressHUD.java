@@ -1,6 +1,7 @@
 package vn.com.vshome.view;
 
 import vn.com.vshome.R;
+import vn.com.vshome.utils.MiscUtils;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,7 +18,7 @@ public class ProgressHUD extends Dialog {
     private static ProgressHUD progressHUD;
 
     public static void showLoading(final Activity activity) {
-        activity.runOnUiThread(new Runnable() {
+        MiscUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 hideLoading(activity);
@@ -27,7 +28,7 @@ public class ProgressHUD extends Dialog {
     }
 
     public static void hideLoading(Activity activity) {
-        activity.runOnUiThread(new Runnable() {
+        MiscUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (progressHUD != null) {
@@ -68,12 +69,6 @@ public class ProgressHUD extends Dialog {
         dialog.setContentView(R.layout.progress_hud);
         dialog.findViewById(R.id.message).setVisibility(View.GONE);
         dialog.setCancelable(false);
-//		dialog.setOnCancelListener(new OnCancelListener() {
-//			@Override
-//			public void onCancel(DialogInterface dialog) {
-//
-//			}
-//		});
         dialog.getWindow().getAttributes().gravity = Gravity.CENTER;
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
         lp.dimAmount = 0.0f;

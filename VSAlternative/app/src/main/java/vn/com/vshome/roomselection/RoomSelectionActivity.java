@@ -12,6 +12,7 @@ import java.util.List;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.database.DatabaseService;
@@ -28,16 +29,19 @@ public class RoomSelectionActivity extends BaseActivity implements View.OnClickL
     private RecyclerView mRecyclerView;
     private BaseAdapter mFloorAdapter;
     private List<AbstractFlexibleItem> mListFloor;
+    private TextView mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_selection);
-
         initView();
     }
 
     private void initView() {
+        mTitle = (TextView) findViewById(R.id.action_bar_title);
+        mTitle.setText("Chiếu sáng");
+
         mBack = (ImageButton) findViewById(R.id.action_bar_menu);
         mBack.setImageResource(R.drawable.icon_back);
         mBack.setOnClickListener(this);

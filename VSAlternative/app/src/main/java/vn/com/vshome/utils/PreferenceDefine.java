@@ -18,5 +18,4 @@ public class PreferenceDefine {
     public static final String VERSION_CODE = "VersionCode";
     public static final String CONFIGURE_ID = "ConfigureID";
     public static final String SCENE_DB_VERSION = "SceneDBVersion";
-
 }

@@ -27,6 +27,10 @@ public class SendThread extends Thread{
         if(mHandler == null){
             return;
         }
+
+        SocketManager.getInstance().stopHeartBeat();
+        SocketManager.getInstance().startHeartBeat();
+
         Message message = new Message();
         message.what = SEND_MESSAGE;
         Bundle bundle = new Bundle();

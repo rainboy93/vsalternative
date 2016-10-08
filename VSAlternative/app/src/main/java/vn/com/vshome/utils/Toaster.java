@@ -11,7 +11,7 @@ public class Toaster {
     private static Toast mToast;
 
     public static void showMessage(final Activity activity, final String msg){
-        activity.runOnUiThread(new Runnable() {
+        MiscUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(mToast == null){

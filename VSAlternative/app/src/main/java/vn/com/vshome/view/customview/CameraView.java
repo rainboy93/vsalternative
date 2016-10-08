@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
+import vn.com.vshome.utils.MiscUtils;
 
 
 public class CameraView extends View implements Runnable {
@@ -32,7 +33,6 @@ public class CameraView extends View implements Runnable {
     private RectF rectF = new RectF();
 
     private CameraSession cameraSession;
-    private Handler handler;
 
     private ByteBuffer buffer = null;
     private FrameData cameraData = null;
@@ -52,10 +52,7 @@ public class CameraView extends View implements Runnable {
 
     public void startDraw() {
         isDrawing = true;
-        if (handler == null) {
-            handler = new Handler();
-        }
-        handler.postDelayed(this, 10);
+        MiscUtils.runOnBackgroundThread(this, 10);
     }
 
     private void setRect() {
@@ -153,15 +150,15 @@ public class CameraView extends View implements Runnable {
             buffer = ByteBuffer.wrap(cameraData.data);
             if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
                 mBit = GlideBitmapPool.getBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
-                setRect();
            }
+            setRect();
             mBit.copyPixelsFromBuffer(buffer);
             buffer.rewind();
         } catch (Exception ex) {
 
         }
-        invalidate();
+        postInvalidate();
         SystemClock.sleep(5);
-        handler.post(this);
+        MiscUtils.runOnBackgroundThread(this);
     }
 }

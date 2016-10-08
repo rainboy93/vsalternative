@@ -34,6 +34,12 @@ public class Define {
 
     public static final String INTENT_CAMERA = "Camera";
 
+    public static final String INTENT_PREVIEW = "StartPreviewing";
+    public static final String INTENT_FULL_SCREEN = "StartFullScreen";
+    public static final String INTENT_STOP_PREVIEW = "StopPreviewing";
+
+    public static final String INTENT_RESTART = "Restart";
+
     public static final int CODE_SELECT_PICTURE = 1000;
     public static final int CODE_TAKE_PICTURE = 1001;
     public static final int CODE_CROP_PICTURE = 1002;

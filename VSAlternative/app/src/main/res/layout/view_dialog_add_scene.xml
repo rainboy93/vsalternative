@@ -46,6 +46,13 @@
             android:textSize="@dimen/d18"
             app:font_name="@string/font_name"
             app:font_variant="@string/font_regular" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/d20"
+            android:layout_marginRight="@dimen/d20"
+            android:background="@color/gray" />
     </LinearLayout>
 
     <in.workarounds.typography.Button

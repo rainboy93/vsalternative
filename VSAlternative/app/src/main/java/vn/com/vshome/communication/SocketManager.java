@@ -1,6 +1,5 @@
 package vn.com.vshome.communication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -14,9 +13,10 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.LoginCallback;
+import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.networks.CommandMessage;
-import vn.com.vshome.security.CameraControlThread;
 import vn.com.vshome.security.PreviewService;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
@@ -35,7 +35,6 @@ public class SocketManager {
     public OutputStream outputStream;
     public ReceiveThread receiveThread;
     public SendThread sendThread;
-    public boolean isDestroy = false;
 
     private static SocketManager socketManager;
 
@@ -67,8 +66,18 @@ public class SocketManager {
         heartBeatHandler.postDelayed(heartBeatRunnable, HEART_BEAT_DELAY * 1000);
     }
 
+    public void stopHeartBeat(){
+        try {
+            heartBeatHandler.removeCallbacks(heartBeatRunnable);
+        } catch (Exception e){
+
+        }
+        heartBeatHandler = null;
+        heartBeatRunnable = null;
+    }
+
     public void startCommunication(LoginCallback callback) {
-        receiveThread = new ReceiveThread(VSHome.activity);
+        receiveThread = new ReceiveThread(TheActivityManager.getInstance().getCurrentActivity());
         receiveThread.start();
         sendThread = new SendThread();
         sendThread.start();
@@ -87,6 +96,7 @@ public class SocketManager {
     }
 
     public boolean canConnect(Context context, int type) {
+        boolean success = false;
         destroySocket();
         String address = "";
         int port = 0;
@@ -102,9 +112,9 @@ public class SocketManager {
             socket = new Socket();
             SocketAddress socketAddress = new InetSocketAddress(address, port);
             if (type == 0) {
-                socket.connect(socketAddress, 2000);
+                socket.connect(socketAddress, 1000);
             } else if (type == 1) {
-                socket.connect(socketAddress, 3000);
+                socket.connect(socketAddress, 2000);
             }
             socket.setSoTimeout(1000);
             inputStream = socket.getInputStream();
@@ -116,29 +126,39 @@ public class SocketManager {
                 Logger.LogD("Connect to WAN success");
                 Define.NETWORK_TYPE = Define.NetworkType.DnsNetwork;
             }
+            localTry = 3;
+            dnsTry = 3;
             return true;
         } catch (IOException e) {
 //            e.printStackTrace();
-            if (type == 0) {
-                Logger.LogD("Connect to LAN failed");
-            } else if (type == 1) {
-                Logger.LogD("Connect to WAN failed");
-            }
             Define.NETWORK_TYPE = Define.NetworkType.NotDetermine;
             destroySocket();
-            return false;
+            if (type == 0 && localTry > 0) {
+                Logger.LogD("Connect to LAN failed");
+                localTry--;
+                return canConnect(context, type);
+            } else if (type == 1 && dnsTry > 0) {
+                Logger.LogD("Connect to WAN failed");
+                return canConnect(context, type);
+            } else {
+                localTry = 3;
+                dnsTry = 3;
+                return false;
+            }
         }
     }
 
+    private int dnsTry = 3;
+    private int localTry = 3;
+
     public void destroySocket() {
         try {
-            heartBeatHandler.removeCallbacks(heartBeatRunnable);
-        } catch (Exception e) {
-//            e.printStackTrace();
-        }
+            Intent intent = new Intent(TheActivityManager.getInstance().getApplication(), PreviewService.class);
+            TheActivityManager.getInstance().getApplication().stopService(intent);
+        } catch (Exception e){
 
-        heartBeatRunnable = null;
-        heartBeatHandler = null;
+        }
+        stopHeartBeat();
 
         if (sendThread != null) {
             sendThread.stopRunning();
@@ -148,16 +168,6 @@ public class SocketManager {
         if (receiveThread != null) {
             receiveThread.stopRunning();
             receiveThread = null;
-        }
-
-        CameraControlThread.getInstance().stopRunning();
-
-        try {
-            if (Utils.isMyServiceRunning(PreviewService.class)) {
-                VSHome.activity.stopService(new Intent(VSHome.activity, PreviewService.class));
-            }
-        } catch (Exception e) {
-
         }
 
         if (inputStream != null) {
@@ -186,5 +196,7 @@ public class SocketManager {
                 e.printStackTrace();
             }
         }
+
+        CameraManager.getInstance().releaseCamera();
     }
 }

@@ -133,7 +133,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     public void onSelect(Room room) {
         if (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN
                 && VSHome.currentUser.roomControl.charAt(room.getId().intValue() - 1) != '1') {
-            Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority, getActivity());
+            Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority);
             return;
         }
 

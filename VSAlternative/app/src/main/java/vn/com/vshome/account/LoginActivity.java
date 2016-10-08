@@ -18,11 +18,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("EXIT", false)) {
-            finish();
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

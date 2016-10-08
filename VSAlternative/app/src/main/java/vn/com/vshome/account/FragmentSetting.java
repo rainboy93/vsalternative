@@ -68,7 +68,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
         if (v == mSave) {
             if (!isValidIP4Address(mIP.getText().toString())) {
                 Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_lan_ip_error), getActivity());
+                        getTextFromResource(R.string.txt_lan_ip_error));
                 mIP.requestFocus();
                 return;
             }
@@ -78,7 +78,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
                 if (!isValidIP4Address(mDNS.getText()
                         .toString())) {
                     Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                            getTextFromResource(R.string.txt_wan_addr_error), getActivity());
+                            getTextFromResource(R.string.txt_wan_addr_error));
                     mDNS.requestFocus();
                     return;
                 }
@@ -87,7 +87,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
             if (((Integer.parseInt(mIPPort.getText().toString())) > 65535)
                     || ((Integer.parseInt(mIPPort.getText().toString())) == 0)) {
                 Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_lan_port_error), getActivity());
+                        getTextFromResource(R.string.txt_lan_port_error));
                 mIPPort.requestFocus();
                 return;
             }
@@ -95,7 +95,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
             if (((Integer.parseInt(mDNSPort.getText().toString())) > 65535)
                     || ((Integer.parseInt(mDNSPort.getText().toString())) == 0)) {
                 Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_wan_port_error), getActivity());
+                        getTextFromResource(R.string.txt_wan_port_error));
                 mDNSPort.requestFocus();
                 return;
             }

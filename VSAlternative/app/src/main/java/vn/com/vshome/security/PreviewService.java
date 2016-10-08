@@ -1,7 +1,7 @@
 package vn.com.vshome.security;
 
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.utils.Define;
@@ -14,14 +14,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.os.IBinder;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -86,11 +83,12 @@ public class PreviewService extends Service implements
 
         Log.d("dungnt", "start preview");
 
-        fullScreenReceiver = new StartFullScreenReceiver();
+        previewReceiver = new PreviewReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("StartFullScreen");
-        filter.addAction("StartPreviewing");
-        getApplication().registerReceiver(fullScreenReceiver, filter);
+        filter.addAction(Define.INTENT_FULL_SCREEN);
+        filter.addAction(Define.INTENT_PREVIEW);
+        filter.addAction(Define.INTENT_STOP_PREVIEW);
+        getApplication().registerReceiver(previewReceiver, filter);
 
         CameraManager.getInstance().isPreviewing = true;
 
@@ -213,6 +211,7 @@ public class PreviewService extends Service implements
 
     @Override
     public void onDestroy() {
+        hidePreview();
         if (mParentLayout != null) {
             try {
                 windowManager.removeView(mParentLayout);
@@ -222,8 +221,8 @@ public class PreviewService extends Service implements
         }
         Log.d("dungnt", "Stop perview");
         try {
-            getApplication().unregisterReceiver(fullScreenReceiver);
-        } catch (Exception e){
+            getApplication().unregisterReceiver(previewReceiver);
+        } catch (Exception e) {
 
         }
         CameraManager.getInstance().removeSession(camera);
@@ -243,9 +242,9 @@ public class PreviewService extends Service implements
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         hidePreview();
-        Intent intent = new Intent(VSHome.activity, FullPreviewActivity.class);
+        Intent intent = new Intent(TheActivityManager.getInstance().getCurrentActivity(), FullPreviewActivity.class);
         intent.putExtra(Define.INTENT_CAMERA, camera.getId());
-        VSHome.activity.startActivity(intent);
+        TheActivityManager.getInstance().getCurrentActivity().startActivity(intent);
         return true;
     }
 
@@ -292,18 +291,16 @@ public class PreviewService extends Service implements
         windowManager.updateViewLayout(mParentLayout, paramF);
     }
 
-    private StartFullScreenReceiver fullScreenReceiver;
+    private PreviewReceiver previewReceiver;
 
-    public class StartFullScreenReceiver extends BroadcastReceiver {
+    public class PreviewReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().equals("StartFullScreen")) {
+            if (intent.getAction().equals(Define.INTENT_FULL_SCREEN)) {
                 hidePreview();
-            }
-
-            if (intent.getAction().equals("StartPreviewing")) {
+            } else if (intent.getAction().equals(Define.INTENT_PREVIEW)) {
                 Log.d("Preview", "StartPreviewing");
                 if (mParentLayout == null) {
                     return;
@@ -313,6 +310,8 @@ public class PreviewService extends Service implements
                 paramF.width = (int) (SCALE * width + CLOSE_BUTTON_WIDTH / 2);
                 paramF.height = (int) (3 * SCALE * width / 4 + CLOSE_BUTTON_HEIGHT / 2);
                 windowManager.updateViewLayout(mParentLayout, paramF);
+            } else if (intent.getAction().equals(Define.INTENT_STOP_PREVIEW)) {
+                stopSelf();
             }
         }
     }

@@ -19,6 +19,7 @@ import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.MiscUtils;
 
 /**
  * Created by anlab on 8/3/16.
@@ -100,7 +101,12 @@ public class CameraThread extends Thread {
     }
 
     private void logOut() {
-        FosSdkJNI.Logout(handler, 1000);
+        MiscUtils.runOnBackgroundThread(new Runnable() {
+            @Override
+            public void run() {
+                FosSdkJNI.Logout(handler, 1000);
+            }
+        });
     }
 
     private void startGetData() {
@@ -110,7 +116,7 @@ public class CameraThread extends Thread {
             if(videoData != null){
                 publicData = videoData.clone();
                 listData.add(publicData);
-                if(listData.size() > 3){
+                if(listData.size() > 2){
                     listData.remove(0);
                 }
             }
@@ -130,10 +136,6 @@ public class CameraThread extends Thread {
         if(videoData != null){
             videoData = null;
         }
-        try {
-            join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        interrupt();
     }
 }

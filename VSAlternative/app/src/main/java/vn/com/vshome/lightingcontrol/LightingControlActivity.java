@@ -239,7 +239,7 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
             if (room != null && mAdapter != null) {
                 if (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN
                         && VSHome.currentUser.roomControl.charAt(room.getId().intValue() - 1) != '1') {
-                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority, LightingControlActivity.this);
+                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority);
                     return false;
                 }
 

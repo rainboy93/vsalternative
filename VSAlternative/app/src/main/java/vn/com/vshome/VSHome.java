@@ -6,8 +6,9 @@ import android.content.ComponentCallbacks;
 import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
+import android.support.v4.app.ActivityCompat;
 
 import com.fos.sdk.FosSdkJNI;
 import com.glidebitmappool.GlideBitmapPool;
@@ -18,28 +19,26 @@ import com.zplesac.connectionbuddy.interfaces.ConnectivityChangeListener;
 import com.zplesac.connectionbuddy.models.ConnectivityEvent;
 import com.zplesac.connectionbuddy.models.ConnectivityState;
 
+import java.io.File;
+import java.io.IOException;
+
 import vn.com.vshome.account.LoginActivity;
+import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
-import vn.com.vshome.foscamsdk.CameraManager;
-import vn.com.vshome.security.FullPreviewActivity;
-import vn.com.vshome.security.PreviewService;
+import vn.com.vshome.utils.FileUtils;
 import vn.com.vshome.utils.Logger;
+import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 7/4/16.
  */
-public class VSHome extends SugarApp implements ConnectivityChangeListener,
-        Application.ActivityLifecycleCallbacks {
-    public static Activity activity;
+public class VSHome extends SugarApp implements ConnectivityChangeListener, ComponentCallbacks2, ComponentCallbacks {
     public static User currentUser;
     public static boolean isTakePhoto = false;
-    private final long BACKGROUND_DELAY = 500;
     private final long BACKGROUND_DELAY_WITH_TAKE_IMAGE = 120 * 1000;
-    public static boolean isLogIn = false;
 
-    private boolean mInBackground = true;
     private final Handler mBackgroundDelayHandler = new Handler();
     private Runnable mBackgroundTransition;
 
@@ -47,76 +46,71 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
     public void onCreate() {
         super.onCreate();
 
+        TheActivityManager.getInstance().configure(this);
+        MiscUtils.init(getApplicationContext());
         FosSdkJNI.Init();
         GlideBitmapPool.initialize(10 * 1024 * 1024);
 
-//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//            @Override
-//            public void uncaughtException(Thread thread, Throwable ex) {
-//                handleUncaughtException(thread, ex);
-//            }
-//        });
-
-        SocketManager.getInstance();
-
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                handleUncaughtException(thread, ex);
+            }
+        });
 
         ConnectionBuddyConfiguration configuration = new ConnectionBuddyConfiguration.Builder(this).build();
         ConnectionBuddy.getInstance().init(configuration);
         ConnectionBuddy.getInstance().registerForConnectivityEvents(this, true, this);
-
-        registerActivityLifecycleCallbacks(this);
     }
 
     @Override
     public void onTerminate() {
         FosSdkJNI.DeInit();
+        GlideBitmapPool.clearMemory();
         super.onTerminate();
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+        GlideBitmapPool.trimMemory(level);
         Logger.LogD("Trim memory level " + level);
         if (level == TRIM_MEMORY_COMPLETE || level == TRIM_MEMORY_UI_HIDDEN) {
             trimMemory();
         }
     }
 
-    private void trimMemory(){
+    private void trimMemory() {
         if (isTakePhoto) {
             mBackgroundTransition = new Runnable() {
                 @Override
                 public void run() {
-                    mInBackground = true;
                     mBackgroundTransition = null;
                     SocketManager.getInstance().destroySocket();
-                    SocketManager.getInstance().isDestroy = true;
+                    TheActivityManager.getInstance().finishAll();
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             };
             mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
                     BACKGROUND_DELAY_WITH_TAKE_IMAGE);
         } else {
-            mInBackground = true;
             mBackgroundTransition = null;
             SocketManager.getInstance().destroySocket();
-            SocketManager.getInstance().isDestroy = true;
-        }
-    }
-
-    public static void restart() {
-        if (activity != null) {
-            Intent intent = new Intent(activity, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            activity.startActivity(intent);
+            TheActivityManager.getInstance().finishAll();
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 
     private void handleUncaughtException(Thread thread, Throwable e) {
         Logger.LogD("Exception caught: " + e.getMessage());
+        try {
+            FileUtils.stringToFile(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + "vshome.debug", e.getMessage());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         SocketManager.getInstance().destroySocket();
-        restart();
+        Utils.restart();
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);
     }
@@ -126,77 +120,10 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener,
         if (event.getState() == ConnectivityState.CONNECTED) {
 
         } else {
-            SocketManager.getInstance().destroySocket();
-            restart();
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onActivityStarted(Activity activity) {
-    }
-
-    @Override
-    public void onActivityResumed(Activity activity) {
-        if (SocketManager.getInstance().isDestroy) {
-            SocketManager.getInstance().isDestroy = false;
-            restart();
-            return;
-        }
-        this.activity = activity;
-        if (!(activity instanceof FullPreviewActivity)) {
-            if (CameraManager.getInstance().isPreviewing && Utils.isMyServiceRunning(PreviewService.class)) {
-                sendBroadcast(new Intent("StartPreviewing"));
+            if (!Utils.isAppInBackground(getApplicationContext())) {
+                SocketManager.getInstance().destroySocket();
+                Utils.restart();
             }
         }
-        if (mBackgroundTransition != null) {
-            mBackgroundDelayHandler.removeCallbacks(mBackgroundTransition);
-            mBackgroundTransition = null;
-        }
-
-        if (mInBackground) {
-            mInBackground = false;
-        }
-    }
-
-    @Override
-    public void onActivityPaused(Activity activity) {
-//        if (!mInBackground && mBackgroundTransition == null) {
-//            mBackgroundTransition = new Runnable() {
-//                @Override
-//                public void run() {
-//                    mInBackground = true;
-//                    mBackgroundTransition = null;
-//                    SocketManager.getInstance().destroySocket();
-//                    SocketManager.getInstance().isDestroy = true;
-//                }
-//            };
-//            if (isTakePhoto) {
-//                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
-//                        BACKGROUND_DELAY_WITH_TAKE_IMAGE);
-//            } else {
-//                mBackgroundDelayHandler.postDelayed(mBackgroundTransition,
-//                        BACKGROUND_DELAY);
-//            }
-//        }
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-
     }
 }
