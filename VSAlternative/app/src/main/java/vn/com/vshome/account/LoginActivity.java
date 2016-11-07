@@ -1,10 +1,6 @@
 package vn.com.vshome.account;
 
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-
-import java.util.List;
 
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;

@@ -7,10 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 /**
  * Created by anlab on 7/4/16.
  */
-public class AccountViewPagerAdapter extends FragmentStatePagerAdapter{
-
-    public static final int FRAGMENT_LOGIN = 0;
-    public static final int FRAGMENT_SETTING = 1;
+public class AccountViewPagerAdapter extends FragmentStatePagerAdapter {
 
     public AccountViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -18,9 +15,9 @@ public class AccountViewPagerAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public Fragment getItem(int position) {
-        if(position == 0){
+        if (position == 0) {
             return FragmentLogin.newInstance(position);
-        } else if(position == 1){
+        } else if (position == 1) {
             return FragmentSetting.newInstance(position);
         }
         return null;
@@ -33,8 +30,8 @@ public class AccountViewPagerAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public int getItemPosition(Object object) {
-        if(object instanceof FragmentSetting){
-            ((FragmentSetting)object).refresh();
+        if (object instanceof FragmentSetting) {
+            ((FragmentSetting) object).refresh();
         }
         return super.getItemPosition(object);
     }

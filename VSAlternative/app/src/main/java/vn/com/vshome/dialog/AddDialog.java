@@ -10,28 +10,34 @@ import android.view.Window;
 import android.widget.ImageButton;
 
 import in.workarounds.typography.Button;
+import in.workarounds.typography.EditText;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.callback.DialogCallback;
+import vn.com.vshome.callback.InputCallback;
 
 /**
  * Created by anlab on 10/6/16.
  */
-public class DeleteDialog extends DialogFragment {
+public class AddDialog extends DialogFragment {
 
-    private TextView mContent;
     private Button mConfirm;
+    private EditText mName;
     private ImageButton mCancel;
 
-    private CharSequence content = "";
+    private String title = "", content = "";
 
-    public void setContent(CharSequence content) {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
         this.content = content;
     }
 
-    private DialogCallback callback;
+    private InputCallback callback;
 
-    public void setCallback(DialogCallback callback) {
+    public void setCallback(InputCallback callback) {
         this.callback = callback;
     }
 
@@ -46,7 +52,7 @@ public class DeleteDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.view_dialog_delete_scene, container,
+        View rootView = inflater.inflate(R.layout.view_dialog_add_scene, container,
                 false);
 
         initView(rootView);
@@ -55,24 +61,23 @@ public class DeleteDialog extends DialogFragment {
     }
 
     private void initView(View view) {
-        mContent = (TextView) view.findViewById(R.id.dialog_delete_scene_text);
-        mContent.setText(content);
+        mName = (EditText) view.findViewById(R.id.dialog_add_scene_name);
 
-        mCancel = (ImageButton) view.findViewById(R.id.dialog_delete_scene_button_cancel);
+        mCancel = (ImageButton) view.findViewById(R.id.dialog_add_scene_button_cancel);
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteDialog.this.dismiss();
+                AddDialog.this.dismiss();
             }
         });
-        mConfirm = (Button) view.findViewById(R.id.dialog_delete_scene_button_confirm);
+        mConfirm = (Button) view.findViewById(R.id.dialog_add_scene_button_confirm);
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteDialog.this.dismiss();
                 if (callback != null) {
-                    callback.onConfirm();
+                    callback.onConfirm(mName.getText().toString());
                 }
+                AddDialog.this.dismiss();
             }
         });
     }

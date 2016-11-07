@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp">
 
@@ -26,40 +27,35 @@
         app:font_name="@string/font_name"
         app:font_variant="@string/font_regular" />
 
-    <LinearLayout
+    <in.workarounds.typography.EditText
+        android:id="@+id/dialog_add_scene_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:layout_below="@+id/dialog_add_scene_text"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/d30"
+        android:layout_weight="1"
+        android:background="@null"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/d25"
+        app:font_name="@string/font_name"
+        app:font_variant="@string/font_regular" />
 
-        <in.workarounds.typography.EditText
-            android:id="@+id/dialog_add_scene_name"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/d50"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/d25"
-            android:textSize="@dimen/d18"
-            app:font_name="@string/font_name"
-            app:font_variant="@string/font_regular" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="@dimen/d20"
-            android:layout_marginRight="@dimen/d20"
-            android:background="@color/gray" />
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/dialog_add_scene_name"
+        android:layout_marginLeft="@dimen/d20"
+        android:layout_marginRight="@dimen/d20"
+        android:background="@color/gray" />
 
     <in.workarounds.typography.Button
         android:id="@+id/dialog_add_scene_button_confirm"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d50"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/dialog_add_scene_name"
+        android:layout_marginTop="@dimen/d20"
         android:background="@color/button_color"
         android:gravity="center"
         android:text="XÁC NHẬN"

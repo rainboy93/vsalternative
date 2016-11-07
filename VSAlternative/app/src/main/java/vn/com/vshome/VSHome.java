@@ -54,7 +54,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                handleUncaughtException(thread, ex);
+//                handleUncaughtException(ex);
             }
         });
 
@@ -76,7 +76,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         GlideBitmapPool.trimMemory(level);
         Logger.LogD("Trim memory level " + level);
         if (level == TRIM_MEMORY_COMPLETE || level == TRIM_MEMORY_UI_HIDDEN) {
-            trimMemory();
+//            trimMemory();
         }
     }
 
@@ -101,7 +101,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         }
     }
 
-    private void handleUncaughtException(Thread thread, Throwable e) {
+    private void handleUncaughtException(Throwable e) {
         Logger.LogD("Exception caught: " + e.getMessage());
         try {
             FileUtils.stringToFile(Environment.getExternalStorageDirectory().getAbsolutePath()

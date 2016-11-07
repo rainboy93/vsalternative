@@ -1,8 +1,14 @@
 package vn.com.vshome;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.transition.Explode;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 
 import vn.com.vshome.activitymanager.TheActivityManager;
@@ -19,12 +25,12 @@ import vn.com.vshome.utils.Utils;
 public class MainActivity extends BaseActivity implements View.OnClickListener, DialogCallback {
 
     private ImageButton mButtonLight, mButtonSecurity, mButtonSensor, mButtonSun, mButtonUser, mButtonAdvance;
+    private static final int DRAW_OVERLAY_REQUEST_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
     }
 
@@ -50,7 +56,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (v == mButtonLight) {
             intent = new Intent(this, RoomSelectionActivity.class);
         } else if (v == mButtonSecurity) {
-            intent = new Intent(this, SecurityActivity.class);
+//            intent = new Intent(this, SecurityActivity.class);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && !Settings.canDrawOverlays(this)) {
+                Utils.showConfirmDialog("", "Bạn cần cho phép vẽ lên màn hình để truy cập mục này", new DialogCallback() {
+                    @Override
+                    public void onConfirm() {
+                        checkPermission();
+                    }
+                });
+            } else {
+                intent = new Intent(this, SecurityActivity.class);
+            }
         } else if (v == mButtonSensor) {
             Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
         } else if (v == mButtonSun) {
@@ -80,5 +98,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 TheActivityManager.getInstance().finishAll();
             }
         });
+    }
+
+    private void checkPermission() {
+        Intent i = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+        VSHome.isTakePhoto = true;
+        startActivityForResult(i, DRAW_OVERLAY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DRAW_OVERLAY_REQUEST_CODE) {
+            VSHome.isTakePhoto = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && !Settings.canDrawOverlays(this)) {
+                super.onActivityResult(requestCode, resultCode, data);
+            } else {
+                Intent intent = new Intent(this, SecurityActivity.class);
+                startActivity(intent);
+            }
+        }
     }
 }

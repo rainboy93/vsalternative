@@ -142,7 +142,11 @@ public class CameraGroupItem
             holder.mDivider.setVisibility(View.VISIBLE);
             ((CameraChildItem) mListChildItems.get(0)).isError = false;
             if (session != null && session.isHasCore) {
-                CameraManager.getInstance().removeSession(camera, true);
+                if (CameraManager.getInstance().isPreviewing) {
+                    CameraManager.getInstance().removeAllSessionExcept(camera);
+                } else {
+                    CameraManager.getInstance().removeAll(camera);
+                }
             }
         }
     }

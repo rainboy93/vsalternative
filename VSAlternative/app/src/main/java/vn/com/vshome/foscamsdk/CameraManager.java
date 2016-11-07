@@ -43,6 +43,9 @@ public class CameraManager {
             session.isHasCore = true;
             mListSession.put(camera.getId(), session);
         } else {
+            if (cameraCallback != null) {
+                session.isHasCore = true;
+            }
             session.amount++;
         }
         Logger.LogD("Add session id " + camera.getId() + " count " + session.amount);
@@ -53,6 +56,28 @@ public class CameraManager {
         if (session != null) {
             session.amount--;
             Logger.LogD("Remove session " + session.amount);
+            if (session.amount <= 0) {
+                session.cameraThread.stopGetData();
+                session.cameraThread = null;
+                mListSession.remove(camera.getId());
+            }
+        }
+    }
+
+    public void removeAllSessionExcept(Camera camera) {
+        CameraSession session = mListSession.get(camera.getId());
+        if (session != null) {
+            session.amount = 1;
+            session.isHasCore = false;
+        }
+    }
+
+    public void removeAll(Camera camera) {
+        CameraSession session = mListSession.get(camera.getId());
+        if (session != null) {
+            session.amount = 0;
+            Logger.LogD("Remove session id " + camera.getId() + " count " + session.amount);
+            session.isHasCore = false;
             if (session.amount <= 0) {
                 session.cameraThread.stopGetData();
                 session.cameraThread = null;
@@ -76,21 +101,21 @@ public class CameraManager {
     }
 
     public CameraSession getCameraSession(Camera camera) {
-        if(camera == null){
+        if (camera == null) {
             return null;
         }
         try {
             Long id = camera.getId();
             return mListSession.get(id);
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public void releaseCamera(){
-        if(mListSession != null){
-            for(CameraSession session : mListSession.values()){
-                if(session != null && session.cameraThread != null){
+    public void releaseCamera() {
+        if (mListSession != null) {
+            for (CameraSession session : mListSession.values()) {
+                if (session != null && session.cameraThread != null) {
                     session.cameraThread.stopGetData();
                     session.cameraThread = null;
                 }

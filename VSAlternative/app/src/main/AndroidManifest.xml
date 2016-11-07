@@ -14,8 +14,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        tool:replace="android:theme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".account.LoginActivity">
             <intent-filter>
@@ -35,22 +34,12 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="vn.com.vshome" />
 
-        <activity
-            android:name=".lightingcontrol.LightingControlActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".lightingcontrol.LightingControlActivity" />
         <activity android:name=".lightingcontrol.LightingSceneActivity" />
-        <activity
-            android:name=".user.UserActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".roomselection.RoomSelectionActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
-            android:name=".CropActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".security.SecurityActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".user.UserActivity" />
+        <activity android:name=".roomselection.RoomSelectionActivity"></activity>
+        <activity android:name=".CropActivity" />
+        <activity android:name=".security.SecurityActivity"></activity>
         <activity
             android:name=".user.UserActionActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -62,7 +51,7 @@
         <service
             android:name=".security.PreviewService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

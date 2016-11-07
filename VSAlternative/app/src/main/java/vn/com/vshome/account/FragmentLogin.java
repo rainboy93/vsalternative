@@ -1,9 +1,11 @@
 package vn.com.vshome.account;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -187,7 +189,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 public void onTimeOut() {
                     ProgressHUD.hideLoading(getActivity());
                     Define.NETWORK_TYPE = Define.NetworkType.NotDetermine;
-                    if(loginTask != null){
+                    if (loginTask != null) {
                         isRunning = false;
                         loginTask.cancel(true);
                         loginTask = null;

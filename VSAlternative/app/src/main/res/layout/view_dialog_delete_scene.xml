@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="wrap_content">
 
     <ImageButton
         android:id="@+id/dialog_delete_scene_button_cancel"
@@ -18,17 +18,20 @@
         android:id="@+id/dialog_delete_scene_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_delete_scene_button_cancel"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/d20"
         android:textColor="@color/gray"
         android:textSize="@dimen/d20"
         app:font_name="@string/font_name"
         app:font_variant="@string/font_regular" />
 
     <ImageView
+        android:id="@+id/dialog_delete_scene_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_delete_scene_text"
         android:layout_centerInParent="true"
+        android:layout_margin="@dimen/d10"
         android:adjustViewBounds="true"
         android:src="@drawable/delete_icon" />
 
@@ -36,7 +39,7 @@
         android:id="@+id/dialog_delete_scene_button_confirm"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d50"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/dialog_delete_scene_icon"
         android:background="@color/button_color"
         android:gravity="center"
         android:text="XÁC NHẬN"

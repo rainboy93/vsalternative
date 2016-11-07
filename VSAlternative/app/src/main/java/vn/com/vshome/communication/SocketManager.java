@@ -66,10 +66,10 @@ public class SocketManager {
         heartBeatHandler.postDelayed(heartBeatRunnable, HEART_BEAT_DELAY * 1000);
     }
 
-    public void stopHeartBeat(){
+    public void stopHeartBeat() {
         try {
             heartBeatHandler.removeCallbacks(heartBeatRunnable);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         heartBeatHandler = null;
@@ -96,7 +96,6 @@ public class SocketManager {
     }
 
     public boolean canConnect(Context context, int type) {
-        boolean success = false;
         destroySocket();
         String address = "";
         int port = 0;
@@ -126,7 +125,7 @@ public class SocketManager {
                 Logger.LogD("Connect to WAN success");
                 Define.NETWORK_TYPE = Define.NetworkType.DnsNetwork;
             }
-            localTry = 3;
+            localTry = 2;
             dnsTry = 3;
             return true;
         } catch (IOException e) {
@@ -134,14 +133,15 @@ public class SocketManager {
             Define.NETWORK_TYPE = Define.NetworkType.NotDetermine;
             destroySocket();
             if (type == 0 && localTry > 0) {
-                Logger.LogD("Connect to LAN failed");
+                Logger.LogD("Connect to LAN failed " + localTry);
                 localTry--;
                 return canConnect(context, type);
             } else if (type == 1 && dnsTry > 0) {
-                Logger.LogD("Connect to WAN failed");
+                Logger.LogD("Connect to WAN failed " + dnsTry);
+                dnsTry--;
                 return canConnect(context, type);
             } else {
-                localTry = 3;
+                localTry = 2;
                 dnsTry = 3;
                 return false;
             }
@@ -149,13 +149,13 @@ public class SocketManager {
     }
 
     private int dnsTry = 3;
-    private int localTry = 3;
+    private int localTry = 2;
 
     public void destroySocket() {
         try {
             Intent intent = new Intent(TheActivityManager.getInstance().getApplication(), PreviewService.class);
             TheActivityManager.getInstance().getApplication().stopService(intent);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         stopHeartBeat();

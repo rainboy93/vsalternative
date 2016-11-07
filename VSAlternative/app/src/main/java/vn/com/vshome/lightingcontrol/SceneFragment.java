@@ -29,6 +29,9 @@ import in.workarounds.typography.EditText;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
+import vn.com.vshome.activitymanager.TheActivityManager;
+import vn.com.vshome.callback.DialogCallback;
+import vn.com.vshome.callback.InputCallback;
 import vn.com.vshome.callback.SceneActionCallback;
 import vn.com.vshome.callback.SceneControlCallback;
 import vn.com.vshome.communication.SocketManager;
@@ -36,6 +39,9 @@ import vn.com.vshome.database.DeviceState;
 import vn.com.vshome.database.LightingDevice;
 import vn.com.vshome.database.Scene;
 import vn.com.vshome.database.SceneDevice;
+import vn.com.vshome.dialog.AddDialog;
+import vn.com.vshome.dialog.ConfirmDialog;
+import vn.com.vshome.dialog.DeleteDialog;
 import vn.com.vshome.flexibleadapter.lightingscene.SceneAdapter;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
@@ -330,28 +336,12 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
     }
 
     private void showConfirmDeleteDialog(final Scene scene) {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setCancelable(true);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.view_dialog_delete_scene);
-
-        ImageButton buttonCancel = (ImageButton) dialog.findViewById(R.id.dialog_delete_scene_button_cancel);
-        Button buttonConfirm = (Button) dialog.findViewById(R.id.dialog_delete_scene_button_confirm);
-        TextView content = (TextView) dialog.findViewById(R.id.dialog_delete_scene_text);
         String s = "Bạn muốn xóa <b>" + scene.name.toUpperCase(Locale.US) + "</b>?";
-        content.setText(Html.fromHtml(s));
-
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
+        DeleteDialog deleteDialog = new DeleteDialog();
+        deleteDialog.setContent(Html.fromHtml(s));
+        deleteDialog.setCallback(new DialogCallback() {
             @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
+            public void onConfirm() {
                 CommandMessage deleteScene = new CommandMessage();
                 deleteScene.setDeleteScene(scene.getId().intValue());
                 ProgressHUD.showLoading(getActivity());
@@ -365,29 +355,16 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 SocketManager.getInstance().sendMessage(deleteScene);
             }
         });
-
-        dialog.show();
+        deleteDialog.show(TheActivityManager.getInstance().getCurrentActivity().getFragmentManager()
+                , ConfirmDialog.class.getSimpleName());
     }
 
     private void showAddSceneDialog() {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.view_dialog_add_scene);
-
-        final EditText name = (EditText) dialog.findViewById(R.id.dialog_add_scene_name);
-
-        ImageButton mCancel = (ImageButton) dialog.findViewById(R.id.dialog_add_scene_button_cancel);
-        mCancel.setOnClickListener(new View.OnClickListener() {
+        AddDialog addDialog = new AddDialog();
+        addDialog.setCallback(new InputCallback() {
             @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        Button mOk = (Button) dialog.findViewById(R.id.dialog_add_scene_button_confirm);
-        mOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String str = name.getText().toString();
+            public void onConfirm(String... strings) {
+                String str = strings[0];
                 if (str.length() == 0) {
                     Toaster.showMessage(getActivity(), "Chưa đặt tên cảnh!");
                     return;
@@ -395,13 +372,13 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     Toaster.showMessage(getActivity(), "Tên cảnh quá dài!");
                     return;
                 }
-                dialog.cancel();
                 Intent intent = new Intent(getActivity(), LightingSceneActivity.class);
                 intent.putExtra(Define.INTENT_ROOM_ID, roomId);
                 intent.putExtra(Define.INTENT_SCENE_NAME, str);
                 startActivityForResult(intent, 1000);
             }
         });
-        dialog.show();
+        addDialog.show(TheActivityManager.getInstance().getCurrentActivity().getFragmentManager()
+                , ConfirmDialog.class.getSimpleName());
     }
 }
