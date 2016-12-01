@@ -67,11 +67,7 @@ public class ReceiveThread extends Thread {
 
     public void stopRunning() {
         isRunning = false;
-        try {
-            join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        interrupt();
     }
 
     private Context mContext;
@@ -91,7 +87,9 @@ public class ReceiveThread extends Thread {
                     Utils.restart();
                     break;
                 }
-                handleMessage();
+                synchronized (data) {
+                    handleMessage();
+                }
             } catch (IOException e) {
 //                e.printStackTrace();
             }

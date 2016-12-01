@@ -81,7 +81,6 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         } catch (Exception e) {
 
         }
-
         super.onPause();
     }
 
@@ -168,34 +167,13 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
 
     @Override
     public void onClick(View v) {
-        if (v == mMenu) {
-            onBackPressed();
-        } else if (v == mHome) {
+        if (v == mMenu || v == mHome) {
             onBackPressed();
         } else if (v == mAdd) {
             Intent intent = new Intent(this, UserActionActivity.class);
             startActivityForResult(intent, Define.CODE_USER_CREATE);
         } else if (v == mShutDown) {
-            if (VSHome.currentUser.priority == Define.PRIORITY_ADMIN) {
-                Utils.showConfirmDialog("", "Bạn muốn thoát toàn bộ các tài khoản?", new DialogCallback() {
-                    @Override
-                    public void onConfirm() {
-                        CommandMessage shutDown = new CommandMessage(CommandMessage.CMD_DISCONNECT_ALL_USER);
-                        ProgressHUD.showLoading(UserActivity.this);
-                        TimeOutManager.getInstance().startCountDown(UserActivity.this, 5);
-                        SocketManager.getInstance().sendMessage(shutDown);
-                    }
-                });
-            } else {
-                Utils.showConfirmDialog("", "Bạn muốn thoát tài khoản " + VSHome.currentUser.username
-                        + "?", new DialogCallback() {
-                    @Override
-                    public void onConfirm() {
-                        SocketManager.getInstance().destroySocket();
-                        Utils.restart();
-                    }
-                });
-            }
+            showConfirmDisconnectDialog();
         }
     }
 
@@ -341,5 +319,29 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
             }
         });
         deleteDialog.show(getFragmentManager(), DeleteDialog.class.getSimpleName());
+    }
+
+    private void showConfirmDisconnectDialog() {
+        DeleteDialog disconnectDialog = new DeleteDialog();
+        String s = VSHome.currentUser.priority == Define.PRIORITY_ADMIN ?
+                "Bạn muốn thoát toàn bộ các tài khoản?" : "Bạn muốn thoát tài khoản " + VSHome.currentUser.username
+                + "?";
+        disconnectDialog.setContent(s);
+        disconnectDialog.setIcon(R.drawable.default_user_avatar);
+        disconnectDialog.setCallback(new DialogCallback() {
+            @Override
+            public void onConfirm() {
+                if (VSHome.currentUser.priority == Define.PRIORITY_ADMIN) {
+                    CommandMessage shutDown = new CommandMessage(CommandMessage.CMD_DISCONNECT_ALL_USER);
+                    ProgressHUD.showLoading(UserActivity.this);
+                    TimeOutManager.getInstance().startCountDown(UserActivity.this, 5);
+                    SocketManager.getInstance().sendMessage(shutDown);
+                } else {
+                    SocketManager.getInstance().destroySocket();
+                    Utils.restart();
+                }
+            }
+        });
+        disconnectDialog.show(getFragmentManager(), DeleteDialog.class.getSimpleName());
     }
 }

@@ -118,11 +118,12 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
     @Override
     public void onConnectionChange(ConnectivityEvent event) {
         if (event.getState() == ConnectivityState.CONNECTED) {
-
+            Logger.LogD(event.getType().name() + " connected!");
         } else {
+            Logger.LogD(event.getType().name() + " disconnected!");
             if (!Utils.isAppInBackground(getApplicationContext())) {
                 SocketManager.getInstance().destroySocket();
-                Utils.restart();
+//                Utils.restart();
             }
         }
     }

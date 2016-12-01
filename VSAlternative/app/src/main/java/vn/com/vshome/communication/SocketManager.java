@@ -152,6 +152,7 @@ public class SocketManager {
     private int localTry = 2;
 
     public void destroySocket() {
+        Logger.LogD("Destroy socket");
         try {
             Intent intent = new Intent(TheActivityManager.getInstance().getApplication(), PreviewService.class);
             TheActivityManager.getInstance().getApplication().stopService(intent);

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
@@ -22,6 +23,9 @@ public class DeleteDialog extends DialogFragment {
     private TextView mContent;
     private Button mConfirm;
     private ImageButton mCancel;
+    private ImageView mIcon;
+
+    private int iconId;
 
     private CharSequence content = "";
 
@@ -58,6 +62,11 @@ public class DeleteDialog extends DialogFragment {
         mContent = (TextView) view.findViewById(R.id.dialog_delete_scene_text);
         mContent.setText(content);
 
+        mIcon = (ImageView) view.findViewById(R.id.dialog_delete_scene_icon);
+        if (iconId != 0) {
+            mIcon.setImageResource(iconId);
+        }
+
         mCancel = (ImageButton) view.findViewById(R.id.dialog_delete_scene_button_cancel);
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,5 +84,9 @@ public class DeleteDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    public void setIcon(int id) {
+        iconId = id;
     }
 }
