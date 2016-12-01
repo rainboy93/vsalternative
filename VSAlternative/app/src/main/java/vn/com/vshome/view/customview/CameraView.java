@@ -150,7 +150,7 @@ public class CameraView extends View implements Runnable {
             buffer = ByteBuffer.wrap(cameraData.data);
             if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
                 mBit = GlideBitmapPool.getBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
-           }
+            }
             setRect();
             mBit.copyPixelsFromBuffer(buffer);
             buffer.rewind();

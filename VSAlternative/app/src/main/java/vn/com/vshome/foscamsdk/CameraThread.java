@@ -36,7 +36,6 @@ public class CameraThread extends Thread {
     private int state = -1;
     private int permissionFlag = -1;
 
-//    public List<FrameData> listData;
     public Vector<FrameData> listData;
 
     public CameraThread(Camera camera) {
@@ -53,7 +52,7 @@ public class CameraThread extends Thread {
         listData = new Vector<>();
         if (state == 0) {
             videoData = new CameraData();
-            while(isRunning){
+            while (isRunning) {
                 startGetData();
             }
         }
@@ -113,10 +112,10 @@ public class CameraThread extends Thread {
         try {
             FosSdkJNI.GetVideoData(handler,
                     videoData, FosDecFmt.FOSDECTYPE_RGBA32);
-            if(videoData != null){
+            if (videoData != null) {
                 publicData = videoData.clone();
                 listData.add(publicData);
-                if(listData.size() > 2){
+                if (listData.size() > 2) {
                     listData.remove(0);
                 }
             }
@@ -128,12 +127,12 @@ public class CameraThread extends Thread {
 
     public void stopGetData() {
         logOut();
-        if(listData != null){
+        if (listData != null) {
             listData.clear();
             listData = null;
         }
         isRunning = false;
-        if(videoData != null){
+        if (videoData != null) {
             videoData = null;
         }
         interrupt();

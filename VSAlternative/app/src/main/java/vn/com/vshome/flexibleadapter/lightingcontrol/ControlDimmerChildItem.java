@@ -117,10 +117,6 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
                     adapter.notifyItemChanged(position);
                 }
 
-                @Override
-                public void onMoving(SliderView seekBar) {
-
-                }
             });
 
             holder.mButtonSelect.setSelected(isSelected);
@@ -190,11 +186,6 @@ public class ControlDimmerChildItem extends AbstractControlItem<ControlDimmerChi
             d.deviceState.param = seekBar.getCurrentProgress();
             startSendControlMessage(d);
         }
-    }
-
-    @Override
-    public void onMoving(SliderView seekBar) {
-
     }
 
     @Override

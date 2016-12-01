@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +46,8 @@ public class Utils {
 
     public static void showErrorDialog(Object title, Object message) {
         ErrorDialog errorDialog = new ErrorDialog();
-        errorDialog.setTitle(title instanceof String ? (String) title : getString((int)title));
-        errorDialog.setContent(message instanceof String ? (String) message : getString((int)message));
+        errorDialog.setTitle(title instanceof String ? (String) title : getString((int) title));
+        errorDialog.setContent(message instanceof String ? (String) message : getString((int) message));
         errorDialog.show(TheActivityManager.getInstance().getCurrentActivity().getFragmentManager(), ErrorDialog.class.getSimpleName());
     }
 
@@ -123,6 +124,23 @@ public class Utils {
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return statusBarHeight;
     }
 
     public static String getTimeString(int c) {

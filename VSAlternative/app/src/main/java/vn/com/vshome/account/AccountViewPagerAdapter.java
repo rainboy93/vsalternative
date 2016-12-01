@@ -30,9 +30,6 @@ public class AccountViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        if (object instanceof FragmentSetting) {
-            ((FragmentSetting) object).refresh();
-        }
         return super.getItemPosition(object);
     }
 }

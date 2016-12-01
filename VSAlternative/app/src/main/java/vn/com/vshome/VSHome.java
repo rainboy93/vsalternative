@@ -76,7 +76,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         GlideBitmapPool.trimMemory(level);
         Logger.LogD("Trim memory level " + level);
         if (level == TRIM_MEMORY_COMPLETE || level == TRIM_MEMORY_UI_HIDDEN) {
-//            trimMemory();
+            trimMemory();
         }
     }
 

@@ -74,7 +74,7 @@ public class PreviewService extends Service implements
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT);
 
     @Override
@@ -95,7 +95,7 @@ public class PreviewService extends Service implements
         mDetector = new GestureDetectorCompat(getApplicationContext(), this);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         width = Utils.getScreenWidth();
-        height = Utils.getScreenHeight();
+        height = Utils.getScreenHeight() - Utils.getStatusBarHeight(getApplicationContext());
 
         mParentLayout = new RelativeLayout(getApplicationContext());
 
@@ -135,7 +135,7 @@ public class PreviewService extends Service implements
 
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = width / 2 - 40;
-        params.y = (int) (height - 3 * SCALE * width / 4);
+        params.y = (int) (height - 3 * SCALE * width / 4 - 40);
         params.width = (int) (SCALE * width + CLOSE_BUTTON_WIDTH / 2);
         params.height = (int) (3 * SCALE * width / 4 + CLOSE_BUTTON_HEIGHT / 2);
 
@@ -177,14 +177,14 @@ public class PreviewService extends Service implements
                             int y = initialY
                                     + (int) (event.getRawY() - initialTouchY);
 
-                            if (x < 0) {
-                                x = 0;
+                            if (x < -width / 4) {
+                                x = -width / 4;
                             }
-                            if (x > width / 2 - 40) {
-                                x = width / 2 - 40;
+                            if (x > 3 * width / 4 - 40) {
+                                x = 3 * width / 4 - 40;
                             }
-                            if (y < 0) {
-                                y = 0;
+                            if (y < -3 * width / 16) {
+                                y = -3 * width / 16;
                             }
                             if (y > (int) (height - 3 * SCALE * width / 4)) {
                                 y = (int) (height - 3 * SCALE * width / 4);

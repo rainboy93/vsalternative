@@ -132,7 +132,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
                     return false;
                 }
 
-                int value = 0;
+                int value;
                 try {
                     value = Integer.parseInt(segment);
                 } catch (NumberFormatException e) {
@@ -158,7 +158,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void refresh(){
+    public void refresh() {
         String ip = PreferenceUtils.getInstance(getActivity())
                 .getValue(PreferenceDefine.IP_ADDRESS, "");
         int ipPort = PreferenceUtils.getInstance(getActivity())
@@ -169,19 +169,23 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
                 .getIntValue(PreferenceDefine.DNS_PORT, 0);
 
         if (!ip.equals("")) {
-            mIP.setText(ip);
+            mIP.setText("");
+            mIP.append(ip);
         }
 
         if (ipPort != 0) {
-            mIPPort.setText(ipPort + "");
+            mIPPort.setText("");
+            mIPPort.append(ipPort + "");
         }
 
         if (!dns.equals("")) {
-            mDNS.setText(dns);
+            mDNS.setText("");
+            mDNS.append(dns);
         }
 
         if (dnsPort != 0) {
-            mDNSPort.setText(dnsPort + "");
+            mDNSPort.setText("");
+            mDNSPort.append(dnsPort + "");
         }
     }
 }
