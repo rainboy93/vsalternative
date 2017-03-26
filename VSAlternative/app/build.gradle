@@ -1,16 +1,23 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion project.ext.compileSdkVersion
+    buildToolsVersion project.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "vn.com.vshome"
-        minSdkVersion 21
-        targetSdkVersion 24
+        minSdkVersion project.ext.minSdkVersion
+        targetSdkVersion project.ext.targetSdkVersion
         versionCode 11
         versionName "1.4.5"
     }
+
+    sourceSets {
+        main {
+            jni.srcDirs = []
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -22,11 +29,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
     compile 'in.workarounds.typography:typography:0.0.8'
     compile 'com.github.satyan:sugar:1.4'
-    compile 'com.android.support:gridlayout-v7:24.2.1'
+    compile 'com.android.support:gridlayout-v7:25.3.0'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-	compileSdkVersion 24
-	buildToolsVersion "24.0.2"
+	compileSdkVersion project.ext.compileSdkVersion
+	buildToolsVersion project.ext.buildToolsVersion
 
 	defaultConfig {
-		minSdkVersion 16
-		targetSdkVersion 24
+		minSdkVersion project.ext.minSdkVersion
+		targetSdkVersion project.ext.targetSdkVersion
 	}
 	buildTypes {
 		release {
@@ -17,6 +17,6 @@ android {
 }
 
 dependencies {
-	compile 'com.android.support:design:24.2.1'
-	compile 'com.android.support:recyclerview-v7:24.2.1'
+	compile 'com.android.support:design:25.3.0'
+	compile 'com.android.support:recyclerview-v7:25.3.0'
 }

@@ -12,6 +12,8 @@ libraries
 
 .DS_Store
 
-build
-
+build/
+obj/
 captures
+
+jni/
