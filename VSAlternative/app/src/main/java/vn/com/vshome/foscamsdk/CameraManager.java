@@ -20,6 +20,7 @@ public class CameraManager {
     private Map<Long, CameraSession> mListSession;
 
     public boolean isPreviewing = false;
+    public Camera currentCamera;
 
     public static CameraManager getInstance() {
         if (cameraManager == null) {

@@ -3,6 +3,7 @@ package vn.com.vshome.security;
 import vn.com.vshome.R;
 import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.database.Camera;
+import vn.com.vshome.flexibleadapter.security.CameraChildItem;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Utils;
@@ -16,23 +17,42 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import org.videolan.libvlc.EventHandler;
+import org.videolan.libvlc.IVideoPlayer;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.LibVlcUtil;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaList;
+import org.videolan.libvlc.NativeCrashHandler;
+import org.videolan.libvlc.VideoView;
+
+import java.lang.ref.WeakReference;
+
 public class PreviewService extends Service implements
-        GestureDetector.OnDoubleTapListener, OnGestureListener {
+        GestureDetector.OnDoubleTapListener, OnGestureListener,SurfaceHolder.Callback, IVideoPlayer {
 
     private final float SCALE = 1f / 2;
     private static final int PADDING_WIDTH = 5;
@@ -48,20 +68,26 @@ public class PreviewService extends Service implements
     private GestureDetectorCompat mDetector;
 
     private CameraView mVideoView;
+    private SurfaceView cameraViewOnvif;
     private Camera camera;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getExtras() != null) {
+        if (intent.getExtras() != null && camera == null) {
             Long id = intent.getExtras().getLong(Define.INTENT_CAMERA, 0);
             camera = Camera.findById(Camera.class, id);
         }
-        CameraManager.getInstance().addSession(camera, null);
-        if (mVideoView != null) {
-            mVideoView.setCamera(camera);
-            mVideoView.startDraw();
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            CameraManager.getInstance().addSession(camera, null);
+            if (mVideoView != null) {
+                mVideoView.setCamera(camera);
+                mVideoView.startDraw();
+            }
+        } else if(camera.deviceType == 3){
+
         }
+
         return Service.START_NOT_STICKY;
     }
 
@@ -105,11 +131,21 @@ public class PreviewService extends Service implements
         mVideoContainer.setPadding(PADDING_WIDTH,
                 PADDING_WIDTH, PADDING_WIDTH,
                 PADDING_WIDTH);
-
-        mVideoView = new CameraView(getApplicationContext());
-        mVideoContainer.addView(mVideoView, new LayoutParams(
-                (int) (width * SCALE), (int) (3 * SCALE * width / 4)));
-        mVideoView.setBackgroundColor(Color.BLACK);
+        camera = CameraManager.getInstance().currentCamera;
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            mVideoView = new CameraView(getApplicationContext());
+            mVideoContainer.addView(mVideoView, new LayoutParams(
+                    (int) (width * SCALE), (int) (3 * SCALE * width / 4)));
+            mVideoView.setBackgroundColor(Color.BLACK);
+        } else if(camera.deviceType == 3){
+            cameraViewOnvif = new SurfaceView(this);
+            holder = cameraViewOnvif.getHolder();
+            holder.addCallback(this);
+            holder.setFormat(PixelFormat.OPAQUE);
+            cameraViewOnvif.setZOrderMediaOverlay(true);
+            mVideoContainer.addView(cameraViewOnvif, new LayoutParams(
+                    (int) (width * SCALE), (int) (3 * SCALE * width / 4)));
+        }
 
         final ImageView imageView = new ImageView(getApplicationContext());
         imageView.setAdjustViewBounds(true);
@@ -225,7 +261,10 @@ public class PreviewService extends Service implements
         } catch (Exception e) {
 
         }
-        CameraManager.getInstance().removeSession(camera);
+
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            CameraManager.getInstance().removeSession(camera);
+        }
         super.onDestroy();
     }
 
@@ -292,6 +331,210 @@ public class PreviewService extends Service implements
     }
 
     private PreviewReceiver previewReceiver;
+
+    private LibVLC libvlc;
+    private EventHandler mEventHandler;
+    private final static int VideoSizeChanged = -1;
+    private SurfaceHolder holder;
+    private int mVideoWidth;
+    private int mVideoHeight;
+
+    public void createPlayer(Context context) {
+        releasePlayer();
+        try {
+            // Create a new media player
+            libvlc = new LibVLC();
+            mEventHandler = libvlc.getEventHandler();
+            libvlc.init(context);
+            libvlc.setHardwareAcceleration(LibVLC.HW_ACCELERATION_FULL);
+            libvlc.setSubtitlesEncoding("");
+            libvlc.setAout(LibVLC.AOUT_OPENSLES);
+            libvlc.setTimeStretching(true);
+            libvlc.setVerboseMode(false);
+            libvlc.setNetworkCaching(300);
+            NativeCrashHandler.getInstance().setOnNativeCrashListener(
+                    nativecrashListener);
+            libvlc.setVout(LibVLC.VOUT_ANDROID_WINDOW);
+            LibVLC.restartInstance(context);
+            mEventHandler.addHandler(mHandler);
+            holder.setKeepScreenOn(true);
+        } catch (Exception e) {
+            Log.e("dungnt", e.toString());
+        }
+    }
+
+    public void play(String media) {
+        if(libvlc != null){
+            MediaList list = libvlc.getMediaList();
+            list.clear();
+            list.add(new Media(libvlc, LibVLC.PathToURI(media)), false);
+            libvlc.playIndex(0);
+//                mute();
+        }
+    }
+
+    private Handler mHandler = new MyHandler(this);
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        createPlayer(TheActivityManager.getInstance().getCurrentActivity());
+        libvlc.attachSurface(holder.getSurface(), this);
+        String streamLink = "";
+        if(Define.NETWORK_TYPE == Define.NetworkType.LocalNetwork){
+            streamLink = camera.localStreamLink;
+        } else if(Define.NETWORK_TYPE == Define.NetworkType.DnsNetwork){
+            streamLink = camera.dnsStreamLink;
+        }
+        play(streamLink);
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                               int height) {
+//            if (libvlc != null)
+//                libvlc.attachSurface(holder.getSurface(), this);
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        releasePlayer();
+    }
+
+    public void eventHardwareAccelerationError() {
+        Log.e("dungnt", "Error with hardware acceleration");
+        releasePlayer();
+    }
+
+    @Override
+    public void setSurfaceLayout(int width, int height, int visible_width,
+                                 int visible_height, int sar_num, int sar_den) {
+        Message msg = Message.obtain(mHandler, VideoSizeChanged, width,
+                height);
+        msg.sendToTarget();
+    }
+
+    // Used only for old stuff
+    @Override
+    public int configureSurface(Surface surface, int width, int height,
+                                int hal) {
+        Log.d("", "configureSurface: width = " + width + ", height = "
+                + height);
+        if (LibVlcUtil.isICSOrLater() || surface == null)
+            return -1;
+        if (width * height == 0)
+            return 0;
+        if (hal != 0)
+            holder.setFormat(hal);
+        holder.setFixedSize(width, height);
+        return 1;
+    }
+
+    private class MyHandler extends Handler {
+        private WeakReference<PreviewService> mOwner;
+
+        public MyHandler(PreviewService owner) {
+            mOwner = new WeakReference<>(owner);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            PreviewService player = mOwner.get();
+
+            // SamplePlayer events
+            if (msg.what == VideoSizeChanged) {
+//                player.setSize(msg.arg1, msg.arg2);
+                return;
+            }
+
+            // Libvlc events
+            Bundle b = msg.getData();
+            switch (b.getInt("event")) {
+                case EventHandler.MediaPlayerEndReached:
+                    player.releasePlayer();
+                    break;
+                case EventHandler.MediaPlayerPlaying:
+                case EventHandler.MediaPlayerPaused:
+                case EventHandler.MediaPlayerStopped:
+                default:
+                    break;
+            }
+        }
+    }
+
+    public NativeCrashHandler.OnNativeCrashListener nativecrashListener = new NativeCrashHandler.OnNativeCrashListener() {
+
+        @Override
+        public void onNativeCrash() {
+            Log.e("vlcdebug", "nativecrash");
+        }
+
+    };
+
+    public void releasePlayer() {
+        if (libvlc == null)
+            return;
+        mEventHandler.removeHandler(mHandler);
+        libvlc.stop();
+        libvlc.detachSurface();
+        libvlc.closeAout();
+        libvlc.destroy();
+        libvlc = null;
+
+        mVideoWidth = 0;
+        mVideoHeight = 0;
+    }
+
+    private void setSize(int width, int height) {
+        if (libvlc != null) {
+            libvlc.closeAout();
+            libvlc.setVolume(0);
+        }
+
+        // Dimensions of the native video
+        mVideoWidth = width;
+        mVideoHeight = height;
+
+        if (mVideoWidth * mVideoHeight <= 1)
+            return;
+
+        // Dimensions of the surface frame
+        int surfaceFrameW = cameraViewOnvif.getMeasuredWidth();
+        int surfaceFrameH = cameraViewOnvif.getMeasuredHeight();
+
+
+        float videoAR = (float) mVideoWidth / (float) mVideoHeight;
+        float surfaceFrameAr = (float) surfaceFrameW / (float) surfaceFrameH;
+
+        int vidW = surfaceFrameW;
+        int vidH = surfaceFrameH;
+
+        if (surfaceFrameAr < videoAR)
+            vidH = (int) (surfaceFrameW / videoAR);
+        else
+            vidW = (int) (surfaceFrameH * videoAR);
+
+        // force surface buffer size
+        if (holder != null) {
+            holder.setFixedSize(mVideoWidth, mVideoHeight);
+
+        } else {
+            Log.e("dungnt", "Holder was null");
+        }
+
+
+        // set display size
+        ViewGroup.LayoutParams lp = cameraViewOnvif.getLayoutParams();
+        lp.width = vidW;
+        lp.height = vidH;
+        cameraViewOnvif.setLayoutParams(lp);
+        cameraViewOnvif.invalidate();
+    }
+
+    public void mute() {
+        libvlc.closeAout();
+        libvlc.setVolume(0);
+    }
 
     public class PreviewReceiver extends BroadcastReceiver {
 

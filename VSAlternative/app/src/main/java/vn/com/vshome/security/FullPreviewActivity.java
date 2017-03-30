@@ -2,6 +2,11 @@ package vn.com.vshome.security;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.SurfaceView;
+import android.view.View;
+
+import org.videolan.libvlc.EventHandler;
+import org.videolan.libvlc.VideoView;
 
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
@@ -16,8 +21,9 @@ public class FullPreviewActivity extends BaseActivity {
 
     private CameraView cameraView;
     private CameraControlView cameraControlView;
-
+    private SurfaceView cameraViewOnvif;
     private Camera camera;
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +44,45 @@ public class FullPreviewActivity extends BaseActivity {
 
     private void initView() {
         cameraView = (CameraView) findViewById(R.id.full_screen_camera_view);
-
+        cameraViewOnvif = (SurfaceView) findViewById(R.id.full_screen_camera_view_onvif);
         cameraControlView = (CameraControlView) findViewById(R.id.full_screen_camera_control_view);
         cameraControlView.setActive(true);
 
-        CameraManager.getInstance().addSession(camera, null);
-        cameraView.setCamera(camera);
-        cameraView.setFullScreen();
-        cameraView.startDraw();
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            cameraView.setVisibility(View.VISIBLE);
+            cameraViewOnvif.setVisibility(View.GONE);
+
+            CameraManager.getInstance().addSession(camera, null);
+            cameraView.setCamera(camera);
+            cameraView.setFullScreen();
+            cameraView.startDraw();
+        } else if(camera.deviceType == 3){
+            cameraView.setVisibility(View.GONE);
+            cameraViewOnvif.setVisibility(View.VISIBLE);
+
+            String streamLink = "";
+            if(Define.NETWORK_TYPE == Define.NetworkType.LocalNetwork){
+                streamLink = camera.localStreamLink;
+            } else if(Define.NETWORK_TYPE == Define.NetworkType.DnsNetwork){
+                streamLink = camera.dnsStreamLink;
+            }
+
+            videoView = new VideoView(cameraViewOnvif, streamLink, this,
+                    EventHandler.getInstance(), null);
+            videoView.createPlayer();
+        }
+
         cameraControlView.setCamera(camera);
         cameraControlView.setFullScreen();
     }
 
     @Override
     public void onBackPressed() {
-        CameraManager.getInstance().removeSession(camera);
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            CameraManager.getInstance().removeSession(camera);
+        } else if(camera.deviceType == 3){
+
+        }
         super.onBackPressed();
     }
 

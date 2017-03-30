@@ -20,6 +20,15 @@ public class TXOnvif implements SimpleOnvif {
     public String mediaService;
     private String TAG = "TXOnvif";
 
+    private static TXOnvif instance;
+
+    public static TXOnvif getInstance(){
+        if(instance == null){
+            instance = new TXOnvif();
+        }
+        return instance;
+    }
+
     @Override
     public ArrayList<Device> discoverDevices() {
         ArrayList<Device> deviceList = _discoverDevices();

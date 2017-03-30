@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <SurfaceView
+        android:id="@+id/security_child_camera_view_onvif"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/security_child_camera_view"
+        android:layout_alignTop="@+id/security_child_camera_view"
+        android:visibility="invisible" />
+
     <vn.com.vshome.view.customview.CameraControlView
         android:id="@+id/security_child_camera_control_view"
         android:layout_width="match_parent"

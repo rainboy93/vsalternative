@@ -119,21 +119,25 @@ public class CameraGroupItem
             holder.mContainer.setBackgroundResource(R.color.device_background);
             holder.mDivider.setVisibility(View.GONE);
 
-            if (session == null || !session.isHasCore) {
-                CameraManager.getInstance().addSession(camera, new CameraCallback() {
-                    @Override
-                    public void onError(String msg) {
-                        ((CameraChildItem) mListChildItems.get(0)).isError = true;
-                        ((CameraChildItem) mListChildItems.get(0)).errorMsg = msg;
-                        adapter.notifyItemChanged(position + 1);
-                    }
+            if(camera.deviceType == 1 || camera.deviceType == 2){
+                if (session == null || !session.isHasCore && (camera.deviceType == 1 || camera.deviceType == 2)) {
+                    CameraManager.getInstance().addSession(camera, new CameraCallback() {
+                        @Override
+                        public void onError(String msg) {
+                            ((CameraChildItem) mListChildItems.get(0)).isError = true;
+                            ((CameraChildItem) mListChildItems.get(0)).errorMsg = msg;
+                            adapter.notifyItemChanged(position + 1);
+                        }
 
-                    @Override
-                    public void onSuccess() {
-                        ((CameraChildItem) mListChildItems.get(0)).isError = false;
-                        adapter.notifyItemChanged(position + 1);
-                    }
-                });
+                        @Override
+                        public void onSuccess() {
+                            ((CameraChildItem) mListChildItems.get(0)).isError = false;
+                            adapter.notifyItemChanged(position + 1);
+                        }
+                    });
+                }
+            } else if(camera.deviceType == 3){
+
             }
         } else {
             holder.mSelector.setRotation(0);
@@ -141,7 +145,7 @@ public class CameraGroupItem
             holder.mContainer.setBackgroundResource(R.color.white);
             holder.mDivider.setVisibility(View.VISIBLE);
             ((CameraChildItem) mListChildItems.get(0)).isError = false;
-            if (session != null && session.isHasCore) {
+            if (session != null && session.isHasCore && (camera.deviceType == 1 || camera.deviceType == 2)) {
                 if (CameraManager.getInstance().isPreviewing) {
                     CameraManager.getInstance().removeAllSessionExcept(camera);
                 } else {

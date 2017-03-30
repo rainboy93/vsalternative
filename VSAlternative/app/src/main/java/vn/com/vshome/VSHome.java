@@ -21,6 +21,8 @@ import com.zplesac.connectionbuddy.models.ConnectivityState;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import vn.com.vshome.account.LoginActivity;
 import vn.com.vshome.activitymanager.TheActivityManager;
@@ -54,7 +56,7 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-//                handleUncaughtException(ex);
+                handleUncaughtException(ex);
             }
         });
 
@@ -104,8 +106,17 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
     private void handleUncaughtException(Throwable e) {
         Logger.LogD("Exception caught: " + e.getMessage());
         try {
-            FileUtils.stringToFile(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "vshome.debug", e.getMessage());
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + "vshome.debug");
+            if(file.exists()){
+                file.delete();
+            }
+            file.createNewFile();
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            FileUtils.stringToFile(file.getAbsolutePath(), exceptionAsString);
+            sw.close();
         } catch (IOException e1) {
             e1.printStackTrace();
         }

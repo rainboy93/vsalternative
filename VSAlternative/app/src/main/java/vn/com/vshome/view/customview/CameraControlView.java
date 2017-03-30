@@ -9,14 +9,17 @@ import android.view.View;
 import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.PtzCmd;
 
+import onvif.sdk.TXOnvif;
+import onvif.sdk.obj.PTZType;
+import vn.com.vshome.MainActivity;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.foscamsdk.CameraSession;
-import vn.com.vshome.security.PreviewService;
+import vn.com.vshome.roomselection.RoomSelectionActivity;
 import vn.com.vshome.security.FullPreviewActivity;
+import vn.com.vshome.security.PreviewService;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.Utils;
@@ -33,10 +36,6 @@ public class CameraControlView extends GridLayout {
     private Camera camera;
     private boolean isActive = false;
 
-    public void setActive(boolean isActive){
-        this.isActive = isActive;
-    }
-
     public CameraControlView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initView();
@@ -50,6 +49,10 @@ public class CameraControlView extends GridLayout {
     public CameraControlView(Context context) {
         super(context);
         initView();
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public void setCamera(Camera camera) {
@@ -90,7 +93,7 @@ public class CameraControlView extends GridLayout {
         gestureImageView.setOnControlListener(new GestureImageView.OnControlListener() {
             @Override
             public void onDoubleTouch() {
-                if(!isActive){
+                if (!isActive) {
                     return;
                 }
                 if (isFullScreen && TheActivityManager.getInstance().getCurrentActivity() instanceof FullPreviewActivity) {
@@ -103,14 +106,19 @@ public class CameraControlView extends GridLayout {
                 MiscUtils.runOnBackgroundThread(new Runnable() {
                     @Override
                     public void run() {
-                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
+                        if(camera.deviceType == 1 || camera.deviceType == 2) {
+                            FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
+                        } else if(camera.deviceType == 3){
+                            TXOnvif.getInstance().ptzStop(camera.username, camera.password,
+                                    ptzService, camera.token, PTZType.PTZ_MOVE);
+                        }
                     }
                 });
             }
 
             @Override
             public void onControl() {
-                if(!isActive){
+                if (!isActive) {
                     return;
                 }
                 if (gestureImageView != mMinimize) {
@@ -120,11 +128,12 @@ public class CameraControlView extends GridLayout {
 
             @Override
             public void onMinimize() {
-                if(!isActive){
+                if (!isActive) {
                     return;
                 }
                 if (gestureImageView == mMinimize && !isFullScreen) {
                     if (!Utils.isMyServiceRunning(PreviewService.class)) {
+                        CameraManager.getInstance().currentCamera = camera;
                         Intent intent = new Intent(TheActivityManager.getInstance().getCurrentActivity(), PreviewService.class);
                         intent.putExtra(Define.INTENT_CAMERA, camera.getId());
                         TheActivityManager.getInstance().getCurrentActivity().startService(intent);
@@ -134,87 +143,176 @@ public class CameraControlView extends GridLayout {
 
             @Override
             public void onStop() {
-                if(!isActive){
+                if (!isActive) {
                     return;
                 }
-                if (gestureImageView != mMinimize) {
-                    MiscUtils.runOnBackgroundThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
-                        }
-                    });
+
+                if(camera.deviceType == 1 || camera.deviceType == 2){
+                    if (gestureImageView != mMinimize) {
+                        MiscUtils.runOnBackgroundThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_STOP, 1000);
+                            }
+                        });
+                    }
+                } else if(camera.deviceType == 3){
+                    if (gestureImageView != mMinimize) {
+                        MiscUtils.runOnBackgroundThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TXOnvif.getInstance().ptzStop(camera.username, camera.password,
+                                        ptzService, camera.token, PTZType.PTZ_MOVE);
+                            }
+                        });
+                    }
                 }
             }
         });
     }
 
+    String ptzService = "";
+
     private void handleLongPress(GestureImageView gestureImageView) {
-        CameraSession session = CameraManager.getInstance().getCameraSession(camera);
-        if (handler != session.cameraThread.handler) {
-            handler = session.cameraThread.handler;
-        }
+        if(camera.deviceType == 1 || camera.deviceType == 2){
+            CameraSession session = CameraManager.getInstance().getCameraSession(camera);
+            if (handler != session.cameraThread.handler) {
+                handler = session.cameraThread.handler;
+            }
 
-        if (handler < 0) {
-            return;
-        }
+            if (handler < 0) {
+                return;
+            }
 
-        if (gestureImageView == mLeftUp) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_UP, 1000);
-                }
-            });
-        } else if (gestureImageView == mUp) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_UP, 1000);
-                }
-            });
-        } else if (gestureImageView == mRightUp) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_UP, 1000);
-                }
-            });
-        } else if (gestureImageView == mLeft) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT, 1000);
-                }
-            });
-        } else if (gestureImageView == mRight) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT, 1000);
-                }
-            });
-        } else if (gestureImageView == mLeftDown) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_DOWN, 1000);
-                }
-            });
-        } else if (gestureImageView == mDown) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_DOWN, 1000);
-                }
-            });
-        } else if (gestureImageView == mRightDown) {
-            MiscUtils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_DOWN, 1000);
-                }
-            });
+            if (gestureImageView == mLeftUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_UP, 1000);
+                    }
+                });
+            } else if (gestureImageView == mUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_UP, 1000);
+                    }
+                });
+            } else if (gestureImageView == mRightUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_UP, 1000);
+                    }
+                });
+            } else if (gestureImageView == mLeft) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT, 1000);
+                    }
+                });
+            } else if (gestureImageView == mRight) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT, 1000);
+                    }
+                });
+            } else if (gestureImageView == mLeftDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_LEFT_DOWN, 1000);
+                    }
+                });
+            } else if (gestureImageView == mDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_DOWN, 1000);
+                    }
+                });
+            } else if (gestureImageView == mRightDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FosSdkJNI.PtzCmd(handler, PtzCmd.FOSPTZ_RIGHT_DOWN, 1000);
+                    }
+                });
+            }
+        } else if(camera.deviceType == 3){
+            if(Define.NETWORK_TYPE == Define.NetworkType.LocalNetwork){
+                ptzService = camera.localPtzService;
+            } else if(Define.NETWORK_TYPE == Define.NetworkType.DnsNetwork){
+                ptzService = camera.dnsPtzService;
+            }
+
+            if (gestureImageView == mLeftUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, -1, 1, 0);
+                    }
+                });
+            } else if (gestureImageView == mUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, 0, 1, 0);
+                    }
+                });
+            } else if (gestureImageView == mRightUp) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, 1, 1, 0);
+                    }
+                });
+            } else if (gestureImageView == mLeft) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, -1, 0, 0);
+                    }
+                });
+            } else if (gestureImageView == mRight) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, 1, 0, 0);
+                    }
+                });
+            } else if (gestureImageView == mLeftDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, -1, -1, 0);
+                    }
+                });
+            } else if (gestureImageView == mDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, 0, -1, 0);
+                    }
+                });
+            } else if (gestureImageView == mRightDown) {
+                MiscUtils.runOnBackgroundThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TXOnvif.getInstance().ptzContinuousMove(camera.username, camera.password,
+                                ptzService, camera.token, PTZType.PTZ_MOVE, 1, -1, 0);
+                    }
+                });
+            }
         }
     }
 }

@@ -20,6 +20,8 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.CheckBox;
 import in.workarounds.typography.EditText;
 import in.workarounds.typography.TextView;
+import onvif.sdk.TXOnvif;
+import onvif.sdk.obj.MediaStreamUri;
 import vn.com.vshome.MainActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
@@ -610,6 +612,22 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                         foscam.password = mCameraPassword;
                         room.foscams.add(foscam);
                         mNumberOfCamera--;
+                    }
+
+                    if(Define.DEBUG){
+                        Camera camera = new Camera();
+                        camera.setId(2L);
+                        camera.deviceType = 3;
+                        camera.deviceName = "Test cam";
+                        camera.username = "admin";
+                        camera.password = "Aa@123456";
+                        camera.ipAddress = "192.168.1.18";
+                        camera.localPort = 888;
+                        camera.dnsAddress = "kimdong6074.ddns.net";
+                        camera.webPort = 888;
+                        camera.localDeviceService = camera.ipAddress + ":" + camera.localPort + "/onvif/device_service";
+                        camera.dnsDeviceService = camera.dnsAddress + ":" + camera.webPort + "/onvif/device_service";
+                        room.foscams.add(camera);
                     }
 
                     int mNumberOfSensor = mBufferData[index];
