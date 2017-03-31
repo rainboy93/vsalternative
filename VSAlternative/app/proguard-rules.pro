@@ -26,6 +26,8 @@
 
 
 -dontwarn com.squareup.okhttp.**
+-dontwarn com.google.**
+-dontwarn org.kxml2.io.**
 
 -keepattributes *Annotation*
 -keep public class * extends android.app.Activity
@@ -37,13 +39,18 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class * extends android.support.v4.app.Fragment
 -keep public class * extends android.app.Fragment
--keep public class vn.com.vshome.foscamsdk.** { *; }
 
+-keep public class vn.com.vshome.foscamsdk.** { *; }
+-keep class com.fos.sdk.** { *; }
+-keep class onvif.sdk.** { *; }
+-keep class org.videolan.libvlc.** { *; }
 -keep class vn.com.vshome.database.** { *; }
 
 -keepclasseswithmembernames class * {
     native <methods>;
 }
+
+-keepattributes *Annotation*,Signature
 
 -keepclasseswithmembers class * {
     *** *Callback(...);

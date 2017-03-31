@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
@@ -120,10 +119,13 @@ public class CameraView extends View implements Runnable {
         canvas.drawColor(Color.BLACK);
         if (isDrawing) {
             try {
-                synchronized (mBit) {
-                    canvas.drawBitmap(mBit, null, rectF, null);
+                if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
+                    mBit = GlideBitmapPool.getBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
                 }
-            } catch (NullPointerException nx) {
+                buffer.rewind();
+                mBit.copyPixelsFromBuffer(buffer);
+                canvas.drawBitmap(mBit, null, rectF, null);
+            } catch (Exception e) {
                 canvas.drawColor(Color.BLACK);
             }
         }
@@ -136,6 +138,7 @@ public class CameraView extends View implements Runnable {
             if (mBit != null) {
                 GlideBitmapPool.putBitmap(mBit);
                 mBit = null;
+                buffer = null;
             }
         } else {
 
@@ -146,14 +149,12 @@ public class CameraView extends View implements Runnable {
     public void run() {
         try {
             cameraSession = CameraManager.getInstance().getCameraSession(camera);
-            cameraData = cameraSession.cameraThread.listData.get(0);
-            buffer = ByteBuffer.wrap(cameraData.data);
-            if (mBit == null || mBit.getWidth() != cameraData.picWidth || mBit.getHeight() != cameraData.picHeight) {
-                mBit = GlideBitmapPool.getBitmap(cameraData.picWidth, cameraData.picHeight, Bitmap.Config.ARGB_8888);
+            cameraData = cameraSession.cameraThread.publicData;
+            if (buffer == null) {
+                buffer = ByteBuffer.wrap(cameraData.data);
             }
             setRect();
-            mBit.copyPixelsFromBuffer(buffer);
-            buffer.rewind();
+
         } catch (Exception ex) {
 
         }

@@ -82,11 +82,20 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         }
     }
 
+    public void cancelDelayKill(){
+        if(mBackgroundDelayHandler != null){
+            mBackgroundDelayHandler.removeCallbacks(mBackgroundTransition);
+        }
+    }
+
     private void trimMemory() {
         if (isTakePhoto) {
             mBackgroundTransition = new Runnable() {
                 @Override
                 public void run() {
+                    if(!isTakePhoto){
+                        return;
+                    }
                     mBackgroundTransition = null;
                     SocketManager.getInstance().destroySocket();
                     TheActivityManager.getInstance().finishAll();

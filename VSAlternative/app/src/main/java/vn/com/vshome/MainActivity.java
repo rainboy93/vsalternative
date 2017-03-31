@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DRAW_OVERLAY_REQUEST_CODE) {
             VSHome.isTakePhoto = false;
+            ((VSHome)getApplication()).cancelDelayKill();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     && !Settings.canDrawOverlays(this)) {
                 super.onActivityResult(requestCode, resultCode, data);

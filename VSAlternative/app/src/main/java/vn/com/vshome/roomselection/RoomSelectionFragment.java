@@ -67,6 +67,8 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
     @Override
     public void onResume() {
         super.onResume();
+        VSHome.isTakePhoto = false;
+        ((VSHome)getActivity().getApplication()).cancelDelayKill();
     }
 
     private void initView(View view) {
@@ -95,6 +97,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                             @Override
                             public void onImageSelected(Uri uri) {
                                 VSHome.isTakePhoto = false;
+                                ((VSHome)getActivity().getApplication()).cancelDelayKill();
                                 selectedUri = uri;
                                 goToCrop();
                             }
@@ -102,6 +105,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                             @Override
                             public void onCancel() {
                                 VSHome.isTakePhoto = false;
+                                ((VSHome)getActivity().getApplication()).cancelDelayKill();
                             }
 
                             @Override
@@ -113,6 +117,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
                             @Override
                             public void onError(String message) {
                                 VSHome.isTakePhoto = false;
+                                ((VSHome)getActivity().getApplication()).cancelDelayKill();
                             }
                         })
                         .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
@@ -125,6 +130,7 @@ public class RoomSelectionFragment extends Fragment implements RoomSelectionCall
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 VSHome.isTakePhoto = false;
+                ((VSHome)getActivity().getApplication()).cancelDelayKill();
             }
         };
     }

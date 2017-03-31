@@ -141,7 +141,7 @@ public class PreviewService extends Service implements
             cameraViewOnvif = new SurfaceView(this);
             holder = cameraViewOnvif.getHolder();
             holder.addCallback(this);
-            holder.setFormat(PixelFormat.OPAQUE);
+            holder.setFormat(PixelFormat.TRANSLUCENT);
             cameraViewOnvif.setZOrderMediaOverlay(true);
             mVideoContainer.addView(cameraViewOnvif, new LayoutParams(
                     (int) (width * SCALE), (int) (3 * SCALE * width / 4)));
