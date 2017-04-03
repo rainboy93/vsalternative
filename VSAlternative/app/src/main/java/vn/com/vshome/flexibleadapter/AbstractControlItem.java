@@ -2,11 +2,9 @@ package vn.com.vshome.flexibleadapter;
 
 import java.io.Serializable;
 
-import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.communication.SocketManager;
@@ -96,7 +94,7 @@ public abstract class AbstractControlItem<VH extends FlexibleViewHolder>
             @Override
             public void onTimeOut() {
                 ProgressHUD.hideLoading(TheActivityManager.getInstance().getCurrentActivity());
-                Toaster.showMessage(TheActivityManager.getInstance().getCurrentActivity(), Utils.getString(R.string.txt_no_response));
+                Toaster.showMessage(TheActivityManager.getInstance().getCurrentActivity(), Utils.getString(R.string.warn_toast_device_no_response));
             }
         }, 5);
         CommandMessage message = new CommandMessage();

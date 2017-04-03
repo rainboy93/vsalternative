@@ -32,7 +32,7 @@
             android:layout_marginRight="@dimen/d5"
             android:gravity="left"
             android:paddingLeft="8dp"
-            android:text="Đèn Downlight ngoài cổng"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="@dimen/d14"
             app:font_name="@string/font_name"

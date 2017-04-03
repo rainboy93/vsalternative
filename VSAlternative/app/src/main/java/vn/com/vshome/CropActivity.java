@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
-public class CropActivity extends Activity {
+public class CropActivity extends BaseActivity {
 
     private CropableImageView imageView;
     private int floorId, roomId;

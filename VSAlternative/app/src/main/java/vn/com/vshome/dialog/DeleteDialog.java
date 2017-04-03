@@ -3,6 +3,7 @@ package vn.com.vshome.dialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class DeleteDialog extends DialogFragment {
 
     private void initView(View view) {
         mContent = (TextView) view.findViewById(R.id.dialog_delete_scene_text);
-        mContent.setText(content);
+        mContent.setText(Html.fromHtml(content.toString()));
 
         mIcon = (ImageView) view.findViewById(R.id.dialog_delete_scene_icon);
         if (iconId != 0) {

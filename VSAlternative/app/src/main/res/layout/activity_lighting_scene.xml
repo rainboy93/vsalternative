@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/device_background">
+    android:background="@color/device_background"
+    android:keepScreenOn="true">
 
     <include
         android:id="@+id/lighting_scene_action_bar"

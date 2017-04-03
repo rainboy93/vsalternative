@@ -40,6 +40,7 @@ import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.flexibleadapter.AbstractItem;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.customview.CameraControlView;
@@ -252,7 +253,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
                 mEventHandler.addHandler(mHandler);
                 holder.setKeepScreenOn(true);
             } catch (Exception e) {
-                Log.e("dungnt", e.toString());
+                Logger.LogD(e.toString());
             }
         }
 
@@ -293,7 +294,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
         }
 
         public void eventHardwareAccelerationError() {
-            Log.e("dungnt", "Error with hardware acceleration");
+            Logger.LogD("Error with hardware acceleration");
             releasePlayer();
         }
 
@@ -309,7 +310,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
         @Override
         public int configureSurface(Surface surface, int width, int height,
                                     int hal) {
-            Log.d("", "configureSurface: width = " + width + ", height = "
+            Logger.LogD("configureSurface: width = " + width + ", height = "
                     + height);
             if (LibVlcUtil.isICSOrLater() || surface == null)
                 return -1;
@@ -357,7 +358,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
 
             @Override
             public void onNativeCrash() {
-                Log.e("vlcdebug", "nativecrash");
+                Logger.LogD("nativecrash");
             }
 
         };
@@ -410,7 +411,7 @@ public class CameraChildItem extends AbstractItem<CameraChildItem.CameraChildVie
                 holder.setFixedSize(mVideoWidth, mVideoHeight);
 
             } else {
-                Log.e("dungnt", "Holder was null");
+                Logger.LogD("Holder was null");
             }
 
 

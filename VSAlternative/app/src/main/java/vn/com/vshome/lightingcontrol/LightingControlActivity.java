@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.LinearLayout;
 import java.util.Locale;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import in.workarounds.typography.Button;
@@ -239,7 +237,7 @@ public class LightingControlActivity extends BaseActivity implements View.OnClic
             if (room != null && mAdapter != null) {
                 if (VSHome.currentUser != null && VSHome.currentUser.priority != Define.PRIORITY_ADMIN
                         && VSHome.currentUser.roomControl.charAt(room.getId().intValue() - 1) != '1') {
-                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_room_priority);
+                    Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_room_control_no_permission);
                     return false;
                 }
 

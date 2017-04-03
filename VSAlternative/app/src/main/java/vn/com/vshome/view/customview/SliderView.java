@@ -179,7 +179,6 @@ public class SliderView extends View {
             case MotionEvent.ACTION_MOVE:
                 calculateProgress(x, y);
                 invalidate();
-                Log.d("dungnt", "Moving");
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -213,7 +212,6 @@ public class SliderView extends View {
             x = endX;
         }
         mCurrentProgress = (int) (100 * (x - startX) / totalProgress);
-        Log.d("dungnt", "Current progress: " + mCurrentProgress);
     }
 
     public int getCurrentProgress() {

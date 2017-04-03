@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import vn.com.vshome.account.LoginActivity;
 import vn.com.vshome.activitymanager.TheActivityManager;
@@ -117,13 +119,17 @@ public class VSHome extends SugarApp implements ConnectivityChangeListener, Comp
         try {
             File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                     + File.separator + "vshome.debug");
-            if(file.exists()){
-                file.delete();
+            if(!file.exists()){
+                file.createNewFile();
             }
-            file.createNewFile();
+//            file.createNewFile();
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            String exceptionAsString = sw.toString();
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String strDate = sdf.format(c.getTime());
+            String exceptionAsString = strDate + "\n";
+            exceptionAsString += sw.toString();
             FileUtils.stringToFile(file.getAbsolutePath(), exceptionAsString);
             sw.close();
         } catch (IOException e1) {

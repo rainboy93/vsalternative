@@ -1,11 +1,8 @@
 package vn.com.vshome.account;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +17,6 @@ import in.workarounds.typography.Button;
 import in.workarounds.typography.CheckBox;
 import in.workarounds.typography.EditText;
 import in.workarounds.typography.TextView;
-import onvif.sdk.TXOnvif;
-import onvif.sdk.obj.MediaStreamUri;
 import vn.com.vshome.MainActivity;
 import vn.com.vshome.R;
 import vn.com.vshome.VSHome;
@@ -115,24 +110,23 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
             String password = mPassword.getText().toString();
             if (!isValidUsername(username)
                     || !isValidPassword(password)) {
-                Utils.showErrorDialog(R.string.txt_error,
-                        R.string.txt_Invalid_User);
+                Utils.showErrorDialog(R.string.title_dialog_error,
+                        R.string.warn_dialog_invalid_username_or_password);
                 return;
             }
 
             boolean isNetConfigured = PreferenceUtils.getInstance(getActivity()).getValue(PreferenceDefine.NET_CONFIGURED, false);
             if (!isNetConfigured) {
-                Utils.showErrorDialog(R.string.txt_error,
-                        R.string.txt_network_not_config);
+                Utils.showErrorDialog(R.string.title_dialog_error,
+                        R.string.warn_dialog__network_not_config);
                 return;
             }
             isRunning = true;
             loginTask = new LoginTask(username, password);
             loginTask.execute("");
         } else if (v == mForgotPassword) {
-            Utils.showErrorDialog("Quên mật khẩu",
-                    "Hãy liên hệ với admin để lấy lại mật khẩu.\n"
-                            + "Hoặc liên hệ với đội HTKH của VSHome theo hotline: 0432252206.");
+            Utils.showErrorDialog(Utils.getString(R.string.title_dialog_forgot_password),
+                    Utils.getString(R.string.warn_dialog_contact_support));
         } else if (v == mSettingButton) {
             ((LoginActivity) getActivity()).changeToSetting();
         }
@@ -228,25 +222,25 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                 SocketManager.getInstance().destroySocket();
                 switch (integer) {
                     case 0:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_connect_problem);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_can_not_connect);
                         break;
                     case 1:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_disable_user);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_disable_user);
                         break;
                     case 2:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_main_not_accept_connection);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_main_control_disconnected);
                         break;
                     case 3:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_auth_fail);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_authentication_fail);
                         break;
                     case 4:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_max_connection);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_max_connections);
                         break;
                     case 5:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_admin_connecting);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_admin_connected);
                         break;
                     default:
-                        Utils.showErrorDialog(R.string.txt_error, R.string.txt_system_error);
+                        Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_system_error);
                         break;
                 }
             }
@@ -358,7 +352,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener {
                             ProgressHUD.hideLoading(getActivity());
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             startActivity(intent);
-                            Toaster.showMessage(getActivity(), getResources().getString(R.string.foscam_login_promote_success));
+                            Toaster.showMessage(getActivity(), Utils.getString(R.string.warn_toast_login_success));
                             getActivity().finishAffinity();
                             SocketManager.getInstance().removeLoginCallback();
                         }

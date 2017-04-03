@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">VSHome</string>
-    <string name="action_settings">Settings</string>
 
     <string name="login_username_hint">Tài khoản</string>
     <string name="login_password_hint">Mật khẩu</string>
@@ -10,27 +9,84 @@
     <string name="font_regular">Regular</string>
     <string name="font_bold">Bold</string>
 
-    <string name="txt_Invalid_User">Tên hoặc mật khẩu không hợp lệ!</string>
-    <string name="txt_error">Lỗi</string>
-    <string name="txt_network_not_config">Chưa cấu hình mạng</string>
-    <string name="txt_main_connect_problem">Kết nối tới bộ điều khiển trung tâm gặp sự cố.</string>
-    <string name="txt_room_priority">Bạn không có quyền điều khiển thiết bị ở phòng này.</string>
-    <string name="txt_disable_user">Tài khoản truy cập đã bị vô hiệu hóa.</string>
-    <string name="txt_main_not_accept_connection">Bộ điều khiển trung tâm tạm thời ngắt kết nối.</string>
-    <string name="txt_auth_fail">Tài khoản hoặc mật khẩu không chính xác.</string>
-    <string name="txt_max_connection">Số lượng thiết bị truy cập vượt quá giới hạn cho phép.</string>
-    <string name="txt_system_error">Lỗi hệ thống.</string>
-    <string name="txt_lan_ip_error">Địa chỉ IP nội mạng không chính xác.</string>
-    <string name="txt_wan_addr_error">Địa chỉ ngoại mạng không chính xác.</string>
-    <string name="txt_lan_port_error">Cổng nội mạng không chính xác.</string>
-    <string name="txt_wan_port_error">Cổng ngoại mạng không chính xác.</string>
-    <string name="txt_empty_scene">Không có thiết bị trong cảnh!</string>
-    <string name="txt_null_date_scene">Hãy chọn ít nhất một ngày!</string>
-    <string name="txt_delete_scene_fail">Xóa cảnh thất bại.</string>
-    <string name="txt_admin_connecting">Tài khoản admin đang truy cập</string>
-    <string name="txt_no_response">Không có phản hồi từ thiết bị.</string>
-    <string name="foscam_login_promote_success">Đăng nhập thành công.</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="warn_exit_all_users">Bạn thoát toàn bộ các tài khoản?</string>
+    <string name="warn_exit_single_user">Bạn muốn thoát tài khoản </string>
+    <string name="warn_quit_app">Bạn có chắc chắn muốn thoát khỏi ứng dụng?</string>
+    <string name="warn_draw_over_other_app">Bạn cần cho phép vẽ lên màn hình để truy cập mục này</string>
+
+    <string name="warn_toast_fill_username_password">Bạn chưa nhập tên hoặc mật khẩu!</string>
+    <string name="warn_toast_wrong_password_format">Hãy nhập vào mật khẩu từ 4-12 kí tự!</string>
+    <string name="warn_toast_login_success">Đăng nhập thành công.</string>
+    <string name="warn_toast_device_no_response">Không có phản hồi từ thiết bị.</string>
+    <string name="warn_toast_user_exist">Tên người dùng đã tồn tại!</string>
+    <string name="warn_toast_update_password_success">Cập nhật mật khẩu thành công!</string>
+    <string name="warn_toast_update_password_unsuccess">Cập nhật mật khẩu không thành công!</string>
+    <string name="warn_toast_input_new_password">Hãy nhập vào mật khẩu mới!</string>
+    <string name="warn_toast_wrong_password_length">Hãy nhập vào mật khẩu từ 4-12 kí tự!</string>
+    <string name="warn_toast_no_scene_name">Chưa đặt tên cảnh!</string>
+    <string name="warn_toast_scene_name_too_long">Tên cảnh quá dài!</string>
+    <string name="warn_toast_device_not_available">Thiết bị chưa được cài đặt</string>
+    <string name="warn_toast_in_development">Đang phát triển</string>
+
+    <string name="warn_dialog_admin_connected">Tài khoản admin đang truy cập</string>
+    <string name="warn_dialog_scene_choose_date">Hãy chọn ít nhất một ngày!</string>
+    <string name="warn_dialog_delete_scene_fail">Xóa cảnh thất bại.</string>
+    <string name="warn_dialog_invalid_username_or_password">Tên hoặc mật khẩu không hợp lệ!</string>
+    <string name="warn_dialog__network_not_config">Chưa cấu hình mạng</string>
+    <string name="warn_dialog_can_not_connect">Kết nối tới bộ điều khiển trung tâm gặp sự cố.</string>
+    <string name="warn_dialog_room_control_no_permission">Bạn không có quyền điều khiển thiết bị ở phòng này.</string>
+    <string name="warn_dialog_disable_user">Tài khoản truy cập đã bị vô hiệu hóa.</string>
+    <string name="warn_dialog_main_control_disconnected">Bộ điều khiển trung tâm tạm thời ngắt kết nối.</string>
+    <string name="warn_dialog_authentication_fail">Tài khoản hoặc mật khẩu không chính xác.</string>
+    <string name="warn_dialog_max_connections">Số lượng thiết bị truy cập vượt quá giới hạn cho phép.</string>
+    <string name="warn_dialog_system_error">Lỗi hệ thống.</string>
+    <string name="warn_dialog_wrong_local_address">Địa chỉ IP nội mạng không chính xác.</string>
+    <string name="warn_dialog_wrong_dns_address">Địa chỉ ngoại mạng không chính xác.</string>
+    <string name="warn_dialog_wrong_local_port">Cổng nội mạng không chính xác.</string>
+    <string name="warn_dialog_wrong_dns_port">Cổng ngoại mạng không chính xác.</string>
+    <string name="warn_dialog_scene_empty_device">Không có thiết bị trong cảnh!</string>
+    <string name="warn_dialog_contact_support">"Hãy liên hệ với admin để lấy lại mật khẩu.\n"
+                            + "Hoặc liên hệ với đội HTKH của VSHome theo hotline: 0432252206."</string>
+    <string name="warn_dialog_error_happen">Có lỗi xảy ra. Hãy thử lại.</string>
+    <string name="warn_dialog_error_happen_and_try_again">Có lỗi xảy ra. Thử lại?</string>
+
+    <string name="title_dialog_notification">Thông báo</string>
+    <string name="title_dialog_error">Lỗi</string>
+    <string name="title_dialog_forgot_password">Quên mật khẩu</string>
+    <string name="title_dialog_input_scene_name">Nhập tên ngữ cảnh</string>
+    <string name="title_greeting">Xin chào </string>
+    <string name="title_lighting">Chiếu sáng</string>
+    <string name="title_camera_type_camera"></string>
+    <string name="title_camera_type_motion_sensor">Cảm biến chuyển động</string>
+    <string name="title_camera_type_open_door_sensor">Cảm biến cửa mở</string>
+
+    <string name="content_dialog_confirm_delete">Bạn muốn xóa </string>
+
+    <string name="device_empty">Không có thiết bị</string>
+    <string name="device_type_relay">Đèn / Thiết bị đóng cắt</string>
+    <string name="device_type_dimmer">Đèn Dimmer</string>
+    <string name="device_type_shutter_relay">Rèm</string>
+    <string name="device_type_rgb">Đèn RGB</string>
+    <string name="device_type_pir">Cảm biến chuyển động</string>
+    <string name="device_type_favorite">Nhóm thiết bị yêu thích</string>
+
+    <string name="warn_camera_max_user_exceed">Truy cập vượt quá giới hạn</string>
+    <string name="warn_camera_error">Camera gặp sự cố</string>
+    <string name="warn_no_scene">Không có ngữ cảnh</string>
+
+    <string name="hint_username">Tên người dùng</string>
+    <string name="hint_password">Mật khẩu</string>
+
+    <string name="copy_rights">QUYỀN SỬ DỤNG</string>
+    <string name="members">Các thành viên</string>
+
+    <string name="menu_lighting">Chiếu sáng\n</string>
+    <string name="menu_security">An ninh\n</string>
+    <string name="menu_environment_sensor">Cảm biến\nmôi trường</string>
+    <string name="menu_sun_energy">Năng lượng\nmặt trời</string>
+    <string name="menu_user">Người dùng\n</string>
+    <string name="menu_advance">Nâng cao\n</string>
 </resources>

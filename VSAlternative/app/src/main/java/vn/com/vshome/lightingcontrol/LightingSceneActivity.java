@@ -19,7 +19,6 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.DeviceSelectCallback;
 import vn.com.vshome.callback.SceneSetUpCallback;
 import vn.com.vshome.callback.TaskCallback;
@@ -233,10 +232,10 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
         for (AbstractFlexibleItem item : mListItems) {
             if (item instanceof ControlGroupItem && !(item instanceof ControlEmptyItem)) {
                 List<AbstractFlexibleItem> subItems = ((ControlGroupItem) item).getSubItems();
-                if(subItems != null){
-                    for(AbstractFlexibleItem subItem : subItems){
-                        if(subItem instanceof AbstractControlItem && !(subItem instanceof ControlEmptyItem)){
-                            if(((AbstractControlItem) subItem).isSelected){
+                if (subItems != null) {
+                    for (AbstractFlexibleItem subItem : subItems) {
+                        if (subItem instanceof AbstractControlItem && !(subItem instanceof ControlEmptyItem)) {
+                            if (((AbstractControlItem) subItem).isSelected) {
                                 count++;
                             }
                         }
@@ -265,8 +264,8 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
         for (AbstractFlexibleItem item : mListItems) {
             if (item instanceof ControlGroupItem) {
                 ControlGroupItem groupItem = (ControlGroupItem) item;
-                for(AbstractFlexibleItem item1 : groupItem.getSubItems()){
-                    if(!(item1 instanceof ControlEmptyItem)){
+                for (AbstractFlexibleItem item1 : groupItem.getSubItems()) {
+                    if (!(item1 instanceof ControlEmptyItem)) {
                         AbstractControlItem controlItem = (AbstractControlItem) item1;
                         if (controlItem.isSelected) {
                             LightingDevice device = controlItem.device;
@@ -350,10 +349,10 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
     public void onClick(View v) {
         if (v == mSave) {
             if (countDevice() == 0) {
-                Utils.showErrorDialog(R.string.txt_error, R.string.txt_empty_scene);
+                Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_scene_empty_device);
                 return;
             } else if (countDay() == 0) {
-                Utils.showErrorDialog(R.string.txt_error, R.string.txt_null_date_scene);
+                Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_scene_choose_date);
                 return;
             }
             saveScene();
@@ -387,7 +386,8 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
     @Override
     public void onTimeOut() {
         ProgressHUD.hideLoading(LightingSceneActivity.this);
-        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+        Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                Utils.getString(R.string.warn_dialog_error_happen));
     }
 
     @Override
@@ -400,7 +400,8 @@ public class LightingSceneActivity extends BaseActivity implements TaskCallback,
         if (status == CommandMessage.STATUS_ERROR) {
             ProgressHUD.hideLoading(LightingSceneActivity.this);
             TimeOutManager.getInstance().cancelCountDown();
-            Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+            Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                    Utils.getString(R.string.warn_dialog_error_happen));
             return;
         } else {
             ProgressHUD.hideLoading(LightingSceneActivity.this);

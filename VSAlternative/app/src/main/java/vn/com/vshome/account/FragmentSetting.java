@@ -2,7 +2,6 @@ package vn.com.vshome.account;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,8 +66,8 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if (v == mSave) {
             if (!isValidIP4Address(mIP.getText().toString())) {
-                Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_lan_ip_error));
+                Utils.showErrorDialog(getTextFromResource(R.string.title_dialog_error),
+                        getTextFromResource(R.string.warn_dialog_wrong_local_address));
                 mIP.requestFocus();
                 return;
             }
@@ -77,8 +76,8 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
                     .toString())) {
                 if (!isValidIP4Address(mDNS.getText()
                         .toString())) {
-                    Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                            getTextFromResource(R.string.txt_wan_addr_error));
+                    Utils.showErrorDialog(getTextFromResource(R.string.title_dialog_error),
+                            getTextFromResource(R.string.warn_dialog_wrong_dns_address));
                     mDNS.requestFocus();
                     return;
                 }
@@ -86,16 +85,16 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
 
             if (((Integer.parseInt(mIPPort.getText().toString())) > 65535)
                     || ((Integer.parseInt(mIPPort.getText().toString())) == 0)) {
-                Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_lan_port_error));
+                Utils.showErrorDialog(getTextFromResource(R.string.title_dialog_error),
+                        getTextFromResource(R.string.warn_dialog_wrong_local_port));
                 mIPPort.requestFocus();
                 return;
             }
 
             if (((Integer.parseInt(mDNSPort.getText().toString())) > 65535)
                     || ((Integer.parseInt(mDNSPort.getText().toString())) == 0)) {
-                Utils.showErrorDialog(getTextFromResource(R.string.txt_error),
-                        getTextFromResource(R.string.txt_wan_port_error));
+                Utils.showErrorDialog(getTextFromResource(R.string.title_dialog_error),
+                        getTextFromResource(R.string.warn_dialog_wrong_dns_port));
                 mDNSPort.requestFocus();
                 return;
             }
@@ -118,7 +117,7 @@ public class FragmentSetting extends Fragment implements View.OnClickListener {
     }
 
     private String getTextFromResource(int id) {
-        return getResources().getString(id);
+        return Utils.getString(id);
     }
 
     private boolean isValidIP4Address(String ipAddress) {

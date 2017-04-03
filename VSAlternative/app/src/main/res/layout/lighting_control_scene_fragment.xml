@@ -42,7 +42,7 @@
         <in.workarounds.typography.TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Không có ngữ cảnh"
+            android:text="@string/warn_no_scene"
             android:textColor="@color/gray"
             android:textSize="@dimen/d20" />
 

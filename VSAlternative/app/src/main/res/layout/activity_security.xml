@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
 
     <include
         android:id="@+id/security_action_bar"
@@ -36,7 +37,7 @@
             android:layout_weight="1"
             android:background="@color/tab"
             android:padding="@dimen/d5"
-            android:text="Cảm biến chuyển động"
+            android:text="@string/title_camera_type_motion_sensor"
             android:textColor="@color/white"
             android:textSize="@dimen/d14"
             app:font_name="@string/font_name"
@@ -49,7 +50,7 @@
             android:layout_weight="1"
             android:background="@color/tab2"
             android:padding="@dimen/d5"
-            android:text="Cảm biến cửa mở"
+            android:text="@string/title_camera_type_open_door_sensor"
             android:textColor="@color/white"
             android:textSize="@dimen/d14"
             app:font_name="@string/font_name"

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/d20"
-        android:text="Nhập tên ngữ cảnh"
+        android:text="@string/title_dialog_input_scene_name"
         android:textColor="@color/gray"
         android:textSize="@dimen/d20"
         app:font_name="@string/font_name"

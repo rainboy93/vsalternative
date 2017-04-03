@@ -183,8 +183,6 @@ public class CropableImageView extends View {
 				pass = false;
 			}
 
-			Log.d("dungnt", "Scale " + scaleFactor);
-
 			if (pass) {
 				transformationMatrix.postScale(scale, scale);
 				float focusShiftX = focusX - lastFocusX;
@@ -226,7 +224,6 @@ public class CropableImageView extends View {
 				float distanceX, float distanceY) {
 
 			drawMatrix.postTranslate(-distanceX, -distanceY);
-			Log.d("dungnt", m[Matrix.MTRANS_X] + " " + m[Matrix.MTRANS_Y]);
 			drawMatrix.getValues(m);
 			if (m[Matrix.MTRANS_X] > width / 2
 					|| m[Matrix.MTRANS_X] < width / 2 - scaleFactor * origWidth

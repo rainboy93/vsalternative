@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:keepScreenOn="true">
 
     <include
         android:id="@+id/user_action_bar"
@@ -52,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/d60"
                     android:background="@color/transparent"
-                    android:hint="Tên người dùng"
+                    android:hint="@string/hint_username"
                     android:paddingLeft="@dimen/d10"
                     android:paddingRight="@dimen/d10"
                     android:singleLine="true"
@@ -66,7 +67,7 @@
                     android:layout_height="@dimen/d60"
                     android:layout_below="@+id/user_username"
                     android:background="@color/transparent"
-                    android:hint="Mật khẩu"
+                    android:hint="@string/hint_password"
                     android:paddingLeft="@dimen/d10"
                     android:paddingRight="@dimen/d10"
                     android:singleLine="true"
@@ -113,7 +114,7 @@
                     android:layout_marginLeft="@dimen/d10"
                     android:layout_toRightOf="@+id/user_icon"
                     android:gravity="center_vertical"
-                    android:text="QUYỀN SỬ DỤNG"
+                    android:text="@string/copy_rights"
                     android:textColor="@color/black"
                     app:font_name="@string/font_name"
                     app:font_variant="@string/font_bold" />

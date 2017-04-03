@@ -15,9 +15,6 @@ public class Define {
 
     public static String BASE_IMAGE_PATH = Environment.getExternalStorageDirectory() + File.separator + ".VSHome";
 
-    public static String DEVICE_NOT_AVAILABLE = "Thiết bị chưa được cài đặt";
-    public static String IN_DEVELOPING = "Đang phát triển";
-
     public enum NetworkType {
         NotDetermine,
         LocalNetwork,

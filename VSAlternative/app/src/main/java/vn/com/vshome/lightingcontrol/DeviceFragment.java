@@ -10,15 +10,11 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.callback.LightingControlCallback;
 import vn.com.vshome.callback.TaskCallback;
 import vn.com.vshome.communication.SocketManager;
-import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
 import vn.com.vshome.flexibleadapter.ControlLayoutManager;
@@ -30,7 +26,6 @@ import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.TimeOutManager;
-import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
@@ -102,24 +97,34 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
             return;
         }
         if (isControlDevice) {
-            TimeOutManager.getInstance().cancelCountDown();
-            ProgressHUD.hideLoading(getActivity());
-        } else if(SocketManager.getInstance().receiveThread.isSceneControl){
-            SocketManager.getInstance().receiveThread.isSceneControl = false;
-            TimeOutManager.getInstance().cancelCountDown();
-            TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
+            MiscUtils.runOnUiThread(new Runnable() {
                 @Override
-                public void onTimeOut() {
+                public void run() {
+                    TimeOutManager.getInstance().cancelCountDown();
                     ProgressHUD.hideLoading(getActivity());
                 }
-            }, 1);
+            });
+        } else if (SocketManager.getInstance().receiveThread.isSceneControl) {
+            SocketManager.getInstance().receiveThread.isSceneControl = false;
+            MiscUtils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TimeOutManager.getInstance().cancelCountDown();
+                    TimeOutManager.getInstance().startCountDown(new TimeOutManager.TimeOutCallback() {
+                        @Override
+                        public void onTimeOut() {
+                            ProgressHUD.hideLoading(getActivity());
+                        }
+                    }, 1);
+                }
+            });
         }
 
         MiscUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (AbstractFlexibleItem item : mListItems) {
-                    if(!(item instanceof ControlGroupItem)){
+                    if (!(item instanceof ControlGroupItem)) {
                         continue;
                     }
                     ControlGroupItem groupItem = (ControlGroupItem) item;
@@ -144,23 +149,18 @@ public class DeviceFragment extends BaseControlFragment implements LightingContr
             return;
         }
         if (status == CommandMessage.STATUS_ERROR) {
-            TimeOutManager.getInstance().cancelCountDown();
-            ProgressHUD.hideLoading(getActivity());
-            Utils.showErrorDialog(R.string.txt_error, R.string.txt_no_response);
             MiscUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    TimeOutManager.getInstance().cancelCountDown();
+                    ProgressHUD.hideLoading(getActivity());
+                    Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_toast_device_no_response);
                     for (AbstractFlexibleItem item : mListItems) {
                         ControlGroupItem groupItem = (ControlGroupItem) item;
                         for (final AbstractFlexibleItem subItem : groupItem.getSubItems()) {
                             AbstractControlItem modelItem = (AbstractControlItem) subItem;
                             if (id == modelItem.deviceId) {
-                                MiscUtils.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mDeviceAdapter.updateItem(subItem, null);
-                                    }
-                                });
+                                mDeviceAdapter.updateItem(subItem, null);
                                 return;
                             }
                         }

@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WheelView extends ScrollView {
-    public static final String TAG = WheelView.class.getSimpleName();
-
     public static class OnWheelViewListener {
         public void onSelected(int selectedIndex, String item) {
         }
@@ -98,7 +96,6 @@ public class WheelView extends ScrollView {
 
 //        scrollView = ((ScrollView)this.getParent());
 //        Log.d(TAG, "scrollview: " + scrollView);
-        Log.d(TAG, "parent: " + this.getParent());
 //        this.setOrientation(VERTICAL);
         this.setVerticalScrollBarEnabled(false);
 
@@ -189,7 +186,6 @@ public class WheelView extends ScrollView {
         tv.setPadding(padding, padding, padding, padding);
         if (0 == itemHeight) {
             itemHeight = getViewMeasuredHeight(tv);
-            Log.d(TAG, "itemHeight: " + itemHeight);
             views.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight * displayItemCount));
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.getLayoutParams();
             this.setLayoutParams(new LinearLayout.LayoutParams(lp.width, itemHeight * displayItemCount));
@@ -287,7 +283,6 @@ public class WheelView extends ScrollView {
 
         if (viewWidth == 0) {
             viewWidth = ((Activity) context).getWindowManager().getDefaultDisplay().getWidth();
-            Log.d(TAG, "viewWidth: " + viewWidth);
         }
 
         if (null == paint) {
@@ -327,7 +322,6 @@ public class WheelView extends ScrollView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.d(TAG, "w: " + w + ", h: " + h + ", oldw: " + oldw + ", oldh: " + oldh);
         viewWidth = w;
         setBackgroundDrawable(null);
     }

@@ -2,7 +2,6 @@ package vn.com.vshome.user;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -138,17 +137,19 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 String password = mPassword.getText().toString();
 
                 if (username.equals("") || password.equals("")) {
-                    Toaster.showMessage(UserActionActivity.this, "Bạn chưa nhập tên hoặc mật khẩu!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_fill_username_password));
                     return;
                 }
                 if (password.length() < 4 || password.length() > 12) {
-                    Toaster.showMessage(UserActionActivity.this, "Hãy nhập vào mật khẩu từ 4-12 kí tự!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_wrong_password_format));
                     return;
                 }
 
                 List<User> list = User.find(User.class, "username = ?", new String[]{username});
                 if (list != null && list.size() > 0) {
-                    Toaster.showMessage(UserActionActivity.this, "Tên người dùng đã tồn tại!");
+                    Toaster.showMessage(UserActionActivity.this, getResources().getString(R.string.warn_toast_user_exist));
                     return;
                 }
 
@@ -214,7 +215,7 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onTimeOut() {
         ProgressHUD.hideLoading(UserActionActivity.this);
-        Toaster.showMessage(UserActionActivity.this, "Có lỗi xảy ra. Hãy thử lại.");
+        Toaster.showMessage(UserActionActivity.this, Utils.getString(R.string.warn_dialog_error_happen));
     }
 
     @Override
@@ -230,7 +231,7 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
             case CommandMessage.CMD_ADD_NEW_USER:
             case CommandMessage.CMD_UPDATE_USER_ROOM:
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Toaster.showMessage(UserActionActivity.this, "Có lỗi xảy ra. Hãy thử lại.");
+                    Toaster.showMessage(UserActionActivity.this, Utils.getString(R.string.warn_dialog_error_happen));
                     return;
                 }
                 long id = mUser.save();
@@ -241,9 +242,11 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
                 break;
             case CommandMessage.CMD_UPDATE_USER_PASSWORD:
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Toaster.showMessage(UserActionActivity.this, "Cập nhật mật khẩu không thành công!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_update_password_unsuccess));
                 } else {
-                    Toaster.showMessage(UserActionActivity.this, "Cập nhật mật khẩu thành công!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_update_password_success));
                 }
                 break;
             default:
@@ -279,10 +282,12 @@ public class UserActionActivity extends BaseActivity implements View.OnClickList
 
                 String np = newPassword.getText().toString();
                 if (np.equals("")) {
-                    Toaster.showMessage(UserActionActivity.this, "Hãy nhập vào mật khẩu mới!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_input_new_password));
                     return;
                 } else if (np.length() < 4 || np.length() > 12) {
-                    Toaster.showMessage(UserActionActivity.this, "Hãy nhập vào mật khẩu từ 4-12 kí tự!");
+                    Toaster.showMessage(UserActionActivity.this,
+                            Utils.getString(R.string.warn_toast_wrong_password_length));
                     return;
                 }
                 dialog.cancel();

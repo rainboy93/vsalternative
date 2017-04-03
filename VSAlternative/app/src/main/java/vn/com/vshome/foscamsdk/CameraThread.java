@@ -9,10 +9,12 @@ import com.fos.sdk.FosSdkJNI;
 import com.fos.sdk.IPCType;
 import com.fos.sdk.StreamType;
 
+import vn.com.vshome.R;
 import vn.com.vshome.callback.CameraCallback;
 import vn.com.vshome.database.Camera;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.MiscUtils;
+import vn.com.vshome.utils.Utils;
 
 /**
  * Created by anlab on 8/3/16.
@@ -79,9 +81,9 @@ public class CameraThread extends Thread {
         if (state > 0 && state != FosResult.FOSCMDRET_INTERFACE_CANCEL_BYUSR) {
             String content = "";
             if (state == 3) {
-                content = "Truy cập vượt quá giới hạn";
+                content = Utils.getString(R.string.warn_camera_max_user_exceed);
             } else {
-                content = "Camera gặp sự cố";
+                content = Utils.getString(R.string.warn_camera_error);
             }
             if (cameraCallback != null) {
                 cameraCallback.onError(content);

@@ -226,7 +226,6 @@ public class CircleSeekBar extends View {
 				mListener.onControlDown();
 			}
 			calculateAngle(x, y);
-			Log.d("dungnt", "Touch Ok");
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (isOutSideTouch(x, y)) {
@@ -306,8 +305,8 @@ public class CircleSeekBar extends View {
 	private OnControlListener mListener;
 
 	public interface OnControlListener {
-		public void onControlDown();
+		void onControlDown();
 
-		public void onControlUp();
+		void onControlUp();
 	}
 }

@@ -21,6 +21,7 @@ import vn.com.vshome.R;
 import vn.com.vshome.flexibleadapter.AbstractControlItem;
 import vn.com.vshome.flexibleadapter.AbstractModelItem;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Utils;
 
 public class ControlGroupItem
         extends AbstractModelItem<ControlGroupItem.ControlGroupHolder>
@@ -37,12 +38,12 @@ public class ControlGroupItem
             R.drawable.control_group_pir_icon,
             R.drawable.control_group_favorite_icon};
     private final String[] mSectionNames = new String[]{
-            "Đèn / Thiết bị đóng cắt",
-            "Đèn Dimmer",
-            "Rèm",
-            "Đèn RGB",
-            "Cảm biến chuyển động",
-            "Nhóm thiết bị yêu thích"};
+            Utils.getString(R.string.device_type_relay),
+            Utils.getString(R.string.device_type_dimmer),
+            Utils.getString(R.string.device_type_shutter_relay),
+            Utils.getString(R.string.device_type_rgb),
+            Utils.getString(R.string.device_type_pir),
+            Utils.getString(R.string.device_type_favorite)};
 
     /* Flags for FlexibleAdapter */
     private boolean mExpanded = false;

@@ -301,10 +301,10 @@ public class ReceiveThread extends Thread {
             if (lightingCallback != null) {
                 if (deviceId == currentControlDeviceId) {
                     lightingCallback.onControl(deviceId, true);
+                    currentControlDeviceId = -1;
                 } else {
                     lightingCallback.onControl(deviceId, false);
                 }
-                currentControlDeviceId = -1;
             }
         }
     }

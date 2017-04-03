@@ -1,7 +1,6 @@
 package vn.com.vshome.user;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,17 +8,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import in.workarounds.typography.Button;
 import in.workarounds.typography.TextView;
 import vn.com.vshome.BaseActivity;
 import vn.com.vshome.R;
@@ -30,12 +26,10 @@ import vn.com.vshome.communication.SocketManager;
 import vn.com.vshome.database.User;
 import vn.com.vshome.dialog.DeleteDialog;
 import vn.com.vshome.flexibleadapter.user.UserAdapter;
-import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.networks.CommandMessage;
 import vn.com.vshome.utils.Define;
 import vn.com.vshome.utils.MiscUtils;
 import vn.com.vshome.utils.TimeOutManager;
-import vn.com.vshome.utils.Toaster;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.ProgressHUD;
 
@@ -53,6 +47,8 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     private UserAdapter mAdapter;
     private ArrayList<User> mListUser;
     private ImageButton mShutDown;
+
+    private int tryTime = 0;
 
     @Override
     protected void onStart() {
@@ -136,7 +132,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         mMenu.setImageResource(R.drawable.icon_back);
         mHome = (ImageButton) findViewById(R.id.action_bar_home);
         mTitle = (TextView) findViewById(R.id.action_bar_title);
-        mTitle.setText("Xin chào " + VSHome.currentUser.username);
+        mTitle.setText(Utils.getString(R.string.title_greeting) + VSHome.currentUser.username);
 
         mMenu.setOnClickListener(this);
         mHome.setOnClickListener(this);
@@ -187,12 +183,17 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
         ProgressHUD.hideLoading(this);
         TimeOutManager.getInstance().cancelCountDown();
         if (status == CommandMessage.STATUS_ERROR) {
-            Utils.showConfirmDialog("Lỗi", "Có lỗi xảy ra. Thử lại?",
+            Utils.showConfirmDialog(Utils.getString(R.string.title_dialog_error),
+                    Utils.getString(R.string.warn_dialog_error_happen_and_try_again),
                     new DialogCallback() {
                         @Override
                         public void onConfirm() {
+                            if(tryTime >= 3){
+                                UserActivity.this.finish();
+                            }
                             User.deleteAll(User.class);
                             getUserList();
+                            tryTime++;
                         }
                     });
             return;
@@ -240,12 +241,17 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     @Override
     public void onTimeOut() {
         ProgressHUD.hideLoading(this);
-        Utils.showConfirmDialog("Lỗi", "Có lỗi xảy ra. Thử lại?",
+        Utils.showConfirmDialog(Utils.getString(R.string.title_dialog_error),
+                Utils.getString(R.string.warn_dialog_error_happen_and_try_again),
                 new DialogCallback() {
                     @Override
                     public void onConfirm() {
+                        if(tryTime >= 3){
+                            UserActivity.this.finish();
+                        }
                         User.deleteAll(User.class);
                         getUserList();
+                        tryTime++;
                     }
                 });
     }
@@ -300,7 +306,8 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
 
     private void showConfirmDeleteDialog(final User user) {
         DeleteDialog deleteDialog = new DeleteDialog();
-        String s = "Bạn muốn xóa <b>" + user.username.toUpperCase(Locale.US) + "</b>?";
+        String s = Utils.getString(R.string.content_dialog_confirm_delete) +
+                "<b>" + user.username.toUpperCase(Locale.US) + "</b>?";
         deleteDialog.setContent(s);
         deleteDialog.setCallback(new DialogCallback() {
             @Override
@@ -312,7 +319,8 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
                     @Override
                     public void onTimeOut() {
                         ProgressHUD.hideLoading(UserActivity.this);
-                        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+                        Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                                Utils.getString(R.string.warn_dialog_error_happen));
                     }
                 }, 5);
                 SocketManager.getInstance().sendMessage(deleteUser);
@@ -324,7 +332,8 @@ public class UserActivity extends BaseActivity implements OnClickListener, UserC
     private void showConfirmDisconnectDialog() {
         DeleteDialog disconnectDialog = new DeleteDialog();
         String s = VSHome.currentUser.priority == Define.PRIORITY_ADMIN ?
-                "Bạn muốn thoát toàn bộ các tài khoản?" : "Bạn muốn thoát tài khoản " + VSHome.currentUser.username
+                Utils.getString(R.string.warn_exit_all_users)
+                : Utils.getString(R.string.warn_exit_single_user) + VSHome.currentUser.username
                 + "?";
         disconnectDialog.setContent(s);
         disconnectDialog.setIcon(R.drawable.default_user_avatar);

@@ -1,14 +1,11 @@
 package vn.com.vshome;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.transition.Explode;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 
 import vn.com.vshome.activitymanager.TheActivityManager;
@@ -60,7 +57,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     && !Settings.canDrawOverlays(this)) {
-                Utils.showConfirmDialog("", "Bạn cần cho phép vẽ lên màn hình để truy cập mục này", new DialogCallback() {
+                Utils.showConfirmDialog(Utils.getString(R.string.title_dialog_notification),
+                        Utils.getString(R.string.warn_draw_over_other_app), new DialogCallback() {
                     @Override
                     public void onConfirm() {
                         checkPermission();
@@ -70,13 +68,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 intent = new Intent(this, SecurityActivity.class);
             }
         } else if (v == mButtonSensor) {
-            Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
+            Toaster.showMessage(this, Utils.getString(R.string.warn_toast_device_not_available));
         } else if (v == mButtonSun) {
-            Toaster.showMessage(this, Define.DEVICE_NOT_AVAILABLE);
+            Toaster.showMessage(this, Utils.getString(R.string.warn_toast_device_not_available));
         } else if (v == mButtonUser) {
             intent = new Intent(this, UserActivity.class);
         } else if (v == mButtonAdvance) {
-            Toaster.showMessage(this, Define.IN_DEVELOPING);
+            Toaster.showMessage(this, Utils.getString(R.string.warn_toast_in_development));
         }
         if (intent != null) {
             startActivity(intent);
@@ -85,8 +83,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onBackPressed() {
-        Utils.showConfirmDialog("Thông báo",
-                "Bạn có chắc chắn muốn thoát khỏi ứng dụng?", this);
+        Utils.showConfirmDialog(Utils.getString(R.string.title_dialog_notification),
+                Utils.getString(R.string.warn_quit_app), this);
     }
 
     @Override

@@ -6,6 +6,7 @@ import vn.com.vshome.database.Camera;
 import vn.com.vshome.flexibleadapter.security.CameraChildItem;
 import vn.com.vshome.foscamsdk.CameraManager;
 import vn.com.vshome.utils.Define;
+import vn.com.vshome.utils.Logger;
 import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.customview.CameraView;
 
@@ -359,7 +360,7 @@ public class PreviewService extends Service implements
             mEventHandler.addHandler(mHandler);
             holder.setKeepScreenOn(true);
         } catch (Exception e) {
-            Log.e("dungnt", e.toString());
+            Logger.LogD(e.toString());
         }
     }
 
@@ -402,7 +403,7 @@ public class PreviewService extends Service implements
     }
 
     public void eventHardwareAccelerationError() {
-        Log.e("dungnt", "Error with hardware acceleration");
+        Logger.LogD("Error with hardware acceleration");
         releasePlayer();
     }
 
@@ -418,7 +419,7 @@ public class PreviewService extends Service implements
     @Override
     public int configureSurface(Surface surface, int width, int height,
                                 int hal) {
-        Log.d("", "configureSurface: width = " + width + ", height = "
+        Logger.LogD("configureSurface: width = " + width + ", height = "
                 + height);
         if (LibVlcUtil.isICSOrLater() || surface == null)
             return -1;
@@ -466,7 +467,7 @@ public class PreviewService extends Service implements
 
         @Override
         public void onNativeCrash() {
-            Log.e("vlcdebug", "nativecrash");
+            Logger.LogD("nativecrash");
         }
 
     };
@@ -519,7 +520,7 @@ public class PreviewService extends Service implements
             holder.setFixedSize(mVideoWidth, mVideoHeight);
 
         } else {
-            Log.e("dungnt", "Holder was null");
+            Logger.LogD("Holder was null");
         }
 
 
@@ -544,7 +545,7 @@ public class PreviewService extends Service implements
             if (intent.getAction().equals(Define.INTENT_FULL_SCREEN)) {
                 hidePreview();
             } else if (intent.getAction().equals(Define.INTENT_PREVIEW)) {
-                Log.d("Preview", "StartPreviewing");
+                Logger.LogD("StartPreviewing");
                 if (mParentLayout == null) {
                     return;
                 }

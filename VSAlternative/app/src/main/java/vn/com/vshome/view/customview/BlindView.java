@@ -298,7 +298,6 @@ public class BlindView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (isControlSlider(x, y)) {
-                    Log.d("dungnt", "Control");
                     if (mListener != null) {
                         mListener.onControlPlay(this);
                     }
@@ -319,7 +318,6 @@ public class BlindView extends View {
                     mListener.onControlDown();
                 }
                 calculateAngle(x, y);
-                Log.d("dungnt", "Touch Ok");
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!canControl) {
@@ -436,7 +434,6 @@ public class BlindView extends View {
 
     public void stopAnimation() {
         try {
-            Log.d("dungnt", "Stop animation");
             if (timer != null) {
                 timer.cancel();
                 timer = null;
@@ -508,7 +505,6 @@ public class BlindView extends View {
     };
 
     public void setProgress(int progress) {
-        Log.d("dungnt", "Progress: " + progress);
         mCurrentAngle = -360 * progress / 100;
         mCurrentProgress = progress;
         invalidate();

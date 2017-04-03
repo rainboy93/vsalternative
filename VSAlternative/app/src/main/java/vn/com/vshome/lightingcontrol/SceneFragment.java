@@ -1,8 +1,6 @@
 package vn.com.vshome.lightingcontrol;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +12,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.daimajia.swipe.util.Attributes;
@@ -24,11 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import in.workarounds.typography.Button;
-import in.workarounds.typography.EditText;
-import in.workarounds.typography.TextView;
 import vn.com.vshome.R;
-import vn.com.vshome.VSHome;
 import vn.com.vshome.activitymanager.TheActivityManager;
 import vn.com.vshome.callback.DialogCallback;
 import vn.com.vshome.callback.InputCallback;
@@ -226,7 +218,8 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
             @Override
             public void onTimeOut() {
                 ProgressHUD.hideLoading(getActivity());
-                Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+                Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                        Utils.getString(R.string.warn_dialog_error_happen));
             }
         }, 5);
         SocketManager.getInstance().sendMessage(sceneScheduleUpdate);
@@ -320,14 +313,15 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                 ProgressHUD.hideLoading(getActivity());
                 TimeOutManager.getInstance().cancelCountDown();
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Utils.showErrorDialog(R.string.txt_error, R.string.txt_delete_scene_fail);
+                    Utils.showErrorDialog(R.string.title_dialog_error, R.string.warn_dialog_delete_scene_fail);
                 }
                 break;
             case CommandMessage.CMD_SCHEDULE_UPDATE:
                 ProgressHUD.hideLoading(getActivity());
                 TimeOutManager.getInstance().cancelCountDown();
                 if (status == CommandMessage.STATUS_ERROR) {
-                    Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+                    Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                            Utils.getString(R.string.warn_dialog_error_happen));
                 }
                 break;
             default:
@@ -336,7 +330,8 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
     }
 
     private void showConfirmDeleteDialog(final Scene scene) {
-        String s = "Bạn muốn xóa <b>" + scene.name.toUpperCase(Locale.US) + "</b>?";
+        String s = Utils.getString(R.string.content_dialog_confirm_delete) +
+                "<b>" + scene.name.toUpperCase(Locale.US) + "</b>?";
         DeleteDialog deleteDialog = new DeleteDialog();
         deleteDialog.setContent(Html.fromHtml(s));
         deleteDialog.setCallback(new DialogCallback() {
@@ -349,7 +344,8 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
                     @Override
                     public void onTimeOut() {
                         ProgressHUD.hideLoading(getActivity());
-                        Utils.showErrorDialog("Lỗi", "Có lỗi xảy ra. Hãy thử lại.");
+                        Utils.showErrorDialog(Utils.getString(R.string.title_dialog_error),
+                                Utils.getString(R.string.warn_dialog_error_happen));
                     }
                 }, 5);
                 SocketManager.getInstance().sendMessage(deleteScene);
@@ -366,10 +362,10 @@ public class SceneFragment extends BaseControlFragment implements SceneActionCal
             public void onConfirm(String... strings) {
                 String str = strings[0];
                 if (str.length() == 0) {
-                    Toaster.showMessage(getActivity(), "Chưa đặt tên cảnh!");
+                    Toaster.showMessage(getActivity(), Utils.getString(R.string.warn_toast_no_scene_name));
                     return;
                 } else if (str.getBytes().length > 49) {
-                    Toaster.showMessage(getActivity(), "Tên cảnh quá dài!");
+                    Toaster.showMessage(getActivity(), Utils.getString(R.string.warn_toast_scene_name_too_long));
                     return;
                 }
                 Intent intent = new Intent(getActivity(), LightingSceneActivity.class);

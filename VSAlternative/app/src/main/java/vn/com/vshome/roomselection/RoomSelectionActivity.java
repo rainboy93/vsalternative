@@ -18,6 +18,7 @@ import vn.com.vshome.R;
 import vn.com.vshome.database.DatabaseService;
 import vn.com.vshome.flexibleadapter.BaseAdapter;
 import vn.com.vshome.flexibleadapter.roomselection.FloorItem;
+import vn.com.vshome.utils.Utils;
 import vn.com.vshome.view.NonSwipeViewPager;
 
 
@@ -40,7 +41,7 @@ public class RoomSelectionActivity extends BaseActivity implements View.OnClickL
 
     private void initView() {
         mTitle = (TextView) findViewById(R.id.action_bar_title);
-        mTitle.setText("Chiếu sáng");
+        mTitle.setText(Utils.getString(R.string.title_lighting));
 
         mBack = (ImageButton) findViewById(R.id.action_bar_menu);
         mBack.setImageResource(R.drawable.icon_back);
